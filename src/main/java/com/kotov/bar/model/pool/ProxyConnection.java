@@ -1,14 +1,14 @@
-package com.kotov.sushi_bar.model.pool;
+package com.kotov.bar.model.pool;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ProxyConnection implements Connection {
+class ProxyConnection implements Connection {
     private Connection connection;
 
-    public ProxyConnection(Connection connection) {
+    ProxyConnection(Connection connection) {
         this.connection = connection;
     }
 
@@ -54,7 +54,8 @@ public class ProxyConnection implements Connection {
 
     @Override
     public void close() {
-        ConnectionPool.INSTANCE.releaseConnection(this);
+        ConnectionPool pool = ConnectionPool.getInstance();
+        pool.releaseConnection(this);
     }
 
     void reallyClose() throws SQLException {
@@ -112,18 +113,19 @@ public class ProxyConnection implements Connection {
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetTypeConcurrency) throws SQLException {
-        return connection.createStatement(resultSetType, resultSetTypeConcurrency);
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+        return connection.createStatement(resultSetType, resultSetConcurrency);
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetTypeConcurrency) throws SQLException {
-        return connection.prepareStatement(sql, resultSetType, resultSetTypeConcurrency);
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+            throws SQLException {
+        return connection.prepareStatement(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetTypeConcurrency) throws SQLException {
-        return connection.prepareCall(sql, resultSetType, resultSetTypeConcurrency);
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+        return connection.prepareCall(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
@@ -167,19 +169,20 @@ public class ProxyConnection implements Connection {
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+            throws SQLException {
         return connection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-                                              int resultSetHoldability) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency
+            , int resultSetHoldability) throws SQLException {
         return connection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-                                         int resultSetHoldability) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency
+            , int resultSetHoldability) throws SQLException {
         return connection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
@@ -279,6 +282,37 @@ public class ProxyConnection implements Connection {
     }
 
     @Override
+    public void beginRequest() throws SQLException {
+        connection.beginRequest();
+    }
+
+    @Override
+    public void endRequest() throws SQLException {
+        connection.endRequest();
+    }
+
+    @Override
+    public boolean setShardingKeyIfValid(ShardingKey shardingKey, ShardingKey superShardingKey, int timeout)
+            throws SQLException {
+        return connection.setShardingKeyIfValid(shardingKey, superShardingKey, timeout);
+    }
+
+    @Override
+    public boolean setShardingKeyIfValid(ShardingKey shardingKey, int timeout) throws SQLException {
+        return connection.setShardingKeyIfValid(shardingKey, timeout);
+    }
+
+    @Override
+    public void setShardingKey(ShardingKey shardingKey, ShardingKey superShardingKey) throws SQLException {
+        connection.setShardingKey(shardingKey, superShardingKey);
+    }
+
+    @Override
+    public void setShardingKey(ShardingKey shardingKey) throws SQLException {
+        connection.setShardingKey(shardingKey);
+    }
+
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         return connection.unwrap(iface);
     }
@@ -287,5 +321,4 @@ public class ProxyConnection implements Connection {
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return connection.isWrapperFor(iface);
     }
-
 }

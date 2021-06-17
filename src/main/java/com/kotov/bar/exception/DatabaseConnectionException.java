@@ -1,4 +1,4 @@
-package com.kotov.sushi_bar.exception;
+package com.kotov.bar.exception;
 
 public class DatabaseConnectionException extends Exception {
     public DatabaseConnectionException() {
