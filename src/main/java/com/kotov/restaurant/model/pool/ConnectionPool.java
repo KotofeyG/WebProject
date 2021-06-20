@@ -9,8 +9,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Timer;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.kotov.restaurant.model.pool.ConnectionFactory.POOL_SIZE;
 
@@ -18,13 +21,10 @@ public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger();
 
     private static ConnectionPool instance;
-    private static CountDownLatch initialisingLatch = new CountDownLatch(1);
     private static AtomicBoolean isInstanceInitialized = new AtomicBoolean(false);
-    private static final int POOL_INITIALIZATION_ATTEMPTS_NUMBER = 3;
-
     private static final long DELAY_UNTIL_CONNECTIONS_NUMBER_CHECK = 1;
     private static final long PERIOD_BETWEEN_CONNECTIONS_NUMBER_CHECK = 1;
-    private CountDownLatch connectionsCheckLatch;
+    private ReentrantLock connectionsLock = new ReentrantLock();
     private AtomicBoolean connectionsNumberCheck = new AtomicBoolean(false);
 
     private BlockingQueue<ProxyConnection> freeConnections;
@@ -33,18 +33,19 @@ public class ConnectionPool {
     private ConnectionPool() {
         freeConnections = new LinkedBlockingQueue<>(POOL_SIZE);
         busyConnections = new LinkedBlockingQueue<>(POOL_SIZE);
-        int attemptCounter = 0;
-        while (freeConnections.size() < POOL_SIZE && attemptCounter < POOL_INITIALIZATION_ATTEMPTS_NUMBER) {
-            for (int i = 0; i < POOL_SIZE; i++) {
-                addConnectionToPool();
+        for (int i = 0; i < POOL_SIZE; i++) {
+            Connection connection = null;
+            try {
+                connection = ConnectionFactory.getConnection();
+            } catch (SQLException e) {
+                logger.log(Level.ERROR, "Unable to create connection", e);
             }
-            attemptCounter++;
+            ProxyConnection proxyConnection = new ProxyConnection(connection);
+            freeConnections.add(proxyConnection);
         }
-        if (freeConnections.size() < POOL_SIZE) {
-            logger.log(Level.FATAL, "Not enough connections was created. Required " + POOL_SIZE + ", but got "
-                    + freeConnections.size());
-            throw new RuntimeException("Not enough connections was created. Required " + POOL_SIZE + ", but got "
-                    + freeConnections.size());
+        if (freeConnections.isEmpty()) {
+            logger.log(Level.FATAL, "Not enough connections was created. Required " + POOL_SIZE + ", but got 0");
+            throw new RuntimeException("Not enough connections was created. Required " + POOL_SIZE + ", but got 0");
         }
         Timer timer = new Timer();
         timer.schedule(new TimerConnectionCounter()
@@ -56,13 +57,6 @@ public class ConnectionPool {
         if (instance == null) {
             while (isInstanceInitialized.compareAndSet(false, true)) {
                 instance = new ConnectionPool();
-                initialisingLatch.countDown();
-            }
-            try {
-                initialisingLatch.await();
-            } catch (InterruptedException e) {
-                logger.log(Level.ERROR, "Thread is interrupted while ConnectionPool is filling", e);
-                Thread.currentThread().interrupt();
             }
         }
         return instance;
@@ -71,7 +65,11 @@ public class ConnectionPool {
     public Connection getConnection() throws DatabaseConnectionException {
         try {
             if (connectionsNumberCheck.get()) {
-                connectionsCheckLatch.await();
+                try {
+                    connectionsLock.lock();
+                } finally {
+                    connectionsLock.unlock();
+                }
             }
             ProxyConnection connection = freeConnections.take();
             busyConnections.put(connection);
@@ -84,7 +82,11 @@ public class ConnectionPool {
     public void releaseConnection(Connection connection) {
         try {
             if (connectionsNumberCheck.get()) {
-                connectionsCheckLatch.await();
+                try {
+                    connectionsLock.lock();
+                } finally {
+                    connectionsLock.unlock();
+                }
             }
             if (connection instanceof ProxyConnection proxyConnection && busyConnections.remove(proxyConnection)) {
                 freeConnections.put(proxyConnection);
@@ -100,7 +102,7 @@ public class ConnectionPool {
     void addMissingConnections() {
         int currentConnectionsNumber = POOL_SIZE;
         try {
-            connectionsCheckLatch = new CountDownLatch(1);
+            connectionsLock.lock();
             connectionsNumberCheck.set(true);
             TimeUnit.MICROSECONDS.sleep(100);
             currentConnectionsNumber = freeConnections.size() + busyConnections.size();
@@ -110,25 +112,21 @@ public class ConnectionPool {
             Thread.currentThread().interrupt();
         } finally {
             connectionsNumberCheck.set(false);
-            connectionsCheckLatch.countDown();
+            connectionsLock.unlock();
         }
         if (currentConnectionsNumber < POOL_SIZE) {
-            int requiredConnectionsNumber = POOL_SIZE - (freeConnections.size() + busyConnections.size());
+            int requiredConnectionsNumber = POOL_SIZE - currentConnectionsNumber;
             for (int i = 0; i < requiredConnectionsNumber; i++) {
-                addConnectionToPool();
+                Connection connection = null;
+                try {
+                    connection = ConnectionFactory.getConnection();
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Unable to create connection", e);
+                }
+                ProxyConnection proxyConnection = new ProxyConnection(connection);
+                freeConnections.add(proxyConnection);
             }
         }
-    }
-
-    private void addConnectionToPool() {
-        Connection connection = null;
-        try {
-            connection = ConnectionFactory.getConnection();
-        } catch (SQLException e) {
-            logger.log(Level.ERROR, "Unable to create connection", e);
-        }
-        ProxyConnection proxyConnection = new ProxyConnection(connection);
-        freeConnections.add(proxyConnection);
     }
 
     public void destroyPool() {
