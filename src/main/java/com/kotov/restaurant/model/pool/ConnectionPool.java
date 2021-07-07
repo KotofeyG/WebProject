@@ -9,23 +9,29 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Timer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.kotov.restaurant.model.pool.ConnectionFactory.POOL_SIZE;
 
 public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger();
-
-    private static ConnectionPool instance;
-    private static AtomicBoolean isInstanceInitialized = new AtomicBoolean(false);
+    private static final int ONCE = 1;
+    private static final int POOL_INITIALIZATION_ATTEMPTS_NUMBER = 3;
+    private static final long DELAY_UNTIL_REMAINING_THREADS_FINISH = 100;
     private static final long DELAY_UNTIL_CONNECTIONS_NUMBER_CHECK = 1;
     private static final long PERIOD_BETWEEN_CONNECTIONS_NUMBER_CHECK = 1;
-    private ReentrantLock connectionsLock = new ReentrantLock();
+    private static final long MAX_CONNECTION_TIMEOUT = 10;
+
+    private static ConnectionPool instance;
+    private static CountDownLatch initialisingLatch = new CountDownLatch(ONCE);
+    private static AtomicBoolean isInstanceInitialized = new AtomicBoolean(false);
+
+    private Timer poolSizeCheckTimer;
+    private CountDownLatch connectionsCheckLatch;
     private AtomicBoolean connectionsNumberCheck = new AtomicBoolean(false);
+
+    private Semaphore semaphore;
 
     private BlockingQueue<ProxyConnection> freeConnections;
     private BlockingQueue<ProxyConnection> busyConnections;
@@ -33,22 +39,23 @@ public class ConnectionPool {
     private ConnectionPool() {
         freeConnections = new LinkedBlockingQueue<>(POOL_SIZE);
         busyConnections = new LinkedBlockingQueue<>(POOL_SIZE);
-        for (int i = 0; i < POOL_SIZE; i++) {
-            Connection connection = null;
-            try {
-                connection = ConnectionFactory.getConnection();
-            } catch (SQLException e) {
-                logger.log(Level.ERROR, "Unable to create connection", e);
+        semaphore = new Semaphore(POOL_SIZE);
+        int attemptCounter = 0;
+        while (freeConnections.size() < POOL_SIZE && attemptCounter < POOL_INITIALIZATION_ATTEMPTS_NUMBER) {
+            int currentPoolSize = freeConnections.size();
+            for (int i = currentPoolSize; i < POOL_SIZE; i++) {
+                addConnectionToPool();
             }
-            ProxyConnection proxyConnection = new ProxyConnection(connection);
-            freeConnections.add(proxyConnection);
+            attemptCounter++;
         }
-        if (freeConnections.isEmpty()) {
-            logger.log(Level.FATAL, "Not enough connections was created. Required " + POOL_SIZE + ", but got 0");
-            throw new RuntimeException("Not enough connections was created. Required " + POOL_SIZE + ", but got 0");
+        if (freeConnections.size() < POOL_SIZE) {
+            logger.log(Level.FATAL, "Not enough connections was created. Required " + POOL_SIZE + ", but got "
+                    + freeConnections.size());
+            throw new RuntimeException("Not enough connections was created. Required " + POOL_SIZE + ", but got "
+                    + freeConnections.size());
         }
-        Timer timer = new Timer();
-        timer.schedule(new TimerConnectionCounter()
+        poolSizeCheckTimer = new Timer();
+        poolSizeCheckTimer.schedule(new TimerConnectionCounter()
                 , TimeUnit.HOURS.toMillis(DELAY_UNTIL_CONNECTIONS_NUMBER_CHECK)
                 , TimeUnit.HOURS.toMillis(PERIOD_BETWEEN_CONNECTIONS_NUMBER_CHECK));
     }
@@ -57,6 +64,13 @@ public class ConnectionPool {
         if (instance == null) {
             while (isInstanceInitialized.compareAndSet(false, true)) {
                 instance = new ConnectionPool();
+                initialisingLatch.countDown();
+            }
+            try {
+                initialisingLatch.await();
+            } catch (InterruptedException e) {
+                logger.log(Level.ERROR, "Thread is interrupted while ConnectionPool is filling", e);
+                Thread.currentThread().interrupt();
             }
         }
         return instance;
@@ -65,46 +79,46 @@ public class ConnectionPool {
     public Connection getConnection() throws DatabaseConnectionException {
         try {
             if (connectionsNumberCheck.get()) {
-                try {
-                    connectionsLock.lock();
-                } finally {
-                    connectionsLock.unlock();
-                }
+                connectionsCheckLatch.await();
             }
-            ProxyConnection connection = freeConnections.take();
-            busyConnections.put(connection);
-            return connection;
+            if (semaphore.tryAcquire(MAX_CONNECTION_TIMEOUT, TimeUnit.SECONDS)) {
+                ProxyConnection connection = freeConnections.take();
+                busyConnections.put(connection);
+                return connection;
+            }
         } catch (InterruptedException e) {
-            throw new DatabaseConnectionException("Impossible to get connection", e);
+            logger.log(Level.ERROR, "Impossible to get connection", e);
+            Thread.currentThread().interrupt();
         }
+        throw new DatabaseConnectionException("Impossible to get connection as free connection timed out");
     }
 
-    public void releaseConnection(Connection connection) {
+    public boolean releaseConnection(Connection connection) {
+        boolean result = true;
         try {
             if (connectionsNumberCheck.get()) {
-                try {
-                    connectionsLock.lock();
-                } finally {
-                    connectionsLock.unlock();
-                }
+                connectionsCheckLatch.await();
             }
             if (connection instanceof ProxyConnection proxyConnection && busyConnections.remove(proxyConnection)) {
                 freeConnections.put(proxyConnection);
             } else {
-                logger.log(Level.WARN, "Impossible to return connection into pool. Wrong argument: " + connection);
+                logger.log(Level.WARN, "Impossible to return connection into pool. Wrong argument: "
+                        + connection);
+                result = false;
             }
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, "Impossible to return connection into pool", e);
             Thread.currentThread().interrupt();
         }
+        return result;
     }
 
     void addMissingConnections() {
         int currentConnectionsNumber = POOL_SIZE;
         try {
-            connectionsLock.lock();
+            connectionsCheckLatch = new CountDownLatch(ONCE);
             connectionsNumberCheck.set(true);
-            TimeUnit.MICROSECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(DELAY_UNTIL_REMAINING_THREADS_FINISH);
             currentConnectionsNumber = freeConnections.size() + busyConnections.size();
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, Thread.class.getSimpleName()
@@ -112,24 +126,29 @@ public class ConnectionPool {
             Thread.currentThread().interrupt();
         } finally {
             connectionsNumberCheck.set(false);
-            connectionsLock.unlock();
+            connectionsCheckLatch.countDown();
         }
         if (currentConnectionsNumber < POOL_SIZE) {
-            int requiredConnectionsNumber = POOL_SIZE - currentConnectionsNumber;
+            int requiredConnectionsNumber = POOL_SIZE - (freeConnections.size() + busyConnections.size());
             for (int i = 0; i < requiredConnectionsNumber; i++) {
-                Connection connection = null;
-                try {
-                    connection = ConnectionFactory.getConnection();
-                } catch (SQLException e) {
-                    logger.log(Level.ERROR, "Unable to create connection", e);
-                }
-                ProxyConnection proxyConnection = new ProxyConnection(connection);
-                freeConnections.add(proxyConnection);
+                addConnectionToPool();
             }
         }
     }
 
+    private void addConnectionToPool() {
+        Connection connection = null;
+        try {
+            connection = ConnectionFactory.getConnection();
+        } catch (SQLException e) {
+            logger.log(Level.ERROR, "Unable to create connection", e);
+        }
+        ProxyConnection proxyConnection = new ProxyConnection(connection);
+        freeConnections.add(proxyConnection);
+    }
+
     public void destroyPool() {
+        poolSizeCheckTimer.cancel();
         for (int i = 0; i < POOL_SIZE; i++) {
             try {
                 ProxyConnection connection = freeConnections.take();

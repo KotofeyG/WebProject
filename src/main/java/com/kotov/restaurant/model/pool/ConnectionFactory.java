@@ -1,5 +1,4 @@
 package com.kotov.restaurant.model.pool;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-class ConnectionFactory {
+public class ConnectionFactory {
     private static final Logger logger = LogManager.getLogger();
     private static final Properties properties = new Properties();
     private static final String DATABASE_URL;
@@ -19,6 +18,7 @@ class ConnectionFactory {
     private static final String DB_DRIVER = "db.driver";
     private static final String DB_POOL_SIZE = "pool.size";
     private static final String PROPERTIES_PATH = "config/db.properties";
+    private static final int DEFAULT_POOL_SIZE = 16;
     static final int POOL_SIZE;
 
     static {
@@ -30,18 +30,25 @@ class ConnectionFactory {
         } catch (ClassNotFoundException e) {
             logger.log(Level.FATAL, "Unable to load application driver", e);
             throw new ExceptionInInitializerError("Unable to load application driver");
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             logger.log(Level.FATAL, "Property file is not found", e);
             throw new ExceptionInInitializerError("Property file is not found");
         }
         DATABASE_URL = properties.getProperty(DB_URL);
-        POOL_SIZE = Integer.parseInt(properties.getProperty(DB_POOL_SIZE));
+        int tempSize;
+        try {
+            tempSize = Integer.parseInt(properties.getProperty(DB_POOL_SIZE));
+        } catch (NumberFormatException e) {
+            logger.log(Level.ERROR, "String does not contain a parsable integer for POOL_SIZE variable", e);
+            tempSize = DEFAULT_POOL_SIZE;
+        }
+        POOL_SIZE = tempSize;
     }
 
     private ConnectionFactory() {
     }
 
     static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DATABASE_URL);
+        return DriverManager.getConnection(DATABASE_URL, properties);
     }
 }
