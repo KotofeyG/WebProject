@@ -1,6 +1,5 @@
 package com.kotov.restaurant.model.pool;
 
-import com.kotov.restaurant.exception.DatabaseConnectionException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,6 +57,7 @@ public class ConnectionPool {
         poolSizeCheckTimer.schedule(new TimerConnectionCounter()
                 , TimeUnit.HOURS.toMillis(DELAY_UNTIL_CONNECTIONS_NUMBER_CHECK)
                 , TimeUnit.HOURS.toMillis(PERIOD_BETWEEN_CONNECTIONS_NUMBER_CHECK));
+        logger.log(Level.INFO, "Connection pool was created");
     }
 
     public static ConnectionPool getInstance() {
@@ -69,14 +69,14 @@ public class ConnectionPool {
             try {
                 initialisingLatch.await();
             } catch (InterruptedException e) {
-                logger.log(Level.ERROR, "Thread is interrupted while ConnectionPool is filling", e);
+                logger.log(Level.ERROR, "Thread is interrupted while ConnectionPool is creating", e);
                 Thread.currentThread().interrupt();
             }
         }
         return instance;
     }
 
-    public Connection getConnection() throws DatabaseConnectionException {
+    public Connection getConnection() {
         try {
             if (connectionsNumberCheck.get()) {
                 connectionsCheckLatch.await();
@@ -84,13 +84,16 @@ public class ConnectionPool {
             if (semaphore.tryAcquire(MAX_CONNECTION_TIMEOUT, TimeUnit.SECONDS)) {
                 ProxyConnection connection = freeConnections.take();
                 busyConnections.put(connection);
+                logger.log(Level.DEBUG, "Connection was taken from pool");
                 return connection;
             }
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, "Impossible to get connection", e);
             Thread.currentThread().interrupt();
+        } finally {
+            semaphore.release();
         }
-        throw new DatabaseConnectionException("Impossible to get connection as free connection timed out");
+        throw new RuntimeException("Impossible to get connection as free connection timed out");
     }
 
     public boolean releaseConnection(Connection connection) {
@@ -110,6 +113,7 @@ public class ConnectionPool {
             logger.log(Level.ERROR, "Impossible to return connection into pool", e);
             Thread.currentThread().interrupt();
         }
+        logger.log(Level.DEBUG, "Connection was returned into pool");
         return result;
     }
 
@@ -129,6 +133,8 @@ public class ConnectionPool {
             connectionsCheckLatch.countDown();
         }
         if (currentConnectionsNumber < POOL_SIZE) {
+            logger.log(Level.WARN, "Insufficient number of connections in the pool: Current size is "
+                    + currentConnectionsNumber + ", required " + POOL_SIZE);
             int requiredConnectionsNumber = POOL_SIZE - (freeConnections.size() + busyConnections.size());
             for (int i = 0; i < requiredConnectionsNumber; i++) {
                 addConnectionToPool();
@@ -145,6 +151,7 @@ public class ConnectionPool {
         }
         ProxyConnection proxyConnection = new ProxyConnection(connection);
         freeConnections.add(proxyConnection);
+        logger.log(Level.INFO, "Connection was created and added to pool");
     }
 
     public void destroyPool() {
@@ -159,6 +166,7 @@ public class ConnectionPool {
                 logger.log(Level.ERROR, "Thread was interrupted while taking free connection", e);
             }
         }
+        logger.log(Level.INFO, "Connection pool was destroyed");
         deregisterDrivers();
     }
 
@@ -172,5 +180,6 @@ public class ConnectionPool {
                         logger.log(Level.ERROR, "Impossible deregister driver", e);
                     }
                 });
+        logger.log(Level.INFO, "Database drivers were de-registered");
     }
 }

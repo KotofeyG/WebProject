@@ -43,6 +43,7 @@ public class ConnectionFactory {
             tempSize = DEFAULT_POOL_SIZE;
         }
         POOL_SIZE = tempSize;
+        logger.log(Level.INFO, "Database connection completed: URL - " + DATABASE_URL);
     }
 
     private ConnectionFactory() {
