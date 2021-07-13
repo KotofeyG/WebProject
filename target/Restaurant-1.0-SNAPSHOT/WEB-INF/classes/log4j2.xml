@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <Configuration status="error" monitorInterval="43200">
+        <Properties>
+            <property name="LOG_FOLDER">logs</property>
+            <property name="pattern_file">%d{DATE} [%t] %-5level %logger{6} : %M - %msg%n</property>
+            <property name="pattern_console">%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{1} - %msg%n</property>
+        </Properties>
+        <Appenders>
+            <RollingFile name="TxtFile" fileName="${LOG_FOLDER}/log.txt" append="true"
+                         filePattern="${LOG_FOLDER}/${date:yyyy-MM-dd}/%d{yyyy-MM-dd_HH-mm}_%i.txt">
+                <PatternLayout pattern="${pattern_file}"/>
+                <Policies>
+                    <TimeBasedTriggeringPolicy/>
+                    <SizeBasedTriggeringPolicy size="50 KB"/>
+                </Policies>
+                <DefaultRolloverStrategy max="15"/>
+            </RollingFile>
+            <Console name="Console" target="SYSTEM_OUT">
+                <PatternLayout pattern="${pattern_console}"/>
+            </Console>
+        </Appenders>
+        <Loggers>
+            <Root level="trace">
+                <AppenderRef ref="TxtFile" level="debug"/>
+                <AppenderRef ref="Console" level="debug"/>
+            </Root>
+        </Loggers>
+    </Configuration>

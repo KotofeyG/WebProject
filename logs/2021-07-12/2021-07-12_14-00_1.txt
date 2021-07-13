@@ -1,0 +1,1 @@
+12 июл. 2021 14:00:34,079 [main] INFO  com.kotov.restaurant.model.pool.ConnectionFactory : <clinit> - Database connection completed: URL - jdbc:mysql://localhost:3306/restaurant
