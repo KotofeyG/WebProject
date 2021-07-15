@@ -44,14 +44,7 @@ public class ParamName {
     public static final String MOBILE_NUMBER_ERROR = "mobile_number_error";
     public static final String INVALID_MOBILE_NUMBER_MESSAGE = "invalid_mobile_number";
     public static final String NOT_UNIQUE_MOBILE_NUMBER_MESSAGE = "not_unique_mobile_number";
-
-    public static final int FIRST_PARAM_INDEX = 1;
-    public static final int SECOND_PARAM_INDEX = 2;
-    public static final int THIRD_PARAM_INDEX = 3;
-    public static final int FOURTH_PARAM_INDEX = 4;
-    public static final int FIFTH_PARAM_INDEX = 5;
-    public static final int SIXTH_PARAM_INDEX = 6;
-    public static final int SEVENTH_PARAM_INDEX = 7;
+    public static final String INVALID_LOGIN_OR_PASSWORD = "invalid_login_or_password";
 
     public static final String VALID = "true";
     public static final String INVALID = "false";

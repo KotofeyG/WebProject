@@ -2,6 +2,6 @@
 <html>
 <head><title>Entrance</title></head>
     <body>
-        <jsp:forward page="/jsp/sign_in.jsp"/>
+        <jsp:forward page="/jsp/main.jsp"/>
     </body>
 </html>

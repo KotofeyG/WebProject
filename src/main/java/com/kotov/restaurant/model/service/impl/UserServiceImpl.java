@@ -2,12 +2,13 @@ package com.kotov.restaurant.model.service.impl;
 
 import com.kotov.restaurant.exception.DaoException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.dao.DaoProvider;
 import com.kotov.restaurant.model.dao.UserDao;
-import com.kotov.restaurant.model.dao.impl.UserDaoImpl;
 import com.kotov.restaurant.model.entity.RegistrationData;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.UserService;
 import com.kotov.restaurant.util.PasswordEncryptor;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +21,7 @@ import static com.kotov.restaurant.command.ParamName.*;
 
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LogManager.getLogger();
+    private static final DaoProvider daoProvider = DaoProvider.getInstance();
 
     private UserServiceImpl() {
     }
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, String> checkRegistrationParams(String... params) throws ServiceException {
-        UserDao dao = UserDaoImpl.getInstance();
+        UserDao dao = daoProvider.getUserDao();
         Map<String, String> dataCheckResult = new HashMap<>();
 
         String login = params[LOGIN_INDEX];
@@ -70,25 +72,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserByLoginAndPassword(String login, String password) throws ServiceException {
-        UserDao dao = UserDaoImpl.getInstance();
+        UserDao dao = daoProvider.getUserDao();
         Optional<User> user = Optional.empty();
         try {
-            if (login.matches(LOGIN_REGEX) && dao.checkLogin(login)) {
-                if (password.matches(PASSPORT_REGEX)) {
-                // to do
-                }
+            if (login.matches(LOGIN_REGEX) && password.matches(PASSPORT_REGEX)) {
+                String passwordHash = PasswordEncryptor.encrypt(password);
+                user = dao.findUserByLoginAndPassword(login, password);
             }
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
-        return Optional.empty();
+        return user;
     }
-
 
     @Override
     public void registerNewUser(RegistrationData data, String password) throws ServiceException {
         User user = new User(data.getLogin(), data.getEmail(), data.getMobileNumber(), LocalDateTime.now());
-        UserDao dao = UserDaoImpl.getInstance();
+        UserDao dao = daoProvider.getUserDao();
         try {
             String passwordHash = PasswordEncryptor.encrypt(password);
             dao.addNewUser(user, passwordHash);

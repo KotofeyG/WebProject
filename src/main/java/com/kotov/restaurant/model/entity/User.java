@@ -186,16 +186,16 @@ public class User extends Entity {
     public String toString() {
         StringBuilder result = new StringBuilder(getClass().getSimpleName());
         result.append("[ userId = ").append(userId);
-        result.append(",login = ").append(login);
-        result.append(",email = ").append(email);
-        result.append(",firstName = ").append(firstName);
-        result.append(",middleName = ").append(middleName);
-        result.append(",lastName = ").append(lastName);
-        result.append(",mobileNumber = ").append(mobileNumber);
-        result.append(",registered = ").append(registered);
-        result.append(",address = ").append(address);
-        result.append(",status = ").append(status);
-        result.append(",role = ").append(role).append(" ]");
+        result.append(" ,login = ").append(login);
+        result.append(" ,email = ").append(email);
+        result.append(" ,firstName = ").append(firstName);
+        result.append(" ,middleName = ").append(middleName);
+        result.append(" ,lastName = ").append(lastName);
+        result.append(" ,mobileNumber = ").append(mobileNumber);
+        result.append(" ,registered = ").append(registered);
+        result.append(" ,address = ").append(address);
+        result.append(" ,status = ").append(status);
+        result.append(" ,role = ").append(role).append(" ]");
         return result.toString();
     }
 }

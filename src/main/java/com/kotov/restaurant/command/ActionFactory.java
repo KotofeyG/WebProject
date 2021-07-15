@@ -14,7 +14,7 @@ public class ActionFactory {
             command = commandType.getCurrentCommand();
         } catch (IllegalArgumentException e) {
             logger.log(Level.ERROR, "Nonexistent command:", e);
-            command = CommandType.NONEXISTENT_COMMAND.getCurrentCommand();                                              // to do NONEXISTENT_COMMAND
+            command = CommandType.DEFAULT_COMMAND.getCurrentCommand();                                              // to do NONEXISTENT_COMMAND
         }
         return command;
     }

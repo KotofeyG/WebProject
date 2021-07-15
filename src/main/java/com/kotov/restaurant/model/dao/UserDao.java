@@ -12,7 +12,7 @@ public interface UserDao {
 
     boolean checkMobileNumber(String mobileNumber) throws DaoException;
 
-    Optional<User> getUserByPassword(String passwordHah)  throws DaoException;
+    Optional<User> findUserByLoginAndPassword(String login, String passwordHah)  throws DaoException;
 
     void addNewUser(User user, String passwordHash) throws DaoException;
 }
