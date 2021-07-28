@@ -32,11 +32,11 @@ public class ColumnName {
     public static final String REGISTERED = "users.registered";
     public static final String USER_ADDRESS_ID = "users.address_id";
     public static final String USER_ROLE_ID = "users.role_id";
-    public static final String USER_USER_STATUS_ID = "users.status_id";             // change
+    public static final String USER_STATUS_ID = "users.status_id";
 
     /* roles table */
     public static final String ROLE_ID = "roles.id";
-    public static final String ROLE = "roles.role";
+    public static final String USER_ROLE = "roles.role";
 
     /* user_statuses table */
     public static final String STATUS_ID = "user_statuses.status.id";
@@ -78,12 +78,12 @@ public class ColumnName {
     public static final String MEAL_PRICE = "meals.price";
     public static final String MEAL_RECIPE = "meals.recipe";
     public static final String MEAL_CREATED = "meals.created";
+    public static final String MEAL_ACTIVE = "meals.active";
 
     /* available_meals table */
     public static final String AVAILABLE_MEAL_ID = "available_meals.id";
-    public static final String ACTIVE = "available_meals.active";
     public static final String AVAILABLE_MEAL_MENU_ID = "available_meals.menu_id";
-    public static final String AVAILABLE_MEAL_MEAL_ID = "available_meals.meal_id";              //change
+    public static final String AVAILABLE_MEAL_MEAL_ID = "available_meals.meal_id";
 
     /* baskets table */
     public static final String BASKET_ID = "baskets.id";
@@ -95,7 +95,7 @@ public class ColumnName {
     public static final String BASKET_HAS_MEAL_QUANTITY = "baskets_has_meals.quantity";
     public static final String BASKET_HAS_MEAL_SUB_PRICE = "baskets_has_meals.sub_price";
     public static final String BASKET_HAS_MEAL_BASKET_ID = "baskets_has_meals.basket_id";
-    public static final String BASKET_HAS_MEAL_MEAL_ID = "baskets_has_meals.meal_id";           //change
+    public static final String BASKET_HAS_MEAL_MEAL_ID = "baskets_has_meals.meal_id";
 
     /* orders table */
     public static final String ORDER_ID = "orders.id";
@@ -104,7 +104,7 @@ public class ColumnName {
     public static final String ORDER_SHIPPING = "orders.shipping";
     public static final String ORDER_SUB_PRICE = "orders.sub_price";
     public static final String ORDER_USER_ID = "orders.user_id";
-    public static final String ORDER_ORDER_STATUS_ID = "orders.order_status_id";                //change
+    public static final String ORDER_ORDER_STATUS_ID = "orders.order_status_id";
     public static final String ORDER_CREDIT_CARD_ID = "orders.credit_card_id";
 
     /* order_statuses table */
@@ -112,12 +112,12 @@ public class ColumnName {
     public static final String ORDER_STATUS = "order_statuses.status";
 
     /* orders_has_meals table */
-    public static final String ORDER_MEAL_ID = "orders_has_meals.id";
-    public static final String ORDER_MEAL_QUANTITY = "orders_has_meals.quantity";
-    public static final String ORDER_MEAL_TOTAL_PRICE = "orders_has_meals.total_price";
-    public static final String ORDER_MEAL_ORDER_ID = "orders_has_meals.order_id";
-    public static final String ORDER_MEAL_MEAL_ID = "orders_has_meals.meal_id";                 //change
-    public static final String ORDER_MEAL_BOOKING_ID = "orders_has_meals.booking_id";
+    public static final String ORDER_HAS_MEAL_ID = "orders_has_meals.id";
+    public static final String ORDER_HAS_MEAL_QUANTITY = "orders_has_meals.quantity";
+    public static final String ORDER_HAS_MEAL_TOTAL_PRICE = "orders_has_meals.total_price";
+    public static final String ORDER_HAS_MEAL_ORDER_ID = "orders_has_meals.order_id";
+    public static final String ORDER_HAS_MEAL_MEAL_ID = "orders_has_meals.meal_id";
+    public static final String ORDER_HAS_MEAL_BOOKING_ID = "orders_has_meals.booking_id";
 
     /* booking table */
     public static final String BOOKING_ID = "booking.orders.id";
@@ -125,7 +125,7 @@ public class ColumnName {
     public static final String BOOKING_UPDATED = "booking.updated";
     public static final String BOOKING_USER_ID = "booking.user_id";
     public static final String BOOKING_TABLE_ID = "booking.table_id";
-    public static final String BOOKING_BOOKING_STATUS_ID = "booking.booking_status_id";         //change
+    public static final String BOOKING_BOOKING_STATUS_ID = "booking.booking_status_id";
 
     /* booking_statuses table */
     public static final String BOOKING_STATUS_ID = "booking_statuses.orders.id";
@@ -136,12 +136,13 @@ public class ColumnName {
     public static final String TABLE_CAPACITY = "tables.capacity";
     public static final String TABLE_TOKEN = "tables.token";
     public static final String TABLE_VIP = "tables.vip";
-    public static final String TABLE_TABLE_STATUS_ID = "tables.table_status_id";                //change
+    public static final String TABLE_TABLE_STATUS_ID = "tables.table_status_id";
 
     /* table_statuses table */
     public static final String TABLE_STATUS_ID = "table_statuses.orders.id";
     public static final String TABLE_STATUS = "table_statuses.status";
 
+    /* param indexes for statement */
     public static final int FIRST_PARAM_INDEX = 1;
     public static final int SECOND_PARAM_INDEX = 2;
     public static final int THIRD_PARAM_INDEX = 3;
@@ -149,8 +150,6 @@ public class ColumnName {
     public static final int FIFTH_PARAM_INDEX = 5;
     public static final int SIXTH_PARAM_INDEX = 6;
     public static final int SEVENTH_PARAM_INDEX = 7;
-
-    public static final int NULL = 0;
 
     private ColumnName() {
     }

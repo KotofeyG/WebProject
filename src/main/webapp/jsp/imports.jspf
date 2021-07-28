@@ -1,0 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="abs">${pageContext.request.contextPath}</c:set>
+
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="localization/locale"/>

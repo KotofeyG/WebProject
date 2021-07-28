@@ -1,10 +1,9 @@
 package com.kotov.restaurant.controller;
 
-import com.kotov.restaurant.command.Command;
-import com.kotov.restaurant.command.ActionFactory;
-import com.kotov.restaurant.command.PagePath;
-import com.kotov.restaurant.command.ParamName;
+import com.kotov.restaurant.controller.command.Command;
+import com.kotov.restaurant.controller.command.ActionFactory;
 import com.kotov.restaurant.exception.CommandException;
+import com.kotov.restaurant.model.pool.ConnectionPool;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +15,18 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@WebServlet(name = "Controller", urlPatterns = {"/controller", "*.res"})
+import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
+import static com.kotov.restaurant.controller.command.ParamName.INTERNAL_SERVER_ERROR;
+
+@WebServlet(name = "Controller", urlPatterns = "/controller")
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
+
+    @Override
+    public void init() throws ServletException {
+        ConnectionPool.getInstance();
+        logger.log(Level.INFO, "Connection pool has been initialized");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,7 +39,7 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String commandStr = req.getParameter(ParamName.COMMAND);
+        String commandStr = req.getParameter(COMMAND);
         Command command = ActionFactory.getCommand(commandStr);
         try {
             Router router = command.execute(req);
@@ -40,8 +48,14 @@ public class Controller extends HttpServlet {
                 case REDIRECT -> resp.sendRedirect(router.getPagePath());
             }
         } catch (CommandException e) {
-            resp.sendRedirect(PagePath.INTERNAL_SERVER_ERROR_PAGE);                                                     //to do INTERNAL_SERVER_ERROR_PAGE
+            resp.sendError(INTERNAL_SERVER_ERROR);
             logger.log(Level.ERROR, "Internal error has occurred:", e);
         }
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionPool.getInstance().destroyPool();
+        logger.log(Level.INFO, "Connection pool has destroyed");
     }
 }

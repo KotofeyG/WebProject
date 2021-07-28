@@ -21,8 +21,8 @@
         </Appenders>
         <Loggers>
             <Root level="trace">
-                <AppenderRef ref="TxtFile" level="debug"/>
-                <AppenderRef ref="Console" level="debug"/>
+                <AppenderRef ref="TxtFile" level="trace"/>
+                <AppenderRef ref="Console" level="trace"/>
             </Root>
         </Loggers>
     </Configuration>

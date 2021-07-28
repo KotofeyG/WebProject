@@ -1,0 +1,13 @@
+<fmt:message key="admin_header.menu_management" var="menu_management"/>
+<fmt:message key="manager_header.orders_confirmation" var="orders_confirmation"/>
+<fmt:message key="manager_header.bill_creation" var="bill_creation"/>
+
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=find_all_meals_command&page=meal_management">${menu_management}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_orders_confirmation_command">${orders_confirmation}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_bill_creation_command">${bill_creation}</a>
+</li>

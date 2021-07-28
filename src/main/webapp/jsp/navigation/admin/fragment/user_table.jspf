@@ -1,0 +1,46 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+
+
+
+<jsp:useBean id="users" scope="request" type="java.util.List"/>
+
+<div class="scroll-table">
+    <table class="table-condensed table-bordered mealTable">
+        <caption><h3 class="text-center">${dishes_list}</h3></caption>
+        <thead>
+        <tr>
+            <th></th>
+            <th>${meal_id}</th>
+            <th>${meal_title}</th>
+            <th>${meal_image}</th>
+            <th>${meal_type}</th>
+            <th>${meal_price}</th>
+            <th>${meal_ingredients}</th>
+            <th>${meal_status}</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-table-body">
+        <table class="table-condensed table-bordered mealTable">
+            <tbody>
+            <c:forEach items="${meals}" var="meal">
+                <tr>
+                    <td>
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="selected" value="${meal.mealId}">
+                        </label>
+                    </td>
+                    <td>${meal.mealId}</td>
+                    <td>${meal.title}</td>
+                    <td>${meal.image}</td>
+                    <td>${meal.type}</td>
+                    <td>${meal.price}</td>
+                    <td>${meal.recipe}</td>
+                    <td>${meal.active}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>

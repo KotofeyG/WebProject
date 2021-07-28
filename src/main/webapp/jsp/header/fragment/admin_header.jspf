@@ -1,0 +1,9 @@
+<fmt:message key="admin_header.user_management" var="user_management"/>
+<fmt:message key="admin_header.reviews_management" var="review_management"/>
+
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=user_management_command">${user_management}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_reviews_management_command">${review_management}</a>
+</li>

@@ -1,0 +1,20 @@
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"
+       href="${abs}/controller?command=go_to_orders_command">${orders}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"
+       href="${abs}/controller?command=go_to_booking_command">${booking}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"
+       href="${abs}/controller?command=go_to_settings_command">${settings}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"
+       href="${abs}/controller?command=go_to_reviews_command">${reviews}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page"
+       href="${abs}/controller?command=go_to_cart_command">${cart}</a>
+</li>

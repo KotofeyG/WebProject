@@ -2,7 +2,7 @@ package com.kotov.restaurant.model.entity;
 
 import java.time.LocalDateTime;
 
-public class User extends Entity {
+public class User extends AbstractEntity {
     private long userId;
     private String login;
     private String email;
@@ -12,15 +12,15 @@ public class User extends Entity {
     private String mobileNumber;
     private LocalDateTime registered;
     private Address address;
-    private UserStatus status;
-    private UserRole role;
+    private Status status;
+    private Role role;
 
-    public enum UserStatus {
+    public enum Status {
         OFFLINE, ONLINE, BLOCKED
     }
 
-    public enum UserRole {
-        SUPER_ADMIN, ADMIN, CLIENT
+    public enum Role {
+        ADMIN, MANAGER, CLIENT, GUEST
     }
 
     public User() {
@@ -31,8 +31,8 @@ public class User extends Entity {
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.registered = registered;
-        this.status = UserStatus.OFFLINE;
-        this.role = UserRole.CLIENT;
+        this.status = Status.OFFLINE;
+        this.role = Role.CLIENT;
     }
 
     public long getUserId() {
@@ -107,19 +107,19 @@ public class User extends Entity {
         this.address = address;
     }
 
-    public UserStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public UserRole getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

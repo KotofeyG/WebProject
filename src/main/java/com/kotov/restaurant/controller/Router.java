@@ -1,13 +1,13 @@
 package com.kotov.restaurant.controller;
 
-import com.kotov.restaurant.command.PagePath;
+import com.kotov.restaurant.controller.command.PagePath;
 
 public class Router {
     public enum RouteType {
         FORWARD, REDIRECT
     }
 
-    private String pagePath = PagePath.INDEX_PAGE;
+    private String pagePath = PagePath.INDEX_PAGE;                          // index.jsp?
     private RouteType route = RouteType.FORWARD;
 
     public String getPagePath() {

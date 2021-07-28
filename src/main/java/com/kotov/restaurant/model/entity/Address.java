@@ -1,8 +1,8 @@
 package com.kotov.restaurant.model.entity;
 
-public class Address extends Entity {
-    private long addressId;
+public class Address extends AbstractEntity {
     private String city;
+    private String street;
     private int building;
     private String block;
     private int flat;
@@ -10,12 +10,7 @@ public class Address extends Entity {
     private int floor;
     private int intercomCode;
 
-    public long getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(long addressId) {
-        this.addressId = addressId;
+    public Address() {
     }
 
     public String getCity() {
@@ -24,6 +19,14 @@ public class Address extends Entity {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public int getBuilding() {
@@ -76,17 +79,14 @@ public class Address extends Entity {
 
     @Override
     public boolean equals(Object otherObject) {
-        if (this == otherObject) {
-            return true;
-        }
-        if (otherObject == null || getClass() != otherObject.getClass()) {
+        if (!super.equals(otherObject)) {
             return false;
         }
         Address other = (Address) otherObject;
-        if (addressId != other.addressId) {
+        if (city != null ? !city.equals(other.city) : other.city != null) {
             return false;
         }
-        if (city != null ? !city.equals(other.city) : other.city != null) {
+        if (street != null ? !street.equals(other.street) : other.street != null) {
             return false;
         }
         if (building != other.building) {
@@ -104,15 +104,15 @@ public class Address extends Entity {
         if (floor != other.floor) {
             return false;
         }
-
         return intercomCode == other.intercomCode;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = (int) (addressId ^ (addressId >>> 32));
+        int result = super.hashCode();
         result = prime * result + (city != null ? city.hashCode() : 0);
+        result = prime * result + (street != null ? street.hashCode() : 0);
         result = prime * result + building;
         result = prime * result + (block != null ? block.hashCode() : 0);
         result = prime * result + flat;
@@ -124,9 +124,9 @@ public class Address extends Entity {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(getClass().getSimpleName());
-        result.append("[ addressId = ").append(addressId);
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,city = ").append(city);
+        result.append(" ,street = ").append(street);
         result.append(" ,building = ").append(building);
         result.append(" ,block = ").append(block);
         result.append(" ,flat = ").append(flat);

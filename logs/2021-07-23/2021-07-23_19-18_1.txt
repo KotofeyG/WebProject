@@ -1,0 +1,10 @@
+23 июл. 2021 19:18:23,419 [main] INFO  com.kotov.restaurant.model.pool.ConnectionFactory : <clinit> - Database connection completed: URL - jdbc:mysql://localhost:3306/restaurant
+23 июл. 2021 19:18:23,978 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,025 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,066 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,110 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,160 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,205 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,242 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,283 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : addConnectionToPool - Connection was created and added to pool
+23 июл. 2021 19:18:24,285 [main] INFO  com.kotov.restaurant.model.pool.ConnectionPool : <init> - Connection pool was created
