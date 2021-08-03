@@ -15,9 +15,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
-import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
+import static com.kotov.restaurant.controller.command.PagePath.*;
 
 public class AuthenticationCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -35,15 +35,16 @@ public class AuthenticationCommand implements Command {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 session.setAttribute(USER_ATTR, user);                           // set user status
-                request.setAttribute(AUTHORIZATION_DATA, VALID_ATTR);            // get attr in jsp
+                request.setAttribute(AUTHORIZATION_DATA, Boolean.TRUE);
             } else {
-                request.setAttribute(AUTHORIZATION_DATA, INVALID_ATTR);
+                request.setAttribute(AUTHORIZATION_DATA, Boolean.FALSE);
             }
-            router.setPagePath(MAIN_PAGE);                                       // change modal plugin
+            router.setPagePath(MAIN_PAGE);                                   // change modal plugin, get attr in jsp
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Impossible to authentication user: ", e);
             throw new CommandException("Impossible to authentication user: ", e);
         }
+        logger.log(Level.DEBUG, "Method execute is completed successfully");
         return router;
     }
 }

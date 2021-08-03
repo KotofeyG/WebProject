@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.USER_MANAGEMENT_PAGE;
-import static com.kotov.restaurant.controller.command.AttributeName.ALL_USERS;
 
 public class UserManagementCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -26,12 +26,18 @@ public class UserManagementCommand implements Command {
         Router router = new Router();
         try {
             List<User> users = service.findAllUsers();
+            if (users.size() == 0) {
+                request.setAttribute(USER_SEARCH_RESULT, Boolean.FALSE);
+            } else {
+                request.setAttribute(USER_SEARCH_RESULT, Boolean.TRUE);
+            }
             request.setAttribute(ALL_USERS, users);
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Impossible to find all users: ", e);
-            throw new CommandException("Impossible to find all users: ", e);
+            logger.log(Level.ERROR, "Method execute cannot be completed:", e);
+            throw new CommandException("Method execute cannot be completed:", e);
         }
         router.setPagePath(USER_MANAGEMENT_PAGE);
+        logger.log(Level.DEBUG, "Method execute is completed successfully");
         return router;
     }
 }

@@ -1,13 +1,11 @@
 package com.kotov.restaurant.model.entity;
 
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 
 public class Meal extends AbstractEntity {
-    private long mealId;
     private String title;
-    private Blob image;
+    private String image;
     private String type;
     private BigDecimal price;
     private String recipe;
@@ -17,34 +15,13 @@ public class Meal extends AbstractEntity {
     public Meal() {
     }
 
-    public Meal(String title, Blob image, String type, BigDecimal price, String recipe, LocalDateTime created, boolean isActive) {
+    public Meal(String title, String type, BigDecimal price, String recipe, LocalDateTime created) {
         this.title = title;
-        this.image = image;
         this.type = type;
         this.price = price;
         this.recipe = recipe;
         this.created = created;
-        this.isActive = isActive;
-    }
-
-    public Meal(long mealId, String title, Blob image, String type, BigDecimal price, String recipe
-            , LocalDateTime created, boolean isActive) {
-        this.mealId = mealId;
-        this.title = title;
-        this.image = image;
-        this.type = type;
-        this.price = price;
-        this.recipe = recipe;
-        this.created = created;
-        this.isActive = isActive;
-    }
-
-    public long getMealId() {
-        return mealId;
-    }
-
-    public void setMealId(long mealId) {
-        this.mealId = mealId;
+        this.isActive = true;
     }
 
     public String getTitle() {
@@ -55,11 +32,11 @@ public class Meal extends AbstractEntity {
         this.title = title;
     }
 
-    public Blob getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Blob image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -105,22 +82,16 @@ public class Meal extends AbstractEntity {
 
     @Override
     public boolean equals(Object otherObject) {
-        if (this == otherObject) {
-            return true;
-        }
-        if (otherObject == null || getClass() != otherObject.getClass()) {
+        if (!super.equals(otherObject)) {
             return false;
         }
         Meal other = (Meal) otherObject;
-        if (mealId != other.mealId) {
-            return false;
-        }
         if (title != null ? !title.equals(other.title) : other.title != null) {
             return false;
         }
-        if (image != null ? !image.equals(other.image) : other.image != null) {
-            return false;
-        }
+//        if (image != null ? !image.equals(other.image) : other.image != null) {
+//            return false;
+//        }
         if (type != null ? !type.equals(other.type) : other.type != null) {
             return false;
         }
@@ -139,7 +110,7 @@ public class Meal extends AbstractEntity {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = (int) (mealId ^ (mealId >>> 32));
+        int result = super.hashCode();
         result = prime * result + (title != null ? title.hashCode() : 0);
         result = prime * result + (image != null ? image.hashCode() : 0);
         result = prime * result + (type != null ? type.hashCode() : 0);
@@ -152,8 +123,7 @@ public class Meal extends AbstractEntity {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(getClass().getSimpleName());
-        result.append("[ mealId = ").append(mealId);
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,title = ").append(title);
         result.append(" ,image = ").append(image);
         result.append(" ,type = ").append(type);

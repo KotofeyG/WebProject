@@ -1,9 +1,29 @@
-<fmt:message key="admin_header.menu_management" var="menu_management"/>
+<fmt:message key="manager_header.meal_management" var="meal_management"/>
+<fmt:message key="manager_header.menu_management" var="menu_management"/>
 <fmt:message key="manager_header.orders_confirmation" var="orders_confirmation"/>
 <fmt:message key="manager_header.bill_creation" var="bill_creation"/>
 
+<jsp:useBean id="current_page" scope="session" type="java.lang.String"/>
+
 <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=find_all_meals_command&page=meal_management">${menu_management}</a>
+    <c:choose>
+        <c:when test="${current_page.contains('meal_management.jsp')}">
+            <a class="nav-link active" aria-current="page" href="#">${meal_management}</a>
+        </c:when>
+        <c:otherwise>
+            <a class="nav-link active" aria-current="page" href="${abs}/controller?command=meal_list_action_command">${meal_management}</a>
+        </c:otherwise>
+    </c:choose>
+</li>
+<li class="nav-item">
+    <c:choose>
+        <c:when test="${current_page.contains('menu_management.jsp')}">
+            <a class="nav-link active" aria-current="page" href="#">${menu_management}</a>
+        </c:when>
+        <c:otherwise>
+            <a class="nav-link active" aria-current="page" href="${abs}/controller?command=menu_management_command">${menu_management}</a>
+        </c:otherwise>
+    </c:choose>
 </li>
 <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_orders_confirmation_command">${orders_confirmation}</a>

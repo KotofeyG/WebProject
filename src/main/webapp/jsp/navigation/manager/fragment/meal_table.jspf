@@ -8,6 +8,7 @@
 <fmt:message key="meal_management.meal_price" var="meal_price"/>
 <fmt:message key="meal_management.meal_ingredients" var="meal_ingredients"/>
 <fmt:message key="meal_management.meal_status" var="meal_status"/>
+<fmt:message key="meal_management.empty_picture" var="empty_picture"/>
 
 <jsp:useBean id="meals" scope="request" type="java.util.List"/>
 
@@ -34,12 +35,12 @@
                 <tr>
                     <td>
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="selected" value="${meal.mealId}">
+                            <input type="checkbox" class="form-check-input" name="selected" value="${meal.id}">
                         </label>
                     </td>
-                    <td>${meal.mealId}</td>
+                    <td>${meal.id}</td>
                     <td>${meal.title}</td>
-                    <td>${meal.image}</td>
+                    <td> <img src="${meal.image}" class="img-thumbnail image-table" alt="${empty_picture}"/></td>
                     <td>${meal.type}</td>
                     <td>${meal.price}</td>
                     <td>${meal.recipe}</td>

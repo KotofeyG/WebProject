@@ -14,9 +14,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
+import static com.kotov.restaurant.controller.command.PagePath.*;
 
 public class RegistrationCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -32,11 +32,22 @@ public class RegistrationCommand implements Command {
         dataCheckResult.put(CONFIRM_PASSWORD, request.getParameter(CONFIRM_PASSWORD));
         dataCheckResult.put(EMAIL, request.getParameter(EMAIL));
         dataCheckResult.put(MOBILE_NUMBER, request.getParameter(MOBILE_NUMBER));
+        dataCheckResult.put(USER_ROLE, request.getParameter(USER_ROLE));
 
         try {
-            if (service.registerNewUser(dataCheckResult)) {
-                router.setPagePath(ACCOUNT_CREATION_DETAILS_PAGE);
+            boolean result = service.registerNewUser(dataCheckResult);
+            String currentPage = (String) request.getSession().getAttribute(CURRENT_PAGE);
+            if (currentPage.equals(USER_MANAGEMENT_PAGE)) {
+                request.setAttribute(ALL_USERS, service.findAllUsers());
+                router.setPagePath(USER_MANAGEMENT_PAGE);
             } else {
+                if (result) {
+                    router.setPagePath(ACCOUNT_CREATION_DETAILS_PAGE);
+                } else {
+                    router.setPagePath(REGISTRATION_PAGE);
+                }
+            }
+            if (!result) {
                 for (String key : dataCheckResult.keySet()) {
                     String validationResult = dataCheckResult.get(key);
                     if (Boolean.parseBoolean(validationResult)) {
@@ -59,12 +70,12 @@ public class RegistrationCommand implements Command {
                         logger.log(Level.DEBUG, "Validation result: " + key + " - " + validationResult);
                     }
                 }
-                router.setPagePath(REGISTRATION_PAGE);
             }
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Command cannot be completed:", e);
             throw new CommandException("Command cannot be completed:", e);
         }
+        logger.log(Level.DEBUG, "Method execute is completed successfully");
         return router;
     }
 }

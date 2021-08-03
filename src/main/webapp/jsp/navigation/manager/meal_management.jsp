@@ -3,52 +3,56 @@
 
 <fmt:message key="meal_management.title" var="meal_title"/>
 <fmt:message key="meal_management.meal_creation" var="new_dish_adding"/>
-<fmt:message key="meal_management.meal_activation" var="dish_activation"/>
-<fmt:message key="meal_management.meal_archiving" var="dish_archiving"/>
-<fmt:message key="meal_management.meal_deletion" var="dish_deletion"/>
+<fmt:message key="meal_management.meal_activation" var="activation"/>
+<fmt:message key="meal_management.meal_archiving" var="archiving"/>
+<fmt:message key="meal_management.meal_deletion" var="deletion"/>
 <fmt:message key="meal_management.meal_modal_title" var="meal_modal_title"/>
 <fmt:message key="meal_management.valid_data_check" var="valid_meal_creation_data"/>
 <fmt:message key="meal_management.invalid_data_check" var="invalid_meal_creation_data"/>
 <fmt:message key="meal_management.not_unique_data_check" var="not_unique_meal_creation_data"/>
+<fmt:message key="meal_management.negative_meal_search_result_message" var="negative_meal_search_message"/>
+<fmt:message key="meal_management.action_result_positive_message" var="action_result_positive_message"/>
+<fmt:message key="meal_management.action_result_negative_message" var="action_result_negative_message"/>
+
+<%--@elvariable id="meal_search_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="meal_action_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="meal_creation_data" type="java.lang.String"--%>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="${abs}/css/main.css">
     <title>${meal_title}</title>
 </head>
 <body>
 <%@include file="../../header/header.jsp" %>
 <div class="container-fluid">
-    <%@include file="fragment/management_navbar.jspf" %>
     <form action="${abs}/controller" method="post">
         <input type="hidden" name="command" value="meal_list_action_command">
-        <%@include file="fragment/meal_table.jspf" %>
+        <c:choose>
+            <c:when test="${meal_search_result eq 'true'}"><%@include file="fragment/meal_table.jspf" %></c:when>
+            <c:otherwise>${negative_meal_search_message}</c:otherwise>
+        </c:choose>
         <div class="container text-center">
             <button type="button" data-toggle="modal" data-target="#create-meal-modal" class="btn btn-primary">
                 <span class="glyphicon glyphicon-plus-sign"></span> ${new_dish_adding}
             </button>
             <button type="submit" name="action" value="unblock" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> ${dish_activation}
+                <span class="glyphicon glyphicon-ok-sign"></span> ${activation}
             </button>
             <button type="submit" name="action" value="block" class="btn btn-warning">
-                <span class="glyphicon glyphicon-remove-sign"></span> ${dish_archiving}
+                <span class="glyphicon glyphicon-remove-sign"></span> ${archiving}
             </button>
             <button type="submit" name="action" value="delete" class="btn btn-danger">
-                <span class="glyphicon glyphicon-minus-sign"></span> ${dish_deletion}
+                <span class="glyphicon glyphicon-minus-sign"></span> ${deletion}
             </button>
         </div>
     </form>
     <c:choose>
-        <%--@elvariable id="meal_creation_data" type="java.lang.String"--%>
         <c:when test="${meal_creation_data eq 'valid'}">${valid_meal_creation_data}</c:when>
         <c:when test="${meal_creation_data eq 'invalid'}">${invalid_meal_creation_data}</c:when>
         <c:when test="${meal_creation_data eq 'not_unique'}">${not_unique_meal_creation_data}</c:when>
+        <c:when test="${meal_action_result eq 'true'}">${action_result_positive_message}</c:when>
+        <c:when test="${meal_action_result eq 'false'}">${action_result_negative_message}</c:when>
     </c:choose>
     <div id="create-meal-modal" class="modal fade">
         <div class="modal-dialog modal-sm">
@@ -58,9 +62,9 @@
                     <h4 class="modal-title">${meal_modal_title}</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="meal-form" method="post" action="${abs}/controller">
-                        <input type="hidden" name="command" value="add_new_meal_command" formenctype="text/plain">
-                        `<div class="form-group">`
+                    <form name="" action="${abs}/controller" method="post" id="meal-form" enctype="multipart/form-data">
+                        <input type="hidden" name="command" value="meal_creation_command">
+                        <div class="form-group">
                             <label for="title">${meal_title}</label>
                             <input type="text" id="title" class="form-control" name="title">
                         </div>

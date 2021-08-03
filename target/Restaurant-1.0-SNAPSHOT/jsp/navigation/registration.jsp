@@ -2,7 +2,7 @@
 <%@include file="../imports.jspf" %>
 
 <fmt:message key="registration.title" var="title"/>
-<fmt:message key="registration.sign_up" var="sign_up"/>
+<fmt:message key="registration.sign_up_1" var="sign_up"/>
 <fmt:message key="registration.login" var="login"/>
 <fmt:message key="registration.password" var="psw"/>
 <fmt:message key="registration.confirm_password" var="confirm_psw"/>
@@ -28,12 +28,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="${abs}/css/main.css">
     <title>${title}</title>
 </head>
 <body>

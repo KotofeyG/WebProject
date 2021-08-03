@@ -13,5 +13,9 @@ public interface UserService {
 
     List<User> findAllUsers() throws ServiceException;
 
+    boolean updateUserStatusesById(String statusStr, String[] userIdArray) throws ServiceException;
+
+    boolean deleteUsersById(String[] userIdArray) throws ServiceException;
+
     boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException;
 }

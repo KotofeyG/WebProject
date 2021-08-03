@@ -5,6 +5,7 @@ import com.kotov.restaurant.controller.command.ActionFactory;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.model.pool.ConnectionPool;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,12 +19,13 @@ import java.io.IOException;
 import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
 import static com.kotov.restaurant.controller.command.ParamName.INTERNAL_SERVER_ERROR;
 
-@WebServlet(name = "Controller", urlPatterns = "/controller")
+@WebServlet(name = "controller", urlPatterns = "/controller")
+@MultipartConfig(fileSizeThreshold = 1024*1024, maxFileSize = 5*1024*1024, maxRequestSize = 5*5*1024*1024)
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         ConnectionPool.getInstance();
         logger.log(Level.INFO, "Connection pool has been initialized");
     }
@@ -48,8 +50,8 @@ public class Controller extends HttpServlet {
                 case REDIRECT -> resp.sendRedirect(router.getPagePath());
             }
         } catch (CommandException e) {
-            resp.sendError(INTERNAL_SERVER_ERROR);
             logger.log(Level.ERROR, "Internal error has occurred:", e);
+            resp.sendError(INTERNAL_SERVER_ERROR);
         }
     }
 

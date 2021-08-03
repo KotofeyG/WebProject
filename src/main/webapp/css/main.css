@@ -7,6 +7,10 @@
     background-position: center;
 }
 
+.image-table {
+    width: 125px;
+}
+
 .error-500 {
     min-height: 100vh;
     width: 100%;

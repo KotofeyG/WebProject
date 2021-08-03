@@ -1,17 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="../imports.jspf" %>
 
-<jsp:useBean id="udd" scope="session" class="java.lang.String"/>
+<fmt:message key="main.title" var="title"/>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main</title>
+    <link rel="stylesheet" href="${abs}/css/background.css">
+    <title>${title}</title>
 </head>
 <body>
-
-<%@include file="../header/header.jsp" %>
-<div class="wrapper container-fluid">
-        ${user.toString()}
-<%--        ${udd.tostring()}--%>
+<header><%@include file="../header/header.jsp" %></header>
+<div class="container-fluid">
+    <div class="row">
+    </div>
 </div>
 <footer><%@include file="../footer/footer.jsp" %></footer>
 </body>

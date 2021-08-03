@@ -1,21 +1,24 @@
 package com.kotov.restaurant.model.dao;
 
 import com.kotov.restaurant.exception.DaoException;
+import com.kotov.restaurant.model.entity.Address;
 import com.kotov.restaurant.model.entity.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDao {
-    boolean checkLogin(String login) throws DaoException;
+public interface UserDao extends BaseDao<User> {
+    boolean isLoginExist(String login) throws DaoException;
 
-    boolean checkEmail(String email) throws DaoException;
+    boolean isEmailExist(String email) throws DaoException;
 
-    boolean checkMobileNumber(String mobileNumber) throws DaoException;
+    boolean isMobileNumberExist(String mobileNumber) throws DaoException;
 
     Optional<User> findUserByLoginAndPassword(String login, String passwordHah)  throws DaoException;
 
-    List<User> findAllUsers() throws DaoException;
+    Optional<Address> findAddressByUserId(long userId) throws DaoException;
 
-    void addNewUser(User user, String passwordHash) throws DaoException;
+    long insertNewEntity(User user, String passwordHash) throws DaoException;
+
+    void updateUserStatusesById(User.Status status, List<Long> userIdList) throws DaoException;
 }

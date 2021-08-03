@@ -1,14 +1,15 @@
 package com.kotov.restaurant.controller.command;
 
 public class PagePath {
-    public static final String PAGE = "page";
-
     /* general pages */
     public static final String INDEX_PAGE = "/index.jsp";
     public static final String MAIN_PAGE = "/jsp/navigation/main.jsp";
     public static final String ADMIN_MAIN_PAGE = "/jsp/navigation/admin_main.jsp";
     public static final String REGISTRATION_PAGE = "/jsp/navigation/registration.jsp";
     public static final String ACCOUNT_CREATION_DETAILS_PAGE = "/jsp/navigation/account_creation_details.jsp";
+
+    /* product pages */
+    public static final String ROLL_PAGE = "/jsp/navigation/rolls.jsp";
 
     /* client pages */
     public static final String MENU_PAGE = "/jsp/navigation/client/menu.jsp";

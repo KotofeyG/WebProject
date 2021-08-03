@@ -1,25 +1,36 @@
 package com.kotov.restaurant.controller.command;
 
+import com.kotov.restaurant.controller.command.impl.admin.UserListActionCommand;
 import com.kotov.restaurant.controller.command.impl.admin.UserManagementCommand;
 import com.kotov.restaurant.controller.command.impl.manager.*;
 import com.kotov.restaurant.controller.command.impl.movement.*;
 import com.kotov.restaurant.controller.command.impl.user.*;
 
 enum CommandType {
+    /* general commands */
     AUTHENTICATION_COMMAND(new AuthenticationCommand()),
     LOGOUT_COMMAND(new LogoutCommand()),
     REGISTRATION_COMMAND(new RegistrationCommand()),
     CHANGE_LOCALE_COMMAND(new ChangeLocaleCommand()),
     DEFAULT_COMMAND(new DefaultCommand()),
+
+    /* product commands */
+    ROLL_COMMAND(new RollCommand()),
+
+    /* admin commands */
     USER_MANAGEMENT_COMMAND(new UserManagementCommand()),
+    USER_LIST_ACTION_COMMAND(new UserListActionCommand()),
 
-    ADD_NEW_MEAL_COMMAND(new AddNewMealCommand()),
+    /* manager commands */
+    MEAL_CREATION_COMMAND(new MealCreationCommand()),
+    MENU_CREATION_COMMAND(new MenuCreationCommand()),
+    MENU_ADDING_TO_MAIN_COMMAND(new MenuAddingToMainCommand()),
     MEAL_LIST_ACTION_COMMAND(new MealListActionCommand()),
-    FIND_ALL_MEALS_COMMAND(new FindAllMealsCommand()),
-    FIND_ALL_MENU_COMMAND(new FindAllMenuCommand()),
-    ADD_NEW_MENU_COMMAND(new AddNewMenuCommand()),
+    MENU_MANAGEMENT_COMMAND(new MenuManagementCommand()),
     MENU_UPDATE_COMMAND(new MenuUpdateCommand()),
+    MENU_DELETE_COMMAND(new MenuDeleteCommand()),
 
+    /* go to commands */
     GO_TO_REGISTRATION_COMMAND(new GoToRegistrationCommand()),
     GO_TO_MAIN_COMMAND(new GoToMainCommand()),
     GO_TO_MENU_COMMAND(new GoToMenuCommand()),

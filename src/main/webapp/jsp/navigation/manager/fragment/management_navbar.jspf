@@ -1,9 +1,0 @@
-<fmt:message key="meal_management.title" var="meal_title"/>
-<fmt:message key="menu_management.title" var="menu_title"/>
-
-<a href="${abs}/controller?command=find_all_meals_command&page=meal_management">
-    <button type="button" class="btn btn-default">${meal_title}</button>
-</a>
-<a href="${abs}/controller?command=find_all_menu_command&page=menu_management">
-    <button type="button" class="btn btn-default">${menu_title}</button>
-</a>

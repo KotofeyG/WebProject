@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class Menu extends AbstractEntity {
-    private long menuId;
     private String title;
     private String type;
     private List<Meal> meals;
@@ -37,14 +36,6 @@ public class Menu extends AbstractEntity {
 
     public boolean addAll(Collection<? extends Meal> c) {
         return meals.addAll(c);
-    }
-
-    public long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(long menuId) {
-        this.menuId = menuId;
     }
 
     public String getTitle() {
@@ -89,16 +80,10 @@ public class Menu extends AbstractEntity {
 
     @Override
     public boolean equals(Object otherObject) {
-        if (this == otherObject) {
-            return true;
-        }
-        if (otherObject == null || getClass() != otherObject.getClass()) {
+        if (!super.equals(otherObject)) {
             return false;
         }
         Menu other = (Menu) otherObject;
-        if (menuId != other.menuId) {
-            return false;
-        }
         if (title != null ? !title.equals(other.title) : other.title != null) {
             return false;
         }
@@ -117,7 +102,7 @@ public class Menu extends AbstractEntity {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = (int)(menuId ^ (menuId >>> 32));
+        int result = super.hashCode();
         result = prime * result + (title != null ? title.hashCode() : 0);
         result = prime * result + (type != null ? type.hashCode() : 0);
         result = prime * result + (meals != null ? meals.hashCode() : 0);
@@ -128,8 +113,7 @@ public class Menu extends AbstractEntity {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(getClass().getSimpleName());
-        result.append("[ menuId = ").append(menuId);
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,title = ").append(title);
         result.append(" ,type = ").append(type);
         result.append(" ,meals = ").append(meals);

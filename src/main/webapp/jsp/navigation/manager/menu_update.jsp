@@ -21,18 +21,13 @@
 <fmt:message key="menu_update.type_change" var="type_change"/>
 <fmt:message key="menu_update.new_title" var="new_title"/>
 <fmt:message key="menu_update.new_type" var="new_type"/>
+<fmt:message key="meal_management.empty_picture" var="empty_picture"/>
 
 <jsp:useBean id="meals" scope="request" type="java.util.Map"/>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="${abs}/css/main.css">
     <title>${title}</title>
 </head>
 <body>
@@ -44,16 +39,16 @@
             <thead>
             <tr>
                 <td colspan="2">
-                    <a href="${abs}/controller?command=find_all_menu_command&page=menu_management">
+                    <a href="${abs}/controller?command=menu_management_command">
                         <button type="button" class="btn btn-warning form-group" data-bs-dismiss="modal">${cancel}</button>
                     </a>
                 </td>
                 <td colspan="2">
-                    <b>${menu_title} ${requestScope.menu.title}</b>
+                    <b>${menu_title} ${requestScope.selected_menu.title}</b>
                     <button class="btn-success" type="button" data-toggle="modal" data-target="#title_change">${change}</button>
                 </td>
                 <td colspan="2">
-                    <b>${menu_type} ${requestScope.menu.type}</b>
+                    <b>${menu_type} ${requestScope.selected_menu.type}</b>
                     <button class="btn-success" type="button" data-toggle="modal" data-target="#type_change">${change}</button>
                 </td>
             </tr>
@@ -74,9 +69,9 @@
                 <tbody>
                 <c:forEach items="${meals}" var="entry">
                     <tr>
-                        <td>${entry.key.mealId}</td>
+                        <td>${entry.key.id}</td>
                         <td>${entry.key.title}</td>
-                        <td>${entry.key.image}</td>
+                        <td> <img src="${entry.key.image}" class="img-thumbnail" alt="${empty_picture}"/></td>
                         <td>${entry.key.type}</td>
                         <td>${entry.key.price}</td>
                         <td>${entry.key.recipe}</td>
@@ -84,8 +79,8 @@
                         <td>
                             <form action="controller" method="post">
                                 <input type="hidden" name="command" value="menu_update_command">
-                                <input type="hidden" name="selected" value="${entry.key.mealId}"/>
-                                <input type="hidden" name="menu" value="${requestScope.menu.menuId}"/>
+                                <input type="hidden" name="selected" value="${entry.key.id}"/>
+                                <input type="hidden" name="selected_menu" value="${requestScope.selected_menu.id}"/>
                                 <c:choose>
                                     <c:when test="${entry.value eq 'true'}">
                                         <button type="submit" name="action" value="remove" class="btn-danger">${remove}
@@ -102,7 +97,6 @@
             </table>
         </div>
     </div>
-
     <div id="title_change" class="modal fade" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -127,7 +121,6 @@
             </div>
         </div>
     </div>
-
     <div id="type_change" class="modal fade" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">

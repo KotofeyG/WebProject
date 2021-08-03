@@ -15,12 +15,30 @@ public class AttributeName {
 
     /* user authentication attributes */
     public static final String USER_ATTR = "user";
-    public static final String VALID_ATTR = "valid";
-    public static final String INVALID_ATTR = "invalid";
     public static final String AUTHORIZATION_DATA = "authorization_data";
 
     /* user management attributes */
     public static final String ALL_USERS = "users";
+    public static final String USER_ACTION_RESULT = "result";
+    public static final String USER_SEARCH_RESULT = "user_search_result";
+
+    /* meal management attributes */
+    public static final String VALID = "valid";
+    public static final String INVALID = "invalid";
+    public static final String NOT_UNIQUE = "not_unique";
+    public static final String MEAL_SEARCH_RESULT = "meal_search_result";
+    public static final String MEAL_ACTION_RESULT = "meal_action_result";
+
+    /* menu management attributes */
+    public static final String MENU_SEARCH_RESULT = "menu_search_result";
+    public static final String UNSELECTED_MENU = "unselected_menu";
+    public static final String MENU_DELETE_RESULT = "menu_delete_result";
+
+    /* adding new menu */
+    public static final String MENU_CREATION_RESULT = "menu_creation_result";
+
+    /* application attributes */
+    public static final String ROLLS = "ROLLS";
 
     private AttributeName() {
     }

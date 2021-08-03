@@ -5,6 +5,9 @@
 <fmt:message key="header.brand" var="brand"/>
 <fmt:message key="header.language_code" var="language"/>
 <fmt:message key="header.dropdown_menu_title" var="menu"/>
+<fmt:message key="header.rolls" var="rolls"/>
+<fmt:message key="header.nigiri" var="nigiri"/>
+<fmt:message key="header.sashimi" var="sashimi"/>
 <fmt:message key="header.registration" var="registration"/>
 <fmt:message key="header.sign_in" var="sign_in"/>
 <fmt:message key="header.logout" var="logout"/>
@@ -12,6 +15,7 @@
 <fmt:message key="header.name" var="name"/>
 <fmt:message key="header.password" var="password"/>
 <fmt:message key="header.invalid_login_psw" var="invalid_message"/>
+
 
 <%--Temporary messages--%>
 <fmt:message key="sign_up.registration" var="registration"/>
@@ -24,7 +28,7 @@
 
 <jsp:useBean id="user" scope="session" type="com.kotov.restaurant.model.entity.User"/>
 
-<%--@elvariable id="authorization_data" type="java.lang.String"--%>
+<%--@elvariable id="authorization_data" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
@@ -44,6 +48,14 @@
             <a class="navbar-brand" href="${abs}/controller?command=go_to_main_command">${brand}</a>
         </div>
         <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span> ${menu}</a>
+                <ul class="dropdown-menu">
+                    <li><a href="${abs}/controller?command=roll_command">${rolls}</a></li>
+                    <li><a href="#">${nigiri}</a></li>
+                    <li><a href="#">${sashimi}</a></li>
+                </ul>
+            </li>
             <c:choose>
                 <c:when test="${user.role eq 'ADMIN'}"><%@include file="fragment/admin_header.jspf" %></c:when>
                 <c:when test="${user.role eq 'MANAGER'}"><%@include file="fragment/manager_header.jspf" %></c:when>
@@ -81,7 +93,7 @@
                                         <label for="user-psw"><span class="glyphicon glyphicon-eye-open"></span> ${password}</label>
                                         <input type="password" id="user-psw" class="form-control" name="password" placeholder="${password}">
                                     </form>
-                                    <c:if test="${authorization_data eq 'invalid'}"><b>${invalid_message}</b></c:if>
+                                    <c:if test="${authorization_data eq 'false'}"><b>${invalid_message}</b></c:if>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" form="log-form" class="btn btn-secondary" data-bs-dismiss="modal">${sign_in}</button>

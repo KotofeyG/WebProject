@@ -3,11 +3,10 @@ package com.kotov.restaurant.model.entity;
 import java.time.LocalDateTime;
 
 public class User extends AbstractEntity {
-    private long userId;
     private String login;
     private String email;
     private String firstName;
-    private String middleName;
+    private String patronymic;
     private String lastName;
     private String mobileNumber;
     private LocalDateTime registered;
@@ -26,21 +25,13 @@ public class User extends AbstractEntity {
     public User() {
     }
 
-    public User(String login, String email, String mobileNumber, LocalDateTime registered) {
+    public User(String login, String email, String mobileNumber, LocalDateTime registered, User.Role role) {
         this.login = login;
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.registered = registered;
+        this.role = role;
         this.status = Status.OFFLINE;
-        this.role = Role.CLIENT;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getLogin() {
@@ -67,12 +58,12 @@ public class User extends AbstractEntity {
         this.firstName = firstName;
     }
 
-    public String getMiddleName() {
-        return middleName;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
     }
 
     public String getLastName() {
@@ -125,16 +116,10 @@ public class User extends AbstractEntity {
 
     @Override
     public boolean equals(Object otherObject) {
-        if (this == otherObject) {
-            return true;
-        }
-        if (otherObject == null || getClass() != otherObject.getClass()) {
+        if (!super.equals(otherObject)) {
             return false;
         }
         User other = (User) otherObject;
-        if (userId != other.userId) {
-            return false;
-        }
         if (login != null ? !login.equals(other.login) : other.login != null) {
             return false;
         }
@@ -144,7 +129,7 @@ public class User extends AbstractEntity {
         if (firstName != null ? !firstName.equals(other.firstName) : other.firstName != null) {
             return false;
         }
-        if (middleName != null ? !middleName.equals(other.middleName) : other.middleName != null) {
+        if (patronymic != null ? !patronymic.equals(other.patronymic) : other.patronymic != null) {
             return false;
         }
         if (lastName != null ? !lastName.equals(other.lastName) : other.lastName != null) {
@@ -168,11 +153,11 @@ public class User extends AbstractEntity {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = (int)(userId ^ (userId >>> 32));
+        int result = super.hashCode();
         result = prime * result + (login != null ? login.hashCode() : 0);
         result = prime * result + (email != null ? email.hashCode() : 0);
         result = prime * result + (firstName != null ? firstName.hashCode() : 0);
-        result = prime * result + (middleName != null ? middleName.hashCode() : 0);
+        result = prime * result + (patronymic != null ? patronymic.hashCode() : 0);
         result = prime * result + (lastName != null ? lastName.hashCode() : 0);
         result = prime * result + (mobileNumber != null ? mobileNumber.hashCode() : 0);
         result = prime * result + (registered != null ? registered.hashCode() : 0);
@@ -184,12 +169,11 @@ public class User extends AbstractEntity {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(getClass().getSimpleName());
-        result.append("[ userId = ").append(userId);
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,login = ").append(login);
         result.append(" ,email = ").append(email);
         result.append(" ,firstName = ").append(firstName);
-        result.append(" ,middleName = ").append(middleName);
+        result.append(" ,middleName = ").append(patronymic);
         result.append(" ,lastName = ").append(lastName);
         result.append(" ,mobileNumber = ").append(mobileNumber);
         result.append(" ,registered = ").append(registered);
