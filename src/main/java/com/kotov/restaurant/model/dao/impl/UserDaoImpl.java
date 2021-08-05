@@ -3,16 +3,21 @@ package com.kotov.restaurant.model.dao.impl;
 import com.kotov.restaurant.exception.DaoException;
 import com.kotov.restaurant.model.dao.UserDao;
 import com.kotov.restaurant.model.entity.Address;
+import com.kotov.restaurant.model.entity.Cart;
+import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.pool.ConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +43,9 @@ public class UserDaoImpl implements UserDao {
             " JOIN user_statuses ON status_id=user_statuses.id";
     private static final String FIND_ADDRESS_BY_USER_ID = "SELECT id, city, street, building, block, flat, entrance, floor, intercom_code" +
             " FROM address WHERE user_id=?";
+    private static final String FIND_MEALS_FOR_USER_IN_CART = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active, quantity FROM meals" +
+            " JOIN meal_types ON meal_types.id=type_id" +
+            " JOIN carts ON meal_id=meals.id and user_id=?";
     private static final String INSERT_NEW_USER = "INSERT INTO users" +
             " (login, password, email_address, mobile_number, registered, role_id, status_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_USER_STATUS_BY_USER_ID = "UPDATE users SET status_id=? WHERE id=?";
@@ -125,6 +133,52 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update meal statuses. Database access error:", e);
             throw new DaoException("Impossible to update meal statuses. Database access error:", e);
+        }
+    }
+
+    @Override
+    public Cart findUserMealsInCart(long userId) throws DaoException {
+        try (Connection connection = connection_pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_MEALS_FOR_USER_IN_CART)) {
+            statement.setLong(FIRST_PARAM_INDEX, userId);
+            ResultSet resultSet = statement.executeQuery();
+            Cart cart = new Cart();
+            while (resultSet.next()) {
+                Meal meal = new Meal();
+                meal.setId(resultSet.getLong(MEAL_ID));
+                meal.setTitle(resultSet.getString(MEAL_TITLE));
+                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
+                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
+                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
+                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
+                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
+                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                Integer quantity = resultSet.getInt(MEAL_QUANTITY);
+                if (cart.containsKey(meal)) {
+                    Integer generalQuantity = cart.get(meal) + quantity;
+                    cart.getMeals().replace(meal, generalQuantity);
+                } else {
+                    cart.put(meal, quantity);
+                }
+            }
+            return cart;
+        } catch (SQLException e) {
+            logger.log(Level.ERROR, "Impossible to find meals in cart for user from database. Database access error:", e);
+            throw new DaoException("Impossible to find meals in cart for user from database. Database access error:", e);
+        }
+    }
+
+    private String encodeBlob(Blob image) throws DaoException {                     // to util package
+        try {
+            byte[] imageBytes = image.getBinaryStream().readAllBytes();
+            byte[] encodeBase64 = Base64.getEncoder().encode(imageBytes);
+            String base64DataString = new String(encodeBase64, StandardCharsets.UTF_8);
+            String src = "data:image/jpeg;base64," + base64DataString;
+            return src;
+        } catch (SQLException e) {
+            throw new DaoException("Image InputStream cannot be received. Error accessing BLOB value:", e);
+        } catch (IOException e) {
+            throw new DaoException("Image bytes cannot be read from InputStream:", e);
         }
     }
 

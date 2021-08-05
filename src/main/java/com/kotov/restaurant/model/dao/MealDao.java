@@ -9,7 +9,11 @@ import java.util.List;
 public interface MealDao extends BaseDao<Meal>{
     boolean isMealExist(String title) throws DaoException;
 
+    List<Meal> findMealsByType(Meal.Type type) throws DaoException;
+
     void insertNewEntity(Meal meal, InputStream image) throws DaoException;
 
     void updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException;
+
+    boolean insertMealToUserCart(long userId, long mealId, int mealQuantity) throws DaoException;
 }

@@ -27,9 +27,14 @@ public class MealDaoImpl implements MealDao {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
 
     private static final String FIND_MEAL_BY_TITLE = "SELECT id FROM meals WHERE title=?";
-    private static final String FIND_MEAL_BY_ID = "SELECT title, image, type, price, recipe, created, active FROM meals WHERE id=?";
-    private static final String FIND_ALL_MEALS = "SELECT id, title, image, type, price, recipe, created, active FROM meals";
-    private static final String INSERT_NEW_MEAL = "INSERT INTO meals (title, image, type, price, recipe, created, active) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String FIND_MEAL_BY_ID = "SELECT title, image, meal_types.type, price, recipe, created, active FROM meals" +
+            " JOIN meal_types ON type_id=meal_types.id WHERE id=?";
+    private static final String FIND_ALL_MEALS = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
+            " JOIN meal_types ON type_id=meal_types.id";
+    private static final String FIND_ALL_MEALS_BY_TYPE = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
+            " JOIN meal_types ON type_id=meal_types.id AND meal_types.type=?";
+    private static final String INSERT_NEW_MEAL = "INSERT INTO meals (title, image, type_id, price, recipe, created, active) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_MEAL_TO_CART = "INSERT INTO carts (user_id, meal_id, quantity) VALUES(?, ?, ?)";
     private static final String UPDATE_MEAL_STATUS = "UPDATE meals SET active=? WHERE id=?";
     private static final String DELETE_MEAL = "DELETE FROM meals WHERE id=?";
 
@@ -45,7 +50,7 @@ public class MealDaoImpl implements MealDao {
                 meal.setId(id);
                 meal.setTitle(resultSet.getString(MEAL_TITLE));
                 meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(resultSet.getString(MEAL_TYPE));
+                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
                 meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
                 meal.setRecipe(resultSet.getString(MEAL_RECIPE));
                 meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
@@ -71,7 +76,7 @@ public class MealDaoImpl implements MealDao {
                 meal.setId(resultSet.getLong(MEAL_ID));
                 meal.setTitle(resultSet.getString(MEAL_TITLE));
                 meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(resultSet.getString(MEAL_TYPE));
+                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
                 meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
                 meal.setRecipe(resultSet.getString(MEAL_RECIPE));
                 meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
@@ -116,7 +121,7 @@ public class MealDaoImpl implements MealDao {
              PreparedStatement statement = connection.prepareStatement(INSERT_NEW_MEAL)) {
             statement.setString(FIRST_PARAM_INDEX, meal.getTitle());
             statement.setBlob(SECOND_PARAM_INDEX, image);
-            statement.setString(THIRD_PARAM_INDEX, meal.getType());
+            statement.setInt(THIRD_PARAM_INDEX, meal.getType().ordinal() + 1);
             statement.setBigDecimal(FOURTH_PARAM_INDEX, meal.getPrice());
             statement.setString(FIFTH_PARAM_INDEX, meal.getRecipe());
             statement.setTimestamp(SIXTH_PARAM_INDEX, Timestamp.valueOf(meal.getCreated()));
@@ -161,6 +166,33 @@ public class MealDaoImpl implements MealDao {
     }
 
     @Override
+    public List<Meal> findMealsByType(Meal.Type type) throws DaoException {
+        try (Connection connection = connection_pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_MEALS_BY_TYPE)) {
+            statement.setString(FIRST_PARAM_INDEX, type.toString());
+            ResultSet resultSet = statement.executeQuery();
+            List<Meal> meals = new ArrayList<>();
+            while (resultSet.next()) {
+                Meal meal = new Meal();
+                meal.setId(resultSet.getLong(MEAL_ID));
+                meal.setTitle(resultSet.getString(MEAL_TITLE));
+                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
+                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
+                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
+                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
+                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
+                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                meals.add(meal);
+            }
+            logger.log(Level.DEBUG, "Method findMealsByType was completed successfully. Meals: " + meals);
+            return meals;
+        } catch (SQLException e) {
+            logger.log(Level.ERROR, "Impossible to find meals by type. Database access error:", e);
+            throw new DaoException("Impossible to find meals by type. Database access error:", e);
+        }
+    }
+
+    @Override
     public void updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_MEAL_STATUS)) {
@@ -174,6 +206,23 @@ public class MealDaoImpl implements MealDao {
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update meal statuses. Database access error:", e);
             throw new DaoException("Impossible to update meal statuses. Database access error:", e);
+        }
+    }
+
+    @Override
+    public boolean insertMealToUserCart(long userId, long mealId, int mealQuantity) throws DaoException {
+        try (Connection connection = connection_pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_MEAL_TO_CART)) {
+            statement.setLong(FIRST_PARAM_INDEX, userId);
+            statement.setLong(SECOND_PARAM_INDEX, mealId);
+            statement.setInt(THIRD_PARAM_INDEX,mealQuantity);
+            int rowCount = statement.executeUpdate();
+            logger.log(Level.DEBUG, "Method insertMealToUserCart was completed successfully. Meal with id "
+                    + mealId + " was added to user cart with user id " + userId + "in the amount of " + mealQuantity + " pieces");
+            return rowCount == 1;
+        } catch (SQLException e) {
+            logger.log(Level.ERROR, "Impossible to insert meal to user cart. Database access error:", e);
+            throw new DaoException("Impossible to insert meal to user cart. Database access error:", e);
         }
     }
 }

@@ -5,6 +5,7 @@ import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.dao.DaoProvider;
 import com.kotov.restaurant.model.dao.UserDao;
 import com.kotov.restaurant.model.entity.Address;
+import com.kotov.restaurant.model.entity.Cart;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.UserService;
 import com.kotov.restaurant.model.service.util.PasswordEncryptor;
@@ -156,5 +157,15 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Impossible to create new user: ", e);
         }
         return result;
+    }
+
+    @Override
+    public Cart findUserMealsInCart(long userId) throws ServiceException {
+        try {
+            return userDao.findUserMealsInCart(userId);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to find meals in cart for user: ", e);
+            throw new ServiceException("Impossible to find meals in cart for user: ", e);
+        }
     }
 }

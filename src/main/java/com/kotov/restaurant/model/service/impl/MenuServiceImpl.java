@@ -38,7 +38,7 @@ public class MenuServiceImpl implements MenuService {
             if (MealValidator.areMealParamsValid(dataCheckResult, image)) {
                 if (!mealDao.isMealExist(title)) {
                     BigDecimal price = BigDecimal.valueOf(Double.parseDouble(priceStr));
-                    Meal meal = new Meal(title, type, price, recipe, LocalDateTime.now());
+                    Meal meal = new Meal(title, Meal.Type.valueOf(type.toUpperCase()), price, recipe, LocalDateTime.now());
                     mealDao.insertNewEntity(meal, image);
                     result = true;
                 } else {
@@ -62,7 +62,7 @@ public class MenuServiceImpl implements MenuService {
         boolean result = false;
         try {
             if (MenuValidator.areMenuParametersValid(title, type, mealIdArray) && !menuDao.isMenuExist(title)) {
-                Menu menu = new Menu(title, type);
+                Menu menu = new Menu(title, Menu.Type.valueOf(type.toUpperCase()));
                 List<Long> mealIdList = convertArrayToList(mealIdArray);
                 long menuId = menuDao.insertNewEntity(menu);                                // autocommit(false)?
                 menuDao.insertMealsToMenu(menuId, mealIdList);
@@ -91,6 +91,16 @@ public class MenuServiceImpl implements MenuService {
         }
         logger.log(Level.DEBUG, "Method updateStatuses is completed successfully. Result is: " + result);
         return result;
+    }
+
+    @Override
+    public List<Meal> findMealsForMenu(long menuId) throws ServiceException {
+        try {
+            return menuDao.findMealsForMenu(menuId);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Meal cannot be found:", e);
+            throw new ServiceException("Meal cannot be found:", e);
+        }
     }
 
     @Override
@@ -148,6 +158,21 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public List<Meal> findMealsByType(String mealType) throws ServiceException {
+        List<Meal> meals = new ArrayList<>();
+        try {
+            Meal.Type type = Meal.Type.valueOf(mealType.toUpperCase());
+            meals = mealDao.findMealsByType(type);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Meal cannot be found by type:", e);
+            throw new ServiceException("Meal cannot be found by type:", e);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.ERROR, "Enum type has no constant with the specified name:", e);
+        }
+        return meals;
+    }
+
+    @Override
     public List<Meal> findAllMeals() throws ServiceException {
         try {
             return mealDao.findAllEntities();
@@ -185,7 +210,7 @@ public class MenuServiceImpl implements MenuService {
         try {
             List<Menu> menus = menuDao.findAllEntities();
             for (Menu menu : menus) {
-                menu.addAll(menuDao.findAllMealsForMenu(menu.getId()));
+                menu.addAll(menuDao.findMealsForMenu(menu.getId()));
             }
             return menus;
         } catch (DaoException e) {
@@ -202,7 +227,7 @@ public class MenuServiceImpl implements MenuService {
             optionalMenu = menuDao.findEntityById(id);
             if (optionalMenu.isPresent()) {
                 Menu menu = optionalMenu.get();
-                menu.addAll(menuDao.findAllMealsForMenu(id));
+                menu.addAll(menuDao.findMealsForMenu(id));
             }
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Menu cannot be found:", e);

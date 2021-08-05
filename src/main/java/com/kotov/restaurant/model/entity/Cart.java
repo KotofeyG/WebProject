@@ -3,10 +3,11 @@ package com.kotov.restaurant.model.entity;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Basket extends AbstractEntity {
-    private Map<Meal, Integer> meals = new LinkedHashMap<>();
+public class Cart extends AbstractEntity {
+    private Map<Meal, Integer> meals;
 
-    public Basket() {
+    public Cart() {
+        meals = new LinkedHashMap<>();
     }
 
     public Map<Meal, Integer> getMeals() {
@@ -17,12 +18,24 @@ public class Basket extends AbstractEntity {
         this.meals = meals;
     }
 
+    public Integer put(Meal key, Integer value) {
+        return meals.put(key, value);
+    }
+
+    public Integer get(Object key) {
+        return meals.get(key);
+    }
+
+    public boolean containsKey(Object key) {
+        return meals.containsKey(key);
+    }
+
     @Override
     public boolean equals(Object otherObject) {
         if (!super.equals(otherObject)) {
             return false;
         }
-        Basket other = (Basket) otherObject;
+        Cart other = (Cart) otherObject;
         return meals != null ? meals.equals(other.meals) : other.meals == null;
     }
 

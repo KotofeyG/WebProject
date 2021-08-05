@@ -7,10 +7,19 @@ import java.util.List;
 
 public class Menu extends AbstractEntity {
     private String title;
-    private String type;
+    private Type type;
     private List<Meal> meals;
     private LocalDate created;
     private LocalDate updated;
+
+    public enum Type {
+        ROLL, NIGIRI, SASHIMI, SOUP, MAIN_DISH, SALAD, APPETIZER;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
 
     {
         meals = new ArrayList<>();
@@ -19,14 +28,21 @@ public class Menu extends AbstractEntity {
     public Menu() {
     }
 
-    public Menu(String title, String type) {
+    public Menu(String title, Type type) {
         this.title = title;
         this.type = type;
         this.created = LocalDate.now();
         this.updated = LocalDate.now();
     }
 
-    public Menu(String title, String type, List<Meal> meals) {
+    public Menu(Type type, List<Meal> meals) {
+        this.type = type;
+        this.meals = meals;
+        this.created = LocalDate.now();
+        this.updated = LocalDate.now();
+    }
+
+    public Menu(String title, Type type, List<Meal> meals) {
         this.title = title;
         this.type = type;
         this.meals = meals;
@@ -46,11 +62,11 @@ public class Menu extends AbstractEntity {
         this.title = title;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

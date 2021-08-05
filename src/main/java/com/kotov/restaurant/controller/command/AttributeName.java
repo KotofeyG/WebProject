@@ -37,6 +37,10 @@ public class AttributeName {
     /* adding new menu */
     public static final String MENU_CREATION_RESULT = "menu_creation_result";
 
+    /* product attributes */
+    public static final String VIEW = "view";
+    public static final String CART = "cart";
+
     /* application attributes */
     public static final String ROLLS = "ROLLS";
 

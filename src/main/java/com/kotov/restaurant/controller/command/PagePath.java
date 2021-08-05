@@ -9,7 +9,7 @@ public class PagePath {
     public static final String ACCOUNT_CREATION_DETAILS_PAGE = "/jsp/navigation/account_creation_details.jsp";
 
     /* product pages */
-    public static final String ROLL_PAGE = "/jsp/navigation/rolls.jsp";
+    public static final String PRODUCT_PAGE = "/jsp/navigation/products.jsp";
 
     /* client pages */
     public static final String MENU_PAGE = "/jsp/navigation/client/menu.jsp";

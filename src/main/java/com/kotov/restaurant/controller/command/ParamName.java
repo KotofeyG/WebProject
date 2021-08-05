@@ -44,6 +44,11 @@ public class ParamName {
     /* general params */
     public static final String COMMAND = "command";
 
+    /* product params */
+    public static final String COMMON = "";
+    public static final String PRODUCT = "product";
+    public static final String MEAL_NUMBER = "meal_number";
+
     public static final String ALL_MEALS = "meals";
     public static final String ALL_MENUS = "menus";
 

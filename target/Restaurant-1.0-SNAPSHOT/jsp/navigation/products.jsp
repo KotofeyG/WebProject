@@ -2,8 +2,9 @@
 <%@include file="../imports.jspf" %>
 
 <fmt:message key="main.title" var="title"/>
+<fmt:message key="main.to_cart" var="to_cart"/>
 
-<jsp:useBean id="ROLLS" scope="application" class="com.kotov.restaurant.model.entity.Menu"/>
+<jsp:useBean id="product" scope="request" class="com.kotov.restaurant.model.entity.Menu"/>
 
 <!DOCTYPE html>
 <html>
@@ -15,11 +16,10 @@
 </head>
 <%@include file="../header/header.jsp" %>
 <body class="catalog-body">
-
 <div class="box box_padding catalog-wrapp">
     <div class="catalog">
-        <c:forEach items="${ROLLS.meals}" var="meal">
-            <div class="catalog__item">
+        <c:forEach items="${product.meals}" var="meal">
+            <div class="catalog-item">
                 <div class="product">
                     <div class="product__header">
                         <div class="product__title">
@@ -41,14 +41,19 @@
                                     ${meal.price}
                             </div>
                         </div>
+                        <form action="${abs}/controller" method="post">
+                            <input type="hidden" name="command" value="add_to_cart_command">
+                            <input type="hidden" name="selected" value="${meal.id}">
+                            <input type="hidden" name="product" value="${product.type.toString()}">
                         <div class="product__actions">
                             <div class="counter">
                                 <div class="counter__btn counter__btn_minus">-</div>
-                                <input type="text" class="counter__number" value="1">
+                                <input type="number" class="counter__number" name="meal_number" value="1">
                                 <div class="counter__btn counter__btn_plus">+</div>
                             </div>
-                            <button type="submit" class="btn btn_type_light js_add-to-cart">В корзину</button>
+                            <button type="submit" class="btn btn_type_light js_add-to-cart">${to_cart}</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

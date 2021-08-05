@@ -6,16 +6,25 @@ import java.time.LocalDateTime;
 public class Meal extends AbstractEntity {
     private String title;
     private String image;
-    private String type;
+    private Type type;
     private BigDecimal price;
     private String recipe;
     private LocalDateTime created;
     private boolean isActive;
 
+    public enum Type {
+        ROLL, NIGIRI, SASHIMI, SOUP, MAIN_DISH, SALAD, APPETIZER;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+
     public Meal() {
     }
 
-    public Meal(String title, String type, BigDecimal price, String recipe, LocalDateTime created) {
+    public Meal(String title, Type type, BigDecimal price, String recipe, LocalDateTime created) {
         this.title = title;
         this.type = type;
         this.price = price;
@@ -40,11 +49,11 @@ public class Meal extends AbstractEntity {
         this.image = image;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -125,7 +134,7 @@ public class Meal extends AbstractEntity {
     public String toString() {
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,title = ").append(title);
-        result.append(" ,image = ").append(image);
+//        result.append(" ,image = ").append(image);
         result.append(" ,type = ").append(type);
         result.append(" ,price = ").append(price);
         result.append(" ,recipe = ").append(recipe);

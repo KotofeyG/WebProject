@@ -2,6 +2,7 @@ package com.kotov.restaurant.model.dao;
 
 import com.kotov.restaurant.exception.DaoException;
 import com.kotov.restaurant.model.entity.Address;
+import com.kotov.restaurant.model.entity.Cart;
 import com.kotov.restaurant.model.entity.User;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface UserDao extends BaseDao<User> {
     long insertNewEntity(User user, String passwordHash) throws DaoException;
 
     void updateUserStatusesById(User.Status status, List<Long> userIdList) throws DaoException;
+
+    Cart findUserMealsInCart(long userId) throws DaoException;
 }

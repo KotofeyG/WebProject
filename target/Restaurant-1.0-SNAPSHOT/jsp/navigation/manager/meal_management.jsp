@@ -70,7 +70,11 @@
                         </div>
                         <div class="form-group">
                             <label for="type">${meal_type}</label>
-                            <input type="text" id="type" class="form-control" name="type">
+                            <input type="text" id="type" class="form-control" list="list" name="type">
+                            <datalist id="list">
+                                <option value="ROLLS"></option>
+                                <option value="NIGIRI"></option>
+                            </datalist>
                         </div>
                         <div class="form-group">
                             <label for="price">${meal_price}</label>

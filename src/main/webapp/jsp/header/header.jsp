@@ -5,9 +5,13 @@
 <fmt:message key="header.brand" var="brand"/>
 <fmt:message key="header.language_code" var="language"/>
 <fmt:message key="header.dropdown_menu_title" var="menu"/>
-<fmt:message key="header.rolls" var="rolls"/>
-<fmt:message key="header.nigiri" var="nigiri"/>
-<fmt:message key="header.sashimi" var="sashimi"/>
+<fmt:message key="header.rolls" var="rolls_menu"/>
+<fmt:message key="header.nigiri" var="nigiri_menu"/>
+<fmt:message key="header.sashimi" var="sashimi_menu"/>
+<fmt:message key="header.soups" var="soups_menu"/>
+<fmt:message key="header.main_dishes" var="main_dishes_menu"/>
+<fmt:message key="header.salads" var="salads_menu"/>
+<fmt:message key="header.appetizers" var="appetizers_menu"/>
 <fmt:message key="header.registration" var="registration"/>
 <fmt:message key="header.sign_in" var="sign_in"/>
 <fmt:message key="header.logout" var="logout"/>
@@ -22,7 +26,7 @@
 <fmt:message key="main.order" var="orders"/>
 <fmt:message key="main.settings" var="settings"/>
 <fmt:message key="main.reviews" var="reviews"/>
-<fmt:message key="main.cart" var="cart"/>
+<fmt:message key="main.cart" var="cart_icon"/>
 <fmt:message key="main.booking" var="booking"/>
 <%--Temporary messages--%>
 
@@ -51,9 +55,13 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span> ${menu}</a>
                 <ul class="dropdown-menu">
-                    <li><a href="${abs}/controller?command=roll_command">${rolls}</a></li>
-                    <li><a href="#">${nigiri}</a></li>
-                    <li><a href="#">${sashimi}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=roll">${rolls_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=nigiri">${nigiri_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=sashimi">${sashimi_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=soup">${soups_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=main_dish">${main_dishes_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=salad">${salads_menu}</a></li>
+                    <li><a href="${abs}/controller?command=product_command&product=appetizer">${appetizers_menu}</a></li>
                 </ul>
             </li>
             <c:choose>

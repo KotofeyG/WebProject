@@ -27,14 +27,17 @@ public class MenuDaoImpl implements MenuDao {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
 
     private static final String FIND_MENU_BY_TITLE = "SELECT id FROM menus WHERE title=?";
-    private static final String FIND_MENU_BY_ID = "SELECT title, type, created, updated FROM menus WHERE id=?";
-    private static final String FIND_ALL_MENUS = "SELECT id, title, type, created, updated FROM menus";
-    private static final String FIND_ALL_MEALS_FOR_MENU = "SELECT meals.id, title, image, type, price, recipe, created, active" +
-            " FROM meals JOIN available_meals ON meal_id=meals.id AND menu_id=?";
+    private static final String FIND_MENU_BY_ID = "SELECT title, menu_types.type, created, updated FROM menus" +
+            " JOIN menu_types ON type_id=menu_types.id WHERE menus.id=?";
+    private static final String FIND_ALL_MENUS = "SELECT menus.id, title, menu_types.type, created, updated FROM menus" +
+            " JOIN menu_types ON type_id=menu_types.id";
+    private static final String FIND_ALL_MEALS_FOR_MENU = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active" +
+            " FROM meals JOIN meal_types ON type_id=meal_types.id" +
+            " JOIN available_meals ON meal_id=meals.id AND menu_id=?";
     private static final String DELETE_MENU_BY_ID = "DELETE FROM menus WHERE id=?";
     private static final String DELETE_MEAL_FROM_MENU = "DELETE FROM available_meals WHERE menu_id=? AND meal_id=?";
     private static final String INSERT_MEAL_TO_MENU = "INSERT INTO available_meals (menu_id, meal_id) VALUES(?, ?)";
-    private static final String INSERT_NEW_MENU = "INSERT INTO menus (title, type, created, updated) VALUES(?, ?, ?, ?)";
+    private static final String INSERT_NEW_MENU = "INSERT INTO menus (title, type_id, created, updated) VALUES(?, ?, ?, ?)";
 
     @Override
     public Optional<Menu> findEntityById(long id) throws DaoException {
@@ -47,7 +50,7 @@ public class MenuDaoImpl implements MenuDao {
                 Menu menu = new Menu();
                 menu.setId(id);
                 menu.setTitle(resultSet.getString(MENU_TITLE));
-                menu.setType(resultSet.getString(MENU_TYPE));
+                menu.setType(Menu.Type.valueOf(resultSet.getString(MENU_TYPES_TYPE).toUpperCase()));
                 menu.setCreated(resultSet.getDate(MENU_CREATED).toLocalDate());
                 menu.setUpdated(resultSet.getDate(MENU_UPDATED).toLocalDate());
                 menuOptional = Optional.of(menu);
@@ -70,7 +73,7 @@ public class MenuDaoImpl implements MenuDao {
                 Menu menu = new Menu();
                 menu.setId(resultSet.getLong(MENU_ID));
                 menu.setTitle(resultSet.getString(MENU_TITLE));
-                menu.setType(resultSet.getString(MENU_TYPE));
+                menu.setType(Menu.Type.valueOf(resultSet.getString(MENU_TYPES_TYPE).toUpperCase()));
                 menu.setCreated(resultSet.getDate(MENU_CREATED).toLocalDate());
                 menu.setUpdated(resultSet.getDate(MENU_UPDATED).toLocalDate());
                 menus.add(menu);
@@ -88,7 +91,7 @@ public class MenuDaoImpl implements MenuDao {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_NEW_MENU, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(FIRST_PARAM_INDEX, menu.getTitle());
-            statement.setString(SECOND_PARAM_INDEX, menu.getType());
+            statement.setInt(SECOND_PARAM_INDEX, menu.getType().ordinal() + 1);
             statement.setDate(THIRD_PARAM_INDEX, Date.valueOf(menu.getCreated()));
             statement.setDate(FOURTH_PARAM_INDEX, Date.valueOf(menu.getUpdated()));
             statement.executeUpdate();
@@ -176,7 +179,7 @@ public class MenuDaoImpl implements MenuDao {
     }
 
     @Override
-    public List<Meal> findAllMealsForMenu(long menuId) throws DaoException {
+    public List<Meal> findMealsForMenu(long menuId) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_ALL_MEALS_FOR_MENU)) {
             statement.setLong(FIRST_PARAM_INDEX, menuId);
@@ -187,7 +190,7 @@ public class MenuDaoImpl implements MenuDao {
                 meal.setId(resultSet.getLong(MEAL_ID));
                 meal.setTitle(resultSet.getString(MEAL_TITLE));
                 meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(resultSet.getString(MEAL_TYPE));
+                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
                 meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
                 meal.setRecipe(resultSet.getString(MEAL_RECIPE));
                 meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));

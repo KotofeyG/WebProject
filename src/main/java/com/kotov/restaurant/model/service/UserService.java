@@ -1,6 +1,7 @@
 package com.kotov.restaurant.model.service;
 
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.Cart;
 import com.kotov.restaurant.model.entity.User;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface UserService {
     boolean deleteUsersById(String[] userIdArray) throws ServiceException;
 
     boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException;
+
+    Cart findUserMealsInCart(long userId) throws ServiceException;
 }

@@ -17,11 +17,15 @@ public interface MenuService {
 
     boolean updateMealStatusesById(boolean status, String[] mealIdArray) throws ServiceException;
 
+    List<Meal> findMealsForMenu(long menuId) throws ServiceException;
+
     boolean removeMealsById(String[] mealIdArray) throws ServiceException;
 
     void addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException;
 
     void deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException;
+
+    List<Meal> findMealsByType(String mealType) throws ServiceException;
 
     List<Meal> findAllMeals() throws ServiceException;
 
@@ -32,4 +36,6 @@ public interface MenuService {
     Optional<Menu> findMenuById(String menuIdStr) throws ServiceException;
 
     boolean deleteMenuById(String menuIdStr) throws ServiceException;
+
+
 }

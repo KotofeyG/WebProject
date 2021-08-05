@@ -80,22 +80,24 @@ public class ColumnName {
     public static final String MEAL_CREATED = "meals.created";
     public static final String MEAL_ACTIVE = "meals.active";
 
+    /* meal_types table */
+    public static final String MEAL_TYPES_ID = "meal_types.id";
+    public static final String MEAL_TYPES_TYPE = "meal_types.type";
+
+    /* menu_types table */
+    public static final String MENU_TYPES_ID = "menu_types.id";
+    public static final String MENU_TYPES_TYPE = "menu_types.type";
+
     /* available_meals table */
     public static final String AVAILABLE_MEAL_ID = "available_meals.id";
     public static final String AVAILABLE_MEAL_MENU_ID = "available_meals.menu_id";
     public static final String AVAILABLE_MEAL_MEAL_ID = "available_meals.meal_id";
 
-    /* baskets table */
-    public static final String BASKET_ID = "baskets.id";
-    public static final String BASKET_TOTAL_PRICE = "baskets.total_price";
-    public static final String BASKET_USER_ID = "baskets.user_id";
-
-    /* baskets_has_meals table */
-    public static final String BASKET_HAS_MEAL_ID = "baskets_has_meals.id";
-    public static final String BASKET_HAS_MEAL_QUANTITY = "baskets_has_meals.quantity";
-    public static final String BASKET_HAS_MEAL_SUB_PRICE = "baskets_has_meals.sub_price";
-    public static final String BASKET_HAS_MEAL_BASKET_ID = "baskets_has_meals.basket_id";
-    public static final String BASKET_HAS_MEAL_MEAL_ID = "baskets_has_meals.meal_id";
+    /* carts table */
+    public static final String CART_ID = "carts.id";
+    public static final String MEAL_QUANTITY = "carts.quantity";
+    public static final String CART_USER_ID = "carts.user_id";
+    public static final String CART_MEAL_ID = "carts.meal_id";
 
     /* orders table */
     public static final String ORDER_ID = "orders.id";

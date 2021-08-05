@@ -13,7 +13,7 @@ public interface MenuDao extends BaseDao<Menu>{
 
     void insertMealsToMenu(long menuId, List<Long> mealIdList) throws DaoException;
 
-    List<Meal> findAllMealsForMenu(long menuId) throws DaoException;
+    List<Meal> findMealsForMenu(long menuId) throws DaoException;
 
     void deleteMealFromMenu(long menuId, long mealId) throws DaoException;
 }

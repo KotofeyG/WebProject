@@ -16,5 +16,5 @@
 </li>
 <li class="nav-item">
     <a class="nav-link active" aria-current="page"
-       href="${abs}/controller?command=go_to_cart_command">${cart}</a>
+       href="${abs}/controller?command=check_cart_command">${cart_icon}</a>
 </li>

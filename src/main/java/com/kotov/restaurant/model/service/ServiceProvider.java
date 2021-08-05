@@ -1,11 +1,13 @@
 package com.kotov.restaurant.model.service;
 
+import com.kotov.restaurant.model.service.impl.MealServiceImpl;
 import com.kotov.restaurant.model.service.impl.MenuServiceImpl;
 import com.kotov.restaurant.model.service.impl.UserServiceImpl;
 
 public class ServiceProvider {
     private UserService userService = new UserServiceImpl();
     private MenuService menuService = new MenuServiceImpl();
+    private MealService mealService = new MealServiceImpl();
 
     private ServiceProvider() {
     }
@@ -24,5 +26,9 @@ public class ServiceProvider {
 
     public MenuService getMenuService() {
         return menuService;
+    }
+
+    public MealService getMealService() {
+        return mealService;
     }
 }

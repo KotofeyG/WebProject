@@ -33,7 +33,7 @@ public class MenuAddingToMainCommand implements Command {
             Optional<Menu> menuOptional = service.findMenuById(menuIdStr);
             if (menuOptional.isPresent()) {
                 Menu menu = menuOptional.get();
-                servletContext.setAttribute(menu.getType(), menu);
+                servletContext.setAttribute(menu.getType().toString(), menu);
                 request.setAttribute(UNSELECTED_MENU, Boolean.FALSE);               // change attribute name
             } else {
                 request.setAttribute(UNSELECTED_MENU, Boolean.TRUE);
