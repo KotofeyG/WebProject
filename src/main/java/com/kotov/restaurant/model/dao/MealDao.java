@@ -5,13 +5,14 @@ import com.kotov.restaurant.model.entity.Meal;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 public interface MealDao extends BaseDao<Meal>{
     boolean isMealExist(String title) throws DaoException;
 
     List<Meal> findMealsByType(Meal.Type type) throws DaoException;
 
-    void insertNewEntity(Meal meal, InputStream image) throws DaoException;
+    long insertNewEntity(Meal meal, InputStream image) throws DaoException;
 
     void updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException;
 

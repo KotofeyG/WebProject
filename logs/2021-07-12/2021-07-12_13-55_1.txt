@@ -1,1 +1,0 @@
-12 июл. 2021 13:55:30,794 [main] INFO  com.kotov.restaurant.model.pool.ConnectionFactory : <clinit> - jdbc:mysql://localhost:3306/restaurant

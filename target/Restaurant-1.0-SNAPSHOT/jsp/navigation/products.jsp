@@ -48,7 +48,7 @@
                         <div class="product__actions">
                             <div class="counter">
                                 <div class="counter__btn counter__btn_minus">-</div>
-                                <input type="number" class="counter__number" name="meal_number" value="1">
+                                <input type="text" class="counter__number" name="meal_number" value="1">
                                 <div class="counter__btn counter__btn_plus">+</div>
                             </div>
                             <button type="submit" class="btn btn_type_light js_add-to-cart">${to_cart}</button>

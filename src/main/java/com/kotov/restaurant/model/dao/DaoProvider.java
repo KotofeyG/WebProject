@@ -2,12 +2,14 @@ package com.kotov.restaurant.model.dao;
 
 import com.kotov.restaurant.model.dao.impl.MealDaoImpl;
 import com.kotov.restaurant.model.dao.impl.MenuDaoImpl;
+import com.kotov.restaurant.model.dao.impl.OrderDaoImpl;
 import com.kotov.restaurant.model.dao.impl.UserDaoImpl;
 
 public class DaoProvider {
     private UserDao userDao = new UserDaoImpl();
     private MealDao mealDao = new MealDaoImpl();
     private MenuDao menuDao = new MenuDaoImpl();
+    private OrderDao orderDao = new OrderDaoImpl();
 
     private DaoProvider() {
     }
@@ -30,5 +32,9 @@ public class DaoProvider {
 
     public MenuDao getMenuDao() {
         return menuDao;
+    }
+
+    public OrderDao getOrderDao() {
+        return orderDao;
     }
 }

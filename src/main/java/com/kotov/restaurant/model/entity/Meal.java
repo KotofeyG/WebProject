@@ -121,7 +121,7 @@ public class Meal extends AbstractEntity {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (title != null ? title.hashCode() : 0);
-        result = prime * result + (image != null ? image.hashCode() : 0);
+//        result = prime * result + (image != null ? image.hashCode() : 0);
         result = prime * result + (type != null ? type.hashCode() : 0);
         result = prime * result + (price != null ? price.hashCode() : 0);
         result = prime * result + (recipe != null ? recipe.hashCode() : 0);

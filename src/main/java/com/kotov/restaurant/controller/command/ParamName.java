@@ -1,6 +1,8 @@
 package com.kotov.restaurant.controller.command;
 
 public class ParamName {
+    public static final String DELIVERY_TIME = "delivery_time";
+
     /* user registration params */
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
@@ -16,8 +18,32 @@ public class ParamName {
     public static final String INVALID_EMAIL_MESSAGE = "invalidEmail";
     public static final String INVALID_MOBILE_NUMBER_MESSAGE = "invalidMobileNumber";
     public static final String NOT_UNIQUE_LOGIN_MESSAGE = "notUniqueLogin";
-    public static final String NOT_UNIQUE_EMAIL_MESSAGE = "notUniqueEmail";
-    public static final String NOT_UNIQUE_MOBILE_NUMBER_MESSAGE = "notUniqueMobileNumber";
+    public static final String NOT_UNIQUE_EMAIL = "notUniqueEmail";
+    public static final String NOT_UNIQUE_MOBILE_NUMBER = "notUniqueMobileNumber";
+
+    /* user personal data params */
+    public static final String ADDRESS = "address";
+    public static final String PERSONAL_DATA = "personal_data";
+    public static final String OLD_PASSWORD = "old_password";
+    public static final String NEW_PASSWORD = "new_password";
+    public static final String CITY = "city";
+    public static final String STREET = "street";
+    public static final String BUILDING = "building";
+    public static final String BUILDING_BLOCK = "block";
+    public static final String FLAT = "flat";
+    public static final String ENTRANCE = "entrance";
+    public static final String FLOOR = "floor";
+    public static final String INTERCOM_CODE = "intercom_code";
+    public static final String DISCOUNT_CARD = "discount_card";
+    public static final String FIRST_NAME = "first_name";
+    public static final String PATRONYMIC = "patronymic";
+    public static final String LAST_NAME = "last_name";
+
+    public static final String CARD_TYPE = "card_type";
+    public static final String CARD_NUMBER = "card_number";
+    public static final String EXPIRATION_DATE = "expiration_date";
+    public static final String HOLDER_NAME = "holder_name";
+    public static final String CVC = "cvc";
 
     /* session attributes */
     public static final String CURRENT_PAGE = "current_page";
@@ -48,6 +74,7 @@ public class ParamName {
     public static final String COMMON = "";
     public static final String PRODUCT = "product";
     public static final String MEAL_NUMBER = "meal_number";
+    public static final String MEAL_ID = "meal_id";
 
     public static final String ALL_MEALS = "meals";
     public static final String ALL_MENUS = "menus";

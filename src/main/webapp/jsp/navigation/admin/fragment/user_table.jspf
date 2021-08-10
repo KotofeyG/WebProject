@@ -9,7 +9,7 @@
 <fmt:message key="user_management.last_name" var="last_name"/>
 <fmt:message key="user_management.mobile_number" var="mobile_number"/>
 <fmt:message key="user_management.registered" var="registered"/>
-<fmt:message key="user_management.address" var="address"/>
+<fmt:message key="user_management.address" var="addresses"/>
 <fmt:message key="user_management.status" var="status"/>
 <fmt:message key="user_management.role" var="role"/>
 <fmt:message key="user_management.intercom_code" var="intercom_code"/>
@@ -28,7 +28,7 @@
             <th>${first_name}<br/>${patronymic}<br/>${last_name}</th>
             <th>${mobile_number}</th>
             <th>${registered}</th>
-            <th>${address}</th>
+            <th>${addresses}</th>
             <th>${status}</th>
             <th>${role}</th>
         </tr>
@@ -51,7 +51,7 @@
                     <td>${user.mobileNumber}</td>
                     <td>${user.registered}</td>
                     <td>                                                      <%--to do column--%>
-                        ${user.address.city}-${user.address.street}-${user.address.building}-${user.address.block}-
+                        ${user.address.city.russianName}-${user.address.street}-${user.address.building}-${user.address.block}-
                         ${user.address.flat}-${user.address.entrance}-${user.address.floor}-${user.address.intercomCode}
                     </td>
                     <td>${user.status}</td>

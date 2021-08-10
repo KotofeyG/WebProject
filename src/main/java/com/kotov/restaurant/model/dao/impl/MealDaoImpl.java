@@ -8,31 +8,25 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-import static com.kotov.restaurant.model.dao.ColumnName.*;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class MealDaoImpl implements MealDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connection_pool = ConnectionPool.getInstance();
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
 
     private static final String FIND_MEAL_BY_TITLE = "SELECT id FROM meals WHERE title=?";
-    private static final String FIND_MEAL_BY_ID = "SELECT title, image, meal_types.type, price, recipe, created, active FROM meals" +
-            " JOIN meal_types ON type_id=meal_types.id WHERE id=?";
+    private static final String FIND_MEAL_BY_ID = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
+            " JOIN meal_types ON meal_types.id=type_id WHERE meals.id=?";
     private static final String FIND_ALL_MEALS = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
-            " JOIN meal_types ON type_id=meal_types.id";
+            " JOIN meal_types ON meal_types.id=type_id";
     private static final String FIND_ALL_MEALS_BY_TYPE = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
-            " JOIN meal_types ON type_id=meal_types.id AND meal_types.type=?";
+            " JOIN meal_types ON meal_types.id=type_id AND meal_types.type=?";
     private static final String INSERT_NEW_MEAL = "INSERT INTO meals (title, image, type_id, price, recipe, created, active) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_MEAL_TO_CART = "INSERT INTO carts (user_id, meal_id, quantity) VALUES(?, ?, ?)";
     private static final String UPDATE_MEAL_STATUS = "UPDATE meals SET active=? WHERE id=?";
@@ -46,18 +40,11 @@ public class MealDaoImpl implements MealDao {
             statement.setLong(FIRST_PARAM_INDEX, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Meal meal = new Meal();
-                meal.setId(id);
-                meal.setTitle(resultSet.getString(MEAL_TITLE));
-                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
-                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
-                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
-                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
-                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                Meal meal = MealCreator.create(resultSet);
                 mealOptional = Optional.of(meal);
-                logger.log(Level.DEBUG, "Method findEntityById was completed successfully. Meal " + meal);
             }
+            logger.log(Level.DEBUG, "findEntityById method was completed successfully."
+                    + ((mealOptional.isPresent()) ? " Meal with id " + id + " was found" : " Meal with id " + id + " don't exist"));
             return mealOptional;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find meal by id. Database access error:", e);
@@ -72,18 +59,10 @@ public class MealDaoImpl implements MealDao {
              ResultSet resultSet = statement.executeQuery(FIND_ALL_MEALS)) {
             List<Meal> meals = new ArrayList<>();
             while (resultSet.next()) {
-                Meal meal = new Meal();
-                meal.setId(resultSet.getLong(MEAL_ID));
-                meal.setTitle(resultSet.getString(MEAL_TITLE));
-                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
-                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
-                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
-                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
-                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                Meal meal = MealCreator.create(resultSet);
                 meals.add(meal);
             }
-            logger.log(Level.DEBUG, "Method findAllEntities was completed successfully. Meals: " + meals);
+            logger.log(Level.DEBUG, "findAllEntities method was completed successfully. All meals were found");
             return meals;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find all meals. Database access error:", e);
@@ -91,34 +70,20 @@ public class MealDaoImpl implements MealDao {
         }
     }
 
-    private String encodeBlob(Blob image) throws DaoException {                     // to util package
-        try {
-            byte[] imageBytes = image.getBinaryStream().readAllBytes();
-            byte[] encodeBase64 = Base64.getEncoder().encode(imageBytes);
-            String base64DataString = new String(encodeBase64, StandardCharsets.UTF_8);
-            String src = "data:image/jpeg;base64," + base64DataString;
-            return src;
-        } catch (SQLException e) {
-            throw new DaoException("Image InputStream cannot be received. Error accessing BLOB value:", e);
-        } catch (IOException e) {
-            throw new DaoException("Image bytes cannot be read from InputStream:", e);
-        }
+    @Override
+    public long insertNewEntity(Meal meal) {
+        throw new UnsupportedOperationException("insertNewEntity(Meal meal) method is not supported");
     }
 
     @Override
-    public long insertNewEntity(Meal entity) throws DaoException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean deleteEntityById(long id) throws DaoException {
+    public boolean deleteEntityById(long id) {
         return false;
     }
 
     @Override
-    public void insertNewEntity(Meal meal, InputStream image) throws DaoException {
+    public long insertNewEntity(Meal meal, InputStream image) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_NEW_MEAL)) {
+             PreparedStatement statement = connection.prepareStatement(INSERT_NEW_MEAL, RETURN_GENERATED_KEYS)) {
             statement.setString(FIRST_PARAM_INDEX, meal.getTitle());
             statement.setBlob(SECOND_PARAM_INDEX, image);
             statement.setInt(THIRD_PARAM_INDEX, meal.getType().ordinal() + 1);
@@ -127,7 +92,13 @@ public class MealDaoImpl implements MealDao {
             statement.setTimestamp(SIXTH_PARAM_INDEX, Timestamp.valueOf(meal.getCreated()));
             statement.setBoolean(SEVENTH_PARAM_INDEX, meal.isActive());
             statement.executeUpdate();
-            logger.log(Level.DEBUG, "Method insertNewEntity was completed successfully. Meal " + meal + " was added");
+            ResultSet resultSet = statement.getGeneratedKeys();
+            long mealId = 0;
+            if (resultSet.next()) {
+                mealId = resultSet.getLong(FIRST_PARAM_INDEX);
+            }
+            logger.log(Level.INFO, "insertNewEntity method was completed successfully. Meal with id " + mealId + " was added");
+            return mealId;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to insert meal into database. Database access error:", e);
             throw new DaoException("Impossible to insert meal into database. Database access error:", e);
@@ -143,7 +114,7 @@ public class MealDaoImpl implements MealDao {
                 statement.addBatch();
             }
             statement.executeBatch();
-            logger.log(Level.DEBUG, "Method deleteEntities was completed successfully. Meals with id: " + idList + " were deleted");
+            logger.log(Level.DEBUG, "deleteEntities method was completed successfully. Meals with id " + idList + " were deleted");
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to delete meals from database. Database access error:", e);
             throw new DaoException("Impossible to delete meals from database. Database access error:", e);
@@ -157,7 +128,7 @@ public class MealDaoImpl implements MealDao {
             statement.setString(FIRST_PARAM_INDEX, title);
             ResultSet resultSet = statement.executeQuery();
             boolean result = resultSet.isBeforeFirst();
-            logger.log(Level.DEBUG, "Method isMealExist was completed successfully. Result: " + result);
+            logger.log(Level.DEBUG, "isMealExist method was completed successfully. Result: " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to check existence of meal. Database access error:", e);
@@ -173,18 +144,11 @@ public class MealDaoImpl implements MealDao {
             ResultSet resultSet = statement.executeQuery();
             List<Meal> meals = new ArrayList<>();
             while (resultSet.next()) {
-                Meal meal = new Meal();
-                meal.setId(resultSet.getLong(MEAL_ID));
-                meal.setTitle(resultSet.getString(MEAL_TITLE));
-                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
-                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
-                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
-                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
-                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                Meal meal = MealCreator.create(resultSet);
                 meals.add(meal);
             }
-            logger.log(Level.DEBUG, "Method findMealsByType was completed successfully. Meals: " + meals);
+            logger.log(Level.DEBUG, "findMealsByType method was completed successfully. " + meals.size()
+                    + " meals with type " + type + " were found");
             return meals;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find meals by type. Database access error:", e);
@@ -202,7 +166,8 @@ public class MealDaoImpl implements MealDao {
                 statement.addBatch();
             }
             statement.executeBatch();
-            logger.log(Level.DEBUG, "Method updateMealStatusesById was completed successfully.");
+            logger.log(Level.INFO, "updateMealStatusesById method was completed successfully. Meal statuses with meal id list "
+                    + mealIdList + " were updated to " + status + " statuses");
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update meal statuses. Database access error:", e);
             throw new DaoException("Impossible to update meal statuses. Database access error:", e);
@@ -217,12 +182,12 @@ public class MealDaoImpl implements MealDao {
             statement.setLong(SECOND_PARAM_INDEX, mealId);
             statement.setInt(THIRD_PARAM_INDEX,mealQuantity);
             int rowCount = statement.executeUpdate();
-            logger.log(Level.DEBUG, "Method insertMealToUserCart was completed successfully. Meal with id "
-                    + mealId + " was added to user cart with user id " + userId + "in the amount of " + mealQuantity + " pieces");
+            logger.log(Level.DEBUG, "insertMealToUserCart method was completed successfully. Meal with id "
+                    + mealId + " was added to user cart with user id " + userId + " in the amount of " + mealQuantity + " pieces");
             return rowCount == 1;
         } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to insert meal to user cart. Database access error:", e);
-            throw new DaoException("Impossible to insert meal to user cart. Database access error:", e);
+            logger.log(Level.ERROR, "Impossible to insert meal(s) to user cart. Database access error:", e);
+            throw new DaoException("Impossible to insert meal(s) to user cart. Database access error:", e);
         }
     }
 }

@@ -61,11 +61,11 @@ public class RegistrationCommand implements Command {
                             case INVALID_LOGIN_MESSAGE -> request.setAttribute(INVALID_LOGIN, INVALID_MESSAGE);
                             case NOT_UNIQUE_LOGIN_MESSAGE -> request.setAttribute(INVALID_LOGIN, NOT_UNIQUE_MESSAGE);
                             case INVALID_PASSPORT_MESSAGE -> request.setAttribute(INVALID_PASSPORT, INVALID_MESSAGE);
-                            case PASSWORD_MISMATCH_MESSAGE -> request.setAttribute(INVALID_PASSPORT, PASSWORD_MISMATCH_MESSAGE);
+                            case PASSWORD_MISMATCH -> request.setAttribute(INVALID_PASSPORT, PASSWORD_MISMATCH);
                             case INVALID_EMAIL_MESSAGE -> request.setAttribute(INVALID_EMAIL, INVALID_MESSAGE);
-                            case NOT_UNIQUE_EMAIL_MESSAGE -> request.setAttribute(INVALID_EMAIL, NOT_UNIQUE_MESSAGE);
+                            case NOT_UNIQUE_EMAIL -> request.setAttribute(INVALID_EMAIL, NOT_UNIQUE_MESSAGE);
                             case INVALID_MOBILE_NUMBER_MESSAGE -> request.setAttribute(INVALID_MOBILE_NUMBER, INVALID_MESSAGE);
-                            case NOT_UNIQUE_MOBILE_NUMBER_MESSAGE -> request.setAttribute(INVALID_MOBILE_NUMBER, NOT_UNIQUE_MESSAGE);
+                            case NOT_UNIQUE_MOBILE_NUMBER -> request.setAttribute(INVALID_MOBILE_NUMBER, NOT_UNIQUE_MESSAGE);
                         }
                         logger.log(Level.DEBUG, "Validation result: " + key + " - " + validationResult);
                     }

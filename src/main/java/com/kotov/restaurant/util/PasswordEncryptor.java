@@ -1,4 +1,4 @@
-package com.kotov.restaurant.model.service.util;
+package com.kotov.restaurant.util;
 
 import com.kotov.restaurant.exception.ServiceException;
 import org.apache.logging.log4j.Level;
@@ -13,6 +13,9 @@ public class PasswordEncryptor {
     private static final Logger logger = LogManager.getLogger();
     private static final String HASH_FUNCTION = "SHA-256";
     private static final String SALT_KEY = "5hr8Uh32Hr";
+
+    private PasswordEncryptor() {
+    }
 
     public static String encrypt(String password) throws ServiceException {
         StringBuilder hash = new StringBuilder();

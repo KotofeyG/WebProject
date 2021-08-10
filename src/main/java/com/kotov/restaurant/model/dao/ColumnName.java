@@ -26,7 +26,7 @@ public class ColumnName {
     public static final String PASSWORD = "users.password";
     public static final String EMAIL_ADDRESS = "users.email_address";
     public static final String FIRST_NAME = "users.first_name";
-    public static final String MIDDLE_NAME = "users.middle_name";
+    public static final String MIDDLE_NAME = "users.patronymic";
     public static final String LAST_NAME = "users.last_name";
     public static final String MOBILE_NUMBER = "users.mobile_number";
     public static final String REGISTERED = "users.registered";
@@ -44,7 +44,7 @@ public class ColumnName {
 
     /* address table */
     public static final String ADDRESS_ID = "address.id";
-    public static final String CITY = "address.city";
+    public static final String CITY = "address.city_id";
     public static final String STREET = "address.street";
     public static final String BUILDING = "address.building";
     public static final String BLOCK = "address.block";
@@ -52,6 +52,13 @@ public class ColumnName {
     public static final String ENTRANCE = "address.entrance";
     public static final String FLOOR = "address.floor";
     public static final String INTERCOM_CODE = "address.intercom_code";
+
+    /* discount_cards table */
+    public static final String DISCOUNT_CARD_ID = "discount_cards.id";
+    public static final String DISCOUNT_CARD_NUMBER = "discount_cards.number";
+    public static final String DISCOUNT = "discount_cards.discount";
+    public static final String DISCOUNT_CARD_ACTIVE = "discount_cards.active";
+    public static final String DISCOUNT_CARD_USER_ID = "discount_cards.user_id";
 
     /* credit_cards table */
     public static final String CREDIT_CARD_ID = "credit_cards.id";
@@ -143,15 +150,6 @@ public class ColumnName {
     /* table_statuses table */
     public static final String TABLE_STATUS_ID = "table_statuses.orders.id";
     public static final String TABLE_STATUS = "table_statuses.status";
-
-    /* param indexes for statement */
-    public static final int FIRST_PARAM_INDEX = 1;
-    public static final int SECOND_PARAM_INDEX = 2;
-    public static final int THIRD_PARAM_INDEX = 3;
-    public static final int FOURTH_PARAM_INDEX = 4;
-    public static final int FIFTH_PARAM_INDEX = 5;
-    public static final int SIXTH_PARAM_INDEX = 6;
-    public static final int SEVENTH_PARAM_INDEX = 7;
 
     private ColumnName() {
     }

@@ -5,10 +5,12 @@ import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.dao.DaoProvider;
 import com.kotov.restaurant.model.dao.UserDao;
 import com.kotov.restaurant.model.entity.Address;
-import com.kotov.restaurant.model.entity.Cart;
+import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.UserService;
-import com.kotov.restaurant.model.service.util.PasswordEncryptor;
+import com.kotov.restaurant.model.service.validator.AddressValidator;
+import com.kotov.restaurant.model.service.validator.DiscountCardValidator;
+import com.kotov.restaurant.util.PasswordEncryptor;
 import com.kotov.restaurant.model.service.validator.UserValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -56,6 +58,16 @@ public class UserServiceImpl implements UserService {
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to find all users: ", e);
             throw new ServiceException("Impossible to find all users: ", e);
+        }
+    }
+
+    @Override
+    public List<Address> findUserAddresses(long userId) throws ServiceException {
+        try {
+            return userDao.findUserAddresses(userId);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to find user addresses:", e);
+            throw new ServiceException("Impossible to find user addresses:", e);
         }
     }
 
@@ -122,13 +134,13 @@ public class UserServiceImpl implements UserService {
                     ? (!userDao.isLoginExist(login) ? TRUE : NOT_UNIQUE_LOGIN_MESSAGE)
                     : INVALID_LOGIN_MESSAGE;
             String passwordCheckResult = UserValidator.isPasswordValid(password)
-                    ? (password.equals(confirmPassword) ? TRUE : PASSWORD_MISMATCH_MESSAGE)
+                    ? (password.equals(confirmPassword) ? TRUE : PASSWORD_MISMATCH)
                     : INVALID_PASSPORT_MESSAGE;
             String emailCheckResult = UserValidator.isEmailValid(email)
-                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL_MESSAGE)
+                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL)
                     : INVALID_EMAIL_MESSAGE;
             String mobileNumberCheckResult = UserValidator.isMobileNumberValid(mobileNumber)
-                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER_MESSAGE)
+                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER)
                     : INVALID_MOBILE_NUMBER_MESSAGE;
 
             if (parseBoolean(loginCheckResult) && parseBoolean(passwordCheckResult)
@@ -160,12 +172,200 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Cart findUserMealsInCart(long userId) throws ServiceException {
+    public Map<Meal, Integer> findMealsInCartByUserId(long userId) throws ServiceException {
         try {
-            return userDao.findUserMealsInCart(userId);
+            return userDao.findMealsInCartByUserId(userId);
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to find meals in cart for user: ", e);
             throw new ServiceException("Impossible to find meals in cart for user: ", e);
+        }
+    }
+
+    @Override
+    public boolean deleteMealsFromCartByUserId(long userId, String[] mealIdArray) throws ServiceException {
+        boolean result = false;
+        List<Long> mealIdList = convertArrayToList(mealIdArray);
+        try {
+            result = userDao.deleteMealsFromCartByUserId(userId, mealIdList);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to delete meals from cart for user: ", e);
+            throw new ServiceException("Impossible to delete meals from cart for user: ", e);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.ERROR, "mealIdStr doesn't contain a parsable long: ", e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addUserAddress(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+        String city = dataCheckResult.get(CITY);
+        String street = dataCheckResult.get(STREET);
+        String building = dataCheckResult.get(BUILDING);
+        String block = dataCheckResult.get(BUILDING_BLOCK);
+        String flat = dataCheckResult.get(FLAT);
+        String entrance = dataCheckResult.get(ENTRANCE);
+        String floor = dataCheckResult.get(FLOOR);
+        String intercomCode = dataCheckResult.get(INTERCOM_CODE);
+
+        String cityCheckResult = AddressValidator.isCityValid(city) ? TRUE : INVALID_CITY;
+        String streetCheckResult = AddressValidator.isStreetValid(street) ? TRUE : INVALID_STREET;
+        String buildingCheckResult = AddressValidator.isBuildingValid(building) ? TRUE : INVALID_BUILDING;
+        String blockCheckResult = AddressValidator.isBlockValid(block) ? TRUE : INVALID_BUILDING_BLOCK;
+        String flatCheckResult = AddressValidator.isFlatValid(flat) ? TRUE : INVALID_FLAT;
+        String entranceCheckResult = AddressValidator.isEntranceValid(entrance) ? TRUE : INVALID_ENTRANCE;
+        String floorCheckResult = AddressValidator.isFloorValid(floor) ? TRUE : INVALID_FLOOR;
+        String intercomCodeCheckResult = AddressValidator.isIntercomCodeValid(intercomCode) ? TRUE : INVALID_INTERCOM_CODE;
+
+        boolean optionalFieldsResult = parseBoolean(blockCheckResult) && parseBoolean(flatCheckResult) && parseBoolean(entranceCheckResult);
+        if (optionalFieldsResult) {
+            floorCheckResult = parseBoolean(floorCheckResult) && (floor.isEmpty() || !flat.isEmpty() || !entrance.isEmpty())
+                    ? TRUE : INVALID_FLOOR;
+            intercomCodeCheckResult = parseBoolean(intercomCodeCheckResult) && (intercomCode.isEmpty() || !flat.isEmpty() || !entrance.isEmpty())
+                    ? TRUE : INVALID_INTERCOM_CODE;
+            optionalFieldsResult = parseBoolean(floorCheckResult) && parseBoolean(intercomCodeCheckResult);
+        }
+
+        boolean result = parseBoolean(cityCheckResult) && parseBoolean(streetCheckResult) && parseBoolean(buildingCheckResult) && optionalFieldsResult;
+
+        if (result) {
+            Address.City enumCity = null;
+            for (Address.City next : Address.City.values()) {
+                if (next.getRussianName().equals(city)) {
+                    enumCity = next;
+                }
+            }
+            Address address = new Address(enumCity, street, Integer.parseInt(building));
+            if (!block.isEmpty()) {
+                address.setBlock(block);
+            }
+            if (!flat.isEmpty()) {
+                address.setFloor(Integer.parseInt(flat));
+            }
+            if (!entrance.isEmpty()) {
+                address.setEntrance(Integer.parseInt(entrance));
+            }
+            if (!floor.isEmpty()) {
+                address.setFloor(Integer.parseInt(floor));
+            }
+            if (!intercomCode.isEmpty()) {
+                address.setIntercomCode(intercomCode);
+            }
+            try {
+                result = userDao.insertUserAddress(userId, address);
+            } catch (DaoException e) {
+                logger.log(Level.ERROR, "Impossible to add address to user:", e);
+                throw new ServiceException("Impossible to add address to user:", e);
+            }
+        } else {
+            dataCheckResult.replace(CITY, cityCheckResult);
+            dataCheckResult.replace(STREET, streetCheckResult);
+            dataCheckResult.replace(BUILDING, buildingCheckResult);
+            dataCheckResult.replace(BUILDING_BLOCK, blockCheckResult);
+            dataCheckResult.replace(FLAT, flatCheckResult);
+            dataCheckResult.replace(ENTRANCE, entranceCheckResult);
+            dataCheckResult.replace(FLOOR, floorCheckResult);
+            dataCheckResult.replace(INTERCOM_CODE, intercomCodeCheckResult);
+            logger.log(Level.DEBUG, "Address data is invalid for user with id " + userId);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addDiscountCardToUser(long userId, String number) throws ServiceException {
+        try {
+            return DiscountCardValidator.isCardNumberValid(number)
+                    && userDao.isDiscountCardActive(number)
+                    && userDao.addDiscountCardToUser(userId, number);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to add discount card to user:", e);
+            throw new ServiceException("Impossible to add discount card to user:", e);
+        }
+    }
+
+    @Override
+    public boolean changeUserPersonalData(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+        String firstName = dataCheckResult.get(FIRST_NAME);
+        String patronymic = dataCheckResult.get(PATRONYMIC);
+        String lastName = dataCheckResult.get(LAST_NAME);
+        String mobileNumber = dataCheckResult.get(MOBILE_NUMBER);
+        String email = dataCheckResult.get(EMAIL);
+
+        try {
+            String firstNameCheckResult = UserValidator.isNameValid(firstName) ? TRUE : INVALID_FIRST_NAME;
+            String patronymicCheckResult = UserValidator.isNameValid(patronymic) ? TRUE : INVALID_PATRONYMIC;
+            String lastNameCheckResult = UserValidator.isNameValid(lastName) ? TRUE : INVALID_LAST_NAME;
+            String emailCheckResult = UserValidator.isEmailValid(email)
+                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL)
+                    : INVALID_EMAIL;
+            String mobileNumberCheckResult = UserValidator.isMobileNumberValid(mobileNumber)
+                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER)
+                    : INVALID_MOBILE_NUMBER;
+            boolean result = parseBoolean(firstNameCheckResult)
+                    && parseBoolean(patronymicCheckResult)
+                    && parseBoolean(lastNameCheckResult)
+                    && parseBoolean(emailCheckResult)
+                    && parseBoolean(mobileNumberCheckResult);
+            if (result) {
+                if (!firstName.isEmpty()) {
+                    result &= userDao.updateUserFirstName(userId, firstName);
+                }
+                if (!patronymic.isEmpty()) {
+                    result &= userDao.updateUserPatronymic(userId, patronymic);
+                }
+                if (!lastName.isEmpty()) {
+                    result &= userDao.updateUserLastName(userId, lastName);
+                }
+                if (!mobileNumber.isEmpty()) {
+                    result &= userDao.updateUserMobileNumber(userId, mobileNumber);
+                }
+                if (!email.isEmpty()) {
+                    result &= userDao.updateUserEmail(userId, email);
+                }
+            } else {
+                dataCheckResult.replace(FIRST_NAME, firstNameCheckResult);
+                dataCheckResult.replace(PATRONYMIC, patronymicCheckResult);
+                dataCheckResult.replace(LAST_NAME, lastNameCheckResult);
+                dataCheckResult.replace(MOBILE_NUMBER, mobileNumberCheckResult);
+                dataCheckResult.replace(EMAIL, emailCheckResult);
+                logger.log(Level.DEBUG, "Personal data is invalid for user with id " + userId);
+            }
+            return result;
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to change user personal data:", e);
+            throw new ServiceException("Impossible to change user personal data:", e);
+        }
+    }
+
+    @Override
+    public boolean changeAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+        String oldPassword = dataCheckResult.get(OLD_PASSWORD);
+        String oldPasswordHash = PasswordEncryptor.encrypt(oldPassword);
+        try {
+            boolean result = UserValidator.isPasswordValid(oldPassword) && userDao.isUserExist(userId, oldPasswordHash);
+            if (result) {
+                String newPassword = dataCheckResult.get(NEW_PASSWORD);
+                String confirmPassword = dataCheckResult.get(CONFIRM_PASSWORD);
+                String passwordCheckResult = UserValidator.isPasswordValid(newPassword)
+                        ? (newPassword.equals(confirmPassword) ? TRUE : PASSWORD_MISMATCH)
+                        : INVALID_PASSPORT;
+                result = parseBoolean(passwordCheckResult);
+                if (result) {
+                    String newPasswordHash = PasswordEncryptor.encrypt(newPassword);
+                    result = userDao.updateUserPassword(userId, newPasswordHash);
+                } else {
+                    dataCheckResult.clear();
+                    dataCheckResult.put(NEW_PASSWORD, passwordCheckResult);
+                    logger.log(Level.DEBUG, "Invalid password or mismatching password was entered");
+                }
+            } else {
+                dataCheckResult.clear();
+                dataCheckResult.put(OLD_PASSWORD, INCORRECT_PASSWORD);
+                logger.log(Level.DEBUG, "Incorrect password was entered");
+            }
+            return result;
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to change user personal data:", e);
+            throw new ServiceException("Impossible to change user personal data:", e);
         }
     }
 }

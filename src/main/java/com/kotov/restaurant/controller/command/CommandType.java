@@ -2,8 +2,7 @@ package com.kotov.restaurant.controller.command;
 
 import com.kotov.restaurant.controller.command.impl.admin.UserListActionCommand;
 import com.kotov.restaurant.controller.command.impl.admin.UserManagementCommand;
-import com.kotov.restaurant.controller.command.impl.client.AddToCartCommand;
-import com.kotov.restaurant.controller.command.impl.client.CheckCartCommand;
+import com.kotov.restaurant.controller.command.impl.client.*;
 import com.kotov.restaurant.controller.command.impl.manager.*;
 import com.kotov.restaurant.controller.command.impl.movement.*;
 import com.kotov.restaurant.controller.command.impl.user.*;
@@ -35,6 +34,9 @@ enum CommandType {
     /* client commands */
     ADD_TO_CART_COMMAND(new AddToCartCommand()),
     CHECK_CART_COMMAND(new CheckCartCommand()),
+    DELETE_FROM_CART_COMMAND(new DeleteFromCartCommand()),
+    SETTING_ACTION_LIST_COMMAND(new SettingActionListCommand()),
+    MEAL_ORDER_COMMAND(new MealOrderCommand()),
 
     /* go to commands */
     GO_TO_REGISTRATION_COMMAND(new GoToRegistrationCommand()),

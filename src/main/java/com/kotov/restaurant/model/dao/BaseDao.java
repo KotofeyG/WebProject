@@ -15,6 +15,8 @@ public interface BaseDao<T extends AbstractEntity> {
     int FIFTH_PARAM_INDEX = 5;
     int SIXTH_PARAM_INDEX = 6;
     int SEVENTH_PARAM_INDEX = 7;
+    int EIGHT_PARAM_INDEX = 8;
+    int NINE_PARAM_INDEX = 9;
 
     Optional<T> findEntityById(long id) throws DaoException;
 

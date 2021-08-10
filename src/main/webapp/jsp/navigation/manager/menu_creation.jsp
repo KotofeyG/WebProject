@@ -38,7 +38,7 @@
             <label for="type">${menu_type}</label>
             <input type="text" list="list" id="type" class="form-control" name="type">
             <datalist id="list">
-                <option value="ROLLS"></option>
+                <option value="ROLL"></option>
                 <option value="NIGIRI"></option>
             </datalist>
         </div>

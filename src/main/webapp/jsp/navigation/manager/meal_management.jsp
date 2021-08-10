@@ -72,7 +72,7 @@
                             <label for="type">${meal_type}</label>
                             <input type="text" id="type" class="form-control" list="list" name="type">
                             <datalist id="list">
-                                <option value="ROLLS"></option>
+                                <option value="ROLL"></option>
                                 <option value="NIGIRI"></option>
                             </datalist>
                         </div>

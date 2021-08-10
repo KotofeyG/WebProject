@@ -9,13 +9,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,20 +19,19 @@ import static com.kotov.restaurant.model.dao.ColumnName.*;
 public class MenuDaoImpl implements MenuDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connection_pool = ConnectionPool.getInstance();
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
 
     private static final String FIND_MENU_BY_TITLE = "SELECT id FROM menus WHERE title=?";
     private static final String FIND_MENU_BY_ID = "SELECT title, menu_types.type, created, updated FROM menus" +
-            " JOIN menu_types ON type_id=menu_types.id WHERE menus.id=?";
+            " JOIN menu_types ON menu_types.id=type_id WHERE menus.id=?";
     private static final String FIND_ALL_MENUS = "SELECT menus.id, title, menu_types.type, created, updated FROM menus" +
-            " JOIN menu_types ON type_id=menu_types.id";
-    private static final String FIND_ALL_MEALS_FOR_MENU = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active" +
-            " FROM meals JOIN meal_types ON type_id=meal_types.id" +
+            " JOIN menu_types ON menu_types.id=type_id";
+    private static final String FIND_ALL_MEALS_FOR_MENU = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
+            " JOIN meal_types ON meal_types.id=type_id" +
             " JOIN available_meals ON meal_id=meals.id AND menu_id=?";
-    private static final String DELETE_MENU_BY_ID = "DELETE FROM menus WHERE id=?";
-    private static final String DELETE_MEAL_FROM_MENU = "DELETE FROM available_meals WHERE menu_id=? AND meal_id=?";
     private static final String INSERT_MEAL_TO_MENU = "INSERT INTO available_meals (menu_id, meal_id) VALUES(?, ?)";
     private static final String INSERT_NEW_MENU = "INSERT INTO menus (title, type_id, created, updated) VALUES(?, ?, ?, ?)";
+    private static final String DELETE_MENU_BY_ID = "DELETE FROM menus WHERE id=?";
+    private static final String DELETE_MEAL_FROM_MENU = "DELETE FROM available_meals WHERE menu_id=? AND meal_id=?";
 
     @Override
     public Optional<Menu> findEntityById(long id) throws DaoException {
@@ -54,7 +48,8 @@ public class MenuDaoImpl implements MenuDao {
                 menu.setCreated(resultSet.getDate(MENU_CREATED).toLocalDate());
                 menu.setUpdated(resultSet.getDate(MENU_UPDATED).toLocalDate());
                 menuOptional = Optional.of(menu);
-                logger.log(Level.DEBUG, "Method findEntityById was completed successfully. Menu: " + menu);
+                logger.log(Level.DEBUG, "findEntityById method was completed successfully." +
+                        (menuOptional.isPresent() ? " Menu with id " + id + " was found" : " Menu with id " + id + " doesn't exist"));
             }
             return menuOptional;
         } catch (SQLException e) {
@@ -78,7 +73,7 @@ public class MenuDaoImpl implements MenuDao {
                 menu.setUpdated(resultSet.getDate(MENU_UPDATED).toLocalDate());
                 menus.add(menu);
             }
-            logger.log(Level.DEBUG, "Method findAllEntity was completed successfully. Meals: " + menus);
+            logger.log(Level.DEBUG, "findAllEntity method was completed successfully. " + menus.size() + " menus were found");
             return menus;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find all menus. Database access error:", e);
@@ -96,12 +91,12 @@ public class MenuDaoImpl implements MenuDao {
             statement.setDate(FOURTH_PARAM_INDEX, Date.valueOf(menu.getUpdated()));
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
-            long key = 0;
+            long menuId = 0;
             if (resultSet.next()) {
-                key = resultSet.getLong(FIRST_PARAM_INDEX);
+                menuId = resultSet.getLong(FIRST_PARAM_INDEX);
             }
-            logger.log(Level.DEBUG, "Method insertNewEntity was completed successfully. Menu with id " + key + " was added");
-            return key;
+            logger.log(Level.INFO, "insertNewEntity method was completed successfully. Menu with id " + menuId + " was added");
+            return menuId;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to insert menu into database. Database access error:", e);
             throw new DaoException("Impossible to insert menu into database. Database access error:", e);
@@ -117,7 +112,8 @@ public class MenuDaoImpl implements MenuDao {
             if (statement.executeUpdate() == 1) {
                 result = true;
             }
-            logger.log(Level.DEBUG, "Method deleteEntityById was completed successfully. Menu with id " + id + " was deleted");
+            logger.log(Level.INFO, "deleteEntityById method was completed successfully."
+                    + (result ? " Menu with id " + id + " was deleted" : " Menu with id " + id + " wasn't deleted"));
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to delete menu from database. Database access error:", e);
             throw new DaoException("Impossible to delete menu from database. Database access error:", e);
@@ -126,8 +122,8 @@ public class MenuDaoImpl implements MenuDao {
     }
 
     @Override
-    public void deleteEntitiesById(List<Long> idList) throws DaoException {
-        throw new UnsupportedOperationException();
+    public void deleteEntitiesById(List<Long> idList) {
+        throw new UnsupportedOperationException("deleteEntitiesById(List<Long> idList) method is not supported");
     }
 
     @Override
@@ -137,7 +133,7 @@ public class MenuDaoImpl implements MenuDao {
             statement.setString(FIRST_PARAM_INDEX, title);
             ResultSet resultSet = statement.executeQuery();
             boolean result = resultSet.isBeforeFirst();
-            logger.log(Level.DEBUG, "Method isMenuExist was completed successfully. Result: " + result);
+            logger.log(Level.DEBUG, "isMenuExist method was completed successfully. Result: " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to check existence of menu. Database access error:", e);
@@ -146,14 +142,14 @@ public class MenuDaoImpl implements MenuDao {
     }
 
     @Override
-    public void insertMealToMenu(long menuId, long mealId) throws DaoException {                  // to delete this method?
+    public void insertMealToMenu(long menuId, long mealId) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_MEAL_TO_MENU)) {
             statement.setLong(FIRST_PARAM_INDEX, menuId);
             statement.setLong(SECOND_PARAM_INDEX, mealId);
             statement.executeUpdate();
-            logger.log(Level.DEBUG, "Method addMealToMenu was completed successfully: Meal with id "
-                    + mealId + "was added to menu with id " + menuId);
+            logger.log(Level.INFO, "addMealToMenu method was completed successfully. Meal with id "
+                    + mealId + " was added to menu with id " + menuId);
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to add meal to menu. Database access error:", e);
             throw new DaoException("Impossible to add meal to menu. Database access error:", e);
@@ -170,7 +166,7 @@ public class MenuDaoImpl implements MenuDao {
                 statement.addBatch();
             }
             statement.executeBatch();
-            logger.log(Level.DEBUG, "Method addMealsToMenu was completed successfully. Meals with id: "
+            logger.log(Level.INFO, "addMealsToMenu method was completed successfully. Meals with id "
                     + mealIdList + " were added to menu with id " + menuId);
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to add meals to menu. Database access error:", e);
@@ -186,37 +182,15 @@ public class MenuDaoImpl implements MenuDao {
             ResultSet resultSet = statement.executeQuery();
             List<Meal> meals = new ArrayList<>();
             while (resultSet.next()) {
-                Meal meal = new Meal();
-                meal.setId(resultSet.getLong(MEAL_ID));
-                meal.setTitle(resultSet.getString(MEAL_TITLE));
-                meal.setImage(encodeBlob(resultSet.getBlob(MEAL_IMAGE)));
-                meal.setType(Meal.Type.valueOf(resultSet.getString(MEAL_TYPES_TYPE).toUpperCase()));
-                meal.setPrice(resultSet.getBigDecimal(MEAL_PRICE));
-                meal.setRecipe(resultSet.getString(MEAL_RECIPE));
-                meal.setCreated(LocalDateTime.parse(resultSet.getString(MEAL_CREATED), FORMATTER));
-                meal.setActive(resultSet.getBoolean(MEAL_ACTIVE));
+                Meal meal = MealCreator.create(resultSet);
                 meals.add(meal);
             }
-            logger.log(Level.DEBUG, "Method findAllMealsForMenu was completed successfully. Meals: " + meals +
-                    " were found for menu with id " + menuId);
+            logger.log(Level.DEBUG, "findAllMealsForMenu method was completed successfully." +
+                    (meals.size() != 0 ? meals.size() + " meals were found for menu with id " + menuId : " Menu doesn't have any meals"));
             return meals;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find meals for menu. Database access error:", e);
             throw new DaoException("Impossible to find meals for menu. Database access error:", e);
-        }
-    }
-
-    private String encodeBlob(Blob image) throws DaoException {                             // to util package
-        try {
-            byte[] imageBytes = image.getBinaryStream().readAllBytes();
-            byte[] encodeBase64 = Base64.getEncoder().encode(imageBytes);
-            String base64DataString = new String(encodeBase64, StandardCharsets.UTF_8);
-            String src = "data:image/jpeg;base64," + base64DataString;                      // to constant
-            return src;
-        } catch (SQLException e) {
-            throw new DaoException("Image InputStream cannot be received. Error accessing BLOB value:", e);
-        } catch (IOException e) {
-            throw new DaoException("Image bytes cannot be read from InputStream:", e);
         }
     }
 
@@ -227,8 +201,8 @@ public class MenuDaoImpl implements MenuDao {
             statement.setLong(FIRST_PARAM_INDEX, menuId);
             statement.setLong(SECOND_PARAM_INDEX, mealId);
             statement.executeUpdate();
-            logger.log(Level.DEBUG, "Method deleteMealFromMenu was completed successfully. Meal with id " + mealId
-                    + "was deleted from menuId with id " + menuId);
+            logger.log(Level.INFO, "deleteMealFromMenu method was completed successfully. Meal with id " + mealId
+                    + " was deleted from menu with id " + menuId);
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to delete meal from menu. Database access error:", e);
             throw new DaoException("Impossible to delete meal from menu. Database access error:", e);

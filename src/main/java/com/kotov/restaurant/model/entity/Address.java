@@ -1,23 +1,44 @@
 package com.kotov.restaurant.model.entity;
 
 public class Address extends AbstractEntity {
-    private String city;
+    private City city;
     private String street;
     private int building;
     private String block;
     private int flat;
     private int entrance;
     private int floor;
-    private int intercomCode;
+    private String intercomCode;
+
+    public enum City {
+        MINSK("Минск"), BREST("Брест"), VITEBSK("Витебск"),
+        GOMEL("Гомель"), GRODNO("Гродно"), MOGILEV("Могилёв");
+
+        private String russianName;
+
+        City(String russianName) {
+            this.russianName = russianName;
+        }
+
+        public String getRussianName() {
+            return russianName;
+        }
+    }
 
     public Address() {
     }
 
-    public String getCity() {
+    public Address(City city, String street, int building) {
+        this.city = city;
+        this.street = street;
+        this.building = building;
+    }
+
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -69,11 +90,11 @@ public class Address extends AbstractEntity {
         this.floor = floor;
     }
 
-    public int getIntercomCode() {
+    public String getIntercomCode() {
         return intercomCode;
     }
 
-    public void setIntercomCode(int intercomCode) {
+    public void setIntercomCode(String intercomCode) {
         this.intercomCode = intercomCode;
     }
 
@@ -104,7 +125,7 @@ public class Address extends AbstractEntity {
         if (floor != other.floor) {
             return false;
         }
-        return intercomCode == other.intercomCode;
+        return intercomCode.equals(other.intercomCode);
     }
 
     @Override
@@ -118,7 +139,7 @@ public class Address extends AbstractEntity {
         result = prime * result + flat;
         result = prime * result + entrance;
         result = prime * result + floor;
-        result = prime * result + intercomCode;
+        result = prime * result + (intercomCode != null ? intercomCode.hashCode() : 0);
         return result;
     }
 
