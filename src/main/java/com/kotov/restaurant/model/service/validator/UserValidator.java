@@ -3,7 +3,7 @@ package com.kotov.restaurant.model.service.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidator {
+public class UserValidator {                                                                // check regexes
     private static final String LOGIN_REGEX = "[A-Za-z]\\w{2,20}";
     private static final String PASSPORT_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,24}$";
     private static final String NAME_PATTERN = "[\\p{Punct}&&[^-]]|-{2,}| {2,}|^[- ]|[- ]$";

@@ -1,3 +1,7 @@
+.disabled {
+    pointer-events: none;
+}
+
 .catalog-body {
     position: relative;
     color: #525252;

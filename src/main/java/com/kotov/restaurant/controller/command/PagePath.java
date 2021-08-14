@@ -27,6 +27,7 @@ public class PagePath {
     public static final String MENU_MANAGEMENT_PAGE = "/jsp/navigation/manager/menu_management.jsp";
     public static final String MENU_CREATION_PAGE = "/jsp/navigation/manager/menu_creation.jsp";
     public static final String MENU_UPDATE_PAGE = "/jsp/navigation/manager/menu_update.jsp";
+    public static final String EDITING_ORDER_PAGE = "/jsp/navigation/manager/editing_order.jsp";
 
     /* admin pages */
     public static final String USER_MANAGEMENT_PAGE = "/jsp/navigation/admin/user_management.jsp";

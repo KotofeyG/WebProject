@@ -1,6 +1,7 @@
 package com.kotov.restaurant.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class User extends AbstractEntity {
     private String login;
@@ -10,12 +11,12 @@ public class User extends AbstractEntity {
     private String lastName;
     private String mobileNumber;
     private LocalDateTime registered;
-    private Address address;
+    private List<Address> addresses;
     private Status status;
     private Role role;
 
     public enum Status {
-        OFFLINE, ONLINE, BLOCKED
+        ACTIVE, BLOCKED
     }
 
     public enum Role {
@@ -31,7 +32,7 @@ public class User extends AbstractEntity {
         this.mobileNumber = mobileNumber;
         this.registered = registered;
         this.role = role;
-        this.status = Status.OFFLINE;
+        this.status = Status.ACTIVE;
     }
 
     public String getLogin() {
@@ -90,12 +91,12 @@ public class User extends AbstractEntity {
         this.registered = registered;
     }
 
-    public Address getAddress() {
-        return address;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     public Status getStatus() {
@@ -141,7 +142,7 @@ public class User extends AbstractEntity {
         if (registered != null ? !registered.equals(other.registered) : other.registered != null) {
             return false;
         }
-        if (address != null ? !address.equals(other.address) : other.address != null) {
+        if (addresses != null ? !addresses.equals(other.addresses) : other.addresses != null) {
             return false;
         }
         if (status != other.status) {
@@ -161,7 +162,7 @@ public class User extends AbstractEntity {
         result = prime * result + (lastName != null ? lastName.hashCode() : 0);
         result = prime * result + (mobileNumber != null ? mobileNumber.hashCode() : 0);
         result = prime * result + (registered != null ? registered.hashCode() : 0);
-        result = prime * result + (address != null ? address.hashCode() : 0);
+        result = prime * result + (addresses != null ? addresses.hashCode() : 0);
         result = prime * result + (status != null ? status.hashCode() : 0);
         result = prime * result + (role != null ? role.hashCode() : 0);
         return result;
@@ -177,7 +178,7 @@ public class User extends AbstractEntity {
         result.append(" ,lastName = ").append(lastName);
         result.append(" ,mobileNumber = ").append(mobileNumber);
         result.append(" ,registered = ").append(registered);
-        result.append(" ,address = ").append(address);
+        result.append(" ,address = ").append(addresses);
         result.append(" ,status = ").append(status);
         result.append(" ,role = ").append(role).append(" ]");
         return result.toString();

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.kotov.restaurant.controller.command.AttributeName.*;
-import static com.kotov.restaurant.controller.command.AttributeName.USER_ATTR;
+import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
 import static com.kotov.restaurant.controller.command.PagePath.SETTINGS_PAGE;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 
@@ -27,7 +27,7 @@ public class SettingActionListCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
-        User user = (User) request.getSession().getAttribute(USER_ATTR);
+        User user = (User) request.getSession().getAttribute(SESSION_USER);
         long userId = user.getId();
         String action = request.getParameter(ACTION);
         try {
@@ -107,9 +107,9 @@ public class SettingActionListCommand implements Command {
                                     case INVALID_PATRONYMIC -> request.setAttribute(INVALID_PATRONYMIC, Boolean.TRUE);
                                     case INVALID_LAST_NAME -> request.setAttribute(INVALID_LAST_NAME, Boolean.TRUE);
                                     case INVALID_MOBILE_NUMBER -> request.setAttribute(INVALID_MOBILE_NUMBER, INVALID_MESSAGE);
-                                    case NOT_UNIQUE_MOBILE_NUMBER -> request.setAttribute(INVALID_MOBILE_NUMBER, NOT_UNIQUE_MESSAGE);
+                                    case NOT_UNIQUE_MOBILE_NUMBER_RESULT -> request.setAttribute(INVALID_MOBILE_NUMBER, NOT_UNIQUE_MESSAGE);
                                     case INVALID_EMAIL -> request.setAttribute(INVALID_EMAIL, INVALID_MESSAGE);
-                                    case NOT_UNIQUE_EMAIL -> request.setAttribute(INVALID_EMAIL, NOT_UNIQUE_MESSAGE);
+                                    case NOT_UNIQUE_EMAIL_RESULT -> request.setAttribute(INVALID_EMAIL, NOT_UNIQUE_MESSAGE);
                                 }
                             }
                         }

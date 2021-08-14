@@ -17,32 +17,31 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Map;
 
+import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.CART_PAGE;
-import static com.kotov.restaurant.controller.command.ParamName.*;
 
 public class DeleteFromCartCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
-    private static final UserService service = ServiceProvider.getInstance().getUserService();
+    private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
-        User user = (User) request.getSession().getAttribute(USER_ATTR);
+        User user = (User) request.getSession().getAttribute(SESSION_USER);
         long userId = user.getId();
         String[] mealIdArray = request.getParameterValues(MEAL_ID);
         try {
-            service.deleteMealsFromCartByUserId(userId, mealIdArray);
-            Map<Meal, Integer> cart = service.findMealsInCartByUserId(userId);
-            List<Address> addresses = service.findUserAddresses(userId);
+            userService.deleteMealsFromCartByUserId(userId, mealIdArray);
+            Map<Meal, Integer> cart = userService.findMealsInCartByUserId(userId);
+            List<Address> addresses = userService.findUserAddresses(userId);
             request.setAttribute(CART, cart);
-            request.setAttribute(ADDRESSES, addresses);
+            request.setAttribute(ADDRESS_LIST, addresses);
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Method execute cannot be completed:", e);
-            throw new CommandException("Method execute cannot be completed:", e);
+            logger.log(Level.ERROR, "Impossible to delete meals from cart:", e);
+            throw new CommandException("Impossible to delete meals from cart:", e);
         }
         router.setPagePath(CART_PAGE);
-        logger.log(Level.DEBUG, "Method execute is completed successfully");
         return router;
     }
 }

@@ -125,7 +125,7 @@ public class Address extends AbstractEntity {
         if (floor != other.floor) {
             return false;
         }
-        return intercomCode.equals(other.intercomCode);
+        return intercomCode != null ? intercomCode.equals(other.intercomCode) : other.intercomCode == null;
     }
 
     @Override

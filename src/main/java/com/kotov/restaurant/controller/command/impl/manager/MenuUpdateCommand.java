@@ -24,7 +24,7 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 
 public class MenuUpdateCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
-    private static final MenuService service = ServiceProvider.getInstance().getMenuService();
+    private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
@@ -32,45 +32,52 @@ public class MenuUpdateCommand implements Command {
         String menuId = request.getParameter(SELECTED_MENU);
         String currentPage = (String) request.getSession().getAttribute(CURRENT_PAGE);
         try {
-            if (currentPage.equals(MENU_UPDATE_PAGE)) {
+            if (currentPage.equals(MENU_UPDATE_PAGE)) {                                 // is it right?
                 String action = request.getParameter(ACTION);
                 String mealId = request.getParameter(SELECTED);
-                if (action.equals(APPEND)) {
-                    service.addMealToMenu(menuId, mealId);
-                } else if (action.equals(REMOVE)) {
-                    service.deleteMealFromMenu(menuId, mealId);
+
+                boolean result;
+                if (APPEND.equals(action)) {
+                    result = menuService.addMealToMenu(menuId, mealId);
+                } else if (REMOVE.equals(action)) {
+                    result = menuService.deleteMealFromMenu(menuId, mealId);
+                } else {
+                    result = false;
+                }
+                if (!result) {
+                    request.setAttribute(ACTION_RESULT, Boolean.FALSE);
                 }
             }
-            Optional<Menu> menuOptional = service.findMenuById(menuId);
+            Optional<Menu> menuOptional = menuService.findMenuById(menuId);
             if (menuOptional.isPresent()) {
                 Menu menu = menuOptional.get();
-                List<Meal> allMeals = service.findAllMeals();
+                List<Meal> allMeals = menuService.findMealsByType(menu.getType().toString()); // pagination?  overriding?
                 List<Meal> menuMeals = menu.getMeals();
-                Map<Meal, Boolean> result = new LinkedHashMap<>();
+                Map<Meal, Boolean> markedMeals = new LinkedHashMap<>();
                 for (Meal meal : allMeals) {
                     if (menuMeals.contains(meal)) {
-                        result.put(meal, Boolean.TRUE);
+                        markedMeals.put(meal, Boolean.TRUE);
                     } else {
-                        result.put(meal, Boolean.FALSE);
+                        markedMeals.put(meal, Boolean.FALSE);
                     }
                 }
-                request.setAttribute(ALL_MEALS, result);
+                request.setAttribute(MARKED_MEALS, markedMeals);
                 request.setAttribute(SELECTED_MENU, menu);
                 router.setPagePath(MENU_UPDATE_PAGE);
             } else {
-                List<Menu> menus = service.findAllMenu();
+                List<Menu> menus = menuService.findAllMenu();                           // pagination?
                 if (menus.size() != 0) {
                     request.setAttribute(MENU_SEARCH_RESULT, Boolean.TRUE);
                 } else {
                     request.setAttribute(MENU_SEARCH_RESULT, Boolean.FALSE);
                 }
-                request.setAttribute(ALL_MENUS, menus);
+                request.setAttribute(MENU_LIST, menus);
                 request.setAttribute(UNSELECTED_MENU, Boolean.TRUE);
                 router.setPagePath(MENU_MANAGEMENT_PAGE);
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Method execute cannot be completed:", e);
-            throw new CommandException("Method execute cannot be completed:", e);
+            logger.log(Level.ERROR, "Impossible to update menu with id " + menuId, e);
+            throw new CommandException("Impossible to update menu with id " + menuId, e);
         }
         return router;
     }

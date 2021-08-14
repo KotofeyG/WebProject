@@ -94,6 +94,10 @@ public class Menu extends AbstractEntity {
         this.updated = updated;
     }
 
+    public int size() {
+        return meals.size();
+    }
+
     @Override
     public boolean equals(Object otherObject) {
         if (!super.equals(otherObject)) {

@@ -5,7 +5,7 @@ import com.kotov.restaurant.controller.command.impl.admin.UserManagementCommand;
 import com.kotov.restaurant.controller.command.impl.client.*;
 import com.kotov.restaurant.controller.command.impl.manager.*;
 import com.kotov.restaurant.controller.command.impl.movement.*;
-import com.kotov.restaurant.controller.command.impl.user.*;
+import com.kotov.restaurant.controller.command.impl.common.*;
 
 enum CommandType {
     /* general commands */
@@ -13,10 +13,10 @@ enum CommandType {
     LOGOUT_COMMAND(new LogoutCommand()),
     REGISTRATION_COMMAND(new RegistrationCommand()),
     CHANGE_LOCALE_COMMAND(new ChangeLocaleCommand()),
-    DEFAULT_COMMAND(new DefaultCommand()),
+    NON_EXISTENT_COMMAND(new NonExistentCommand()),
 
     /* product commands */
-    PRODUCT_COMMAND(new ProductCommand()),
+    SHOW_PRODUCTS_COMMAND(new ShowProductsCommand()),
 
     /* admin commands */
     USER_MANAGEMENT_COMMAND(new UserManagementCommand()),
@@ -25,18 +25,23 @@ enum CommandType {
     /* manager commands */
     MEAL_CREATION_COMMAND(new MealCreationCommand()),
     MENU_CREATION_COMMAND(new MenuCreationCommand()),
-    MENU_ADDING_TO_MAIN_COMMAND(new MenuAddingToMainCommand()),
+    ADD_MENU_TO_MAIN_PAGE_COMMAND(new AddMenuToMainPageCommand()),
     MEAL_LIST_ACTION_COMMAND(new MealListActionCommand()),
     MENU_MANAGEMENT_COMMAND(new MenuManagementCommand()),
     MENU_UPDATE_COMMAND(new MenuUpdateCommand()),
     MENU_DELETE_COMMAND(new MenuDeleteCommand()),
+    SHOW_ACTIVE_ORDERS_COMMAND(new ShowActiveOrdersCommand()),
+    CHANGE_ORDER_STATUS_COMMAND(new ChangeOrderStatusCommand()),
+    EDIT_ORDER_COMMAND(new EditOrderCommand()),
 
     /* client commands */
     ADD_TO_CART_COMMAND(new AddToCartCommand()),
     CHECK_CART_COMMAND(new CheckCartCommand()),
     DELETE_FROM_CART_COMMAND(new DeleteFromCartCommand()),
     SETTING_ACTION_LIST_COMMAND(new SettingActionListCommand()),
-    MEAL_ORDER_COMMAND(new MealOrderCommand()),
+    ORDER_MEALS_COMMAND(new OrderMealsCommand()),
+    CHECK_ORDER_COMMAND(new CheckOrderCommand()),
+    ORDER_ACTION_COMMAND(new OrderActionCommand()),
 
     /* go to commands */
     GO_TO_REGISTRATION_COMMAND(new GoToRegistrationCommand()),

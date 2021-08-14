@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface MenuService {
+    int getMealCountForMenu(long menuId) throws ServiceException;
+
+    List<Meal> findMealsForMenuByPresence(long menuId, int page) throws ServiceException;
 
     boolean addNewMeal(Map<String, String> dataCheckResult, InputStream image) throws ServiceException;
 
@@ -21,21 +24,17 @@ public interface MenuService {
 
     boolean removeMealsById(String[] mealIdArray) throws ServiceException;
 
-    void addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException;
+    boolean addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException;
 
-    void deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException;
+    boolean deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException;
 
     List<Meal> findMealsByType(String mealType) throws ServiceException;
 
     List<Meal> findAllMeals() throws ServiceException;
-
-//    Map<Meal, String> findAllMeals1() throws ServiceException;
 
     List<Menu> findAllMenu() throws ServiceException;
 
     Optional<Menu> findMenuById(String menuIdStr) throws ServiceException;
 
     boolean deleteMenuById(String menuIdStr) throws ServiceException;
-
-
 }

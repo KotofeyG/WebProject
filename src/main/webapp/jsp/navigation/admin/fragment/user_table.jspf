@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="ctg" uri="custom_tags" %>
+
 
 <fmt:message key="user_management.users" var="user_list"/>
 <fmt:message key="user_management.user_id" var="id"/>
@@ -51,8 +53,9 @@
                     <td>${user.mobileNumber}</td>
                     <td>${user.registered}</td>
                     <td>                                                      <%--to do column--%>
-                        ${user.address.city.russianName}-${user.address.street}-${user.address.building}-${user.address.block}-
-                        ${user.address.flat}-${user.address.entrance}-${user.address.floor}-${user.address.intercomCode}
+                        <c:forEach items="${user.addresses}" var="address">
+                            <ctg:AddressInfo address="${address}"/>
+                        </c:forEach>
                     </td>
                     <td>${user.status}</td>
                     <td>${user.role}</td>

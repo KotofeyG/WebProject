@@ -31,6 +31,7 @@ public class MealDaoImpl implements MealDao {
     private static final String INSERT_MEAL_TO_CART = "INSERT INTO carts (user_id, meal_id, quantity) VALUES(?, ?, ?)";
     private static final String UPDATE_MEAL_STATUS = "UPDATE meals SET active=? WHERE id=?";
     private static final String DELETE_MEAL = "DELETE FROM meals WHERE id=?";
+    private static final String MEAL_ORDER_BY_TITLE = " ORDER BY meals.title ";
 
     @Override
     public Optional<Meal> findEntityById(long id) throws DaoException {
@@ -106,15 +107,17 @@ public class MealDaoImpl implements MealDao {
     }
 
     @Override
-    public void deleteEntitiesById(List<Long> idList) throws DaoException {
+    public boolean deleteEntitiesById(List<Long> idList) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_MEAL)) {
             for (Long mealId : idList) {
                 statement.setLong(FIRST_PARAM_INDEX, mealId);
                 statement.addBatch();
             }
-            statement.executeBatch();
-            logger.log(Level.DEBUG, "deleteEntities method was completed successfully. Meals with id " + idList + " were deleted");
+            boolean result = statement.executeBatch().length == idList.size();
+            logger.log(Level.DEBUG, result ?"deleteEntities method was completed successfully. Meals with id " + idList + " were deleted"
+                    : "Meals with id " + idList + " weren't deleted");
+            return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to delete meals from database. Database access error:", e);
             throw new DaoException("Impossible to delete meals from database. Database access error:", e);
@@ -157,7 +160,7 @@ public class MealDaoImpl implements MealDao {
     }
 
     @Override
-    public void updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException {
+    public boolean updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException {
         try (Connection connection = connection_pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_MEAL_STATUS)) {
             for (Long mealId : mealIdList) {
@@ -165,9 +168,10 @@ public class MealDaoImpl implements MealDao {
                 statement.setLong(SECOND_PARAM_INDEX, mealId);
                 statement.addBatch();
             }
-            statement.executeBatch();
-            logger.log(Level.INFO, "updateMealStatusesById method was completed successfully. Meal statuses with meal id list "
-                    + mealIdList + " were updated to " + status + " statuses");
+            boolean result = statement.executeBatch().length == mealIdList.size();
+            logger.log(Level.INFO, result ? "updateMealStatusesById method was completed successfully. Meals with id list "
+                    + mealIdList + " were updated to " + status + " statuses" : "Meals with id list " + mealIdList + " weren't updated to " + status + " statuses");
+            return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update meal statuses. Database access error:", e);
             throw new DaoException("Impossible to update meal statuses. Database access error:", e);
@@ -180,7 +184,7 @@ public class MealDaoImpl implements MealDao {
              PreparedStatement statement = connection.prepareStatement(INSERT_MEAL_TO_CART)) {
             statement.setLong(FIRST_PARAM_INDEX, userId);
             statement.setLong(SECOND_PARAM_INDEX, mealId);
-            statement.setInt(THIRD_PARAM_INDEX,mealQuantity);
+            statement.setInt(THIRD_PARAM_INDEX, mealQuantity);
             int rowCount = statement.executeUpdate();
             logger.log(Level.DEBUG, "insertMealToUserCart method was completed successfully. Meal with id "
                     + mealId + " was added to user cart with user id " + userId + " in the amount of " + mealQuantity + " pieces");

@@ -2,6 +2,11 @@ package com.kotov.restaurant.controller.command;
 
 public class ParamName {
     public static final String DELIVERY_TIME = "delivery_time";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String APPROVE = "approve";
+    public static final String PAY = "pay";
+    public static final String REJECT = "reject";
+    public static final String ORDER_ID = "order_id";
 
     /* user registration params */
     public static final String LOGIN = "login";
@@ -13,13 +18,13 @@ public class ParamName {
 
     /* user registration check params */
     public static final String TRUE = "true";
-    public static final String INVALID_LOGIN_MESSAGE = "invalidLogin";
-    public static final String INVALID_PASSPORT_MESSAGE = "invalidPassport";
-    public static final String INVALID_EMAIL_MESSAGE = "invalidEmail";
-    public static final String INVALID_MOBILE_NUMBER_MESSAGE = "invalidMobileNumber";
-    public static final String NOT_UNIQUE_LOGIN_MESSAGE = "notUniqueLogin";
-    public static final String NOT_UNIQUE_EMAIL = "notUniqueEmail";
-    public static final String NOT_UNIQUE_MOBILE_NUMBER = "notUniqueMobileNumber";
+    public static final String INVALID_LOGIN_RESULT = "invalidLogin";
+    public static final String INVALID_PASSPORT_RESULT = "invalidPassport";
+    public static final String INVALID_EMAIL_RESULT = "invalidEmail";
+    public static final String INVALID_MOBILE_NUMBER_RESULT = "invalidMobileNumber";
+    public static final String NOT_UNIQUE_LOGIN_RESULT = "notUniqueLogin";
+    public static final String NOT_UNIQUE_EMAIL_RESULT = "notUniqueEmail";
+    public static final String NOT_UNIQUE_MOBILE_NUMBER_RESULT = "notUniqueMobileNumber";
 
     /* user personal data params */
     public static final String ADDRESS = "address";
@@ -45,10 +50,6 @@ public class ParamName {
     public static final String HOLDER_NAME = "holder_name";
     public static final String CVC = "cvc";
 
-    /* session attributes */
-    public static final String CURRENT_PAGE = "current_page";
-    public static final String LOCALE = "locale";
-
     /* user-meal action params */
     public static final String ACTION = "action";
     public static final String BLOCK = "block";
@@ -71,8 +72,8 @@ public class ParamName {
     public static final String COMMAND = "command";
 
     /* product params */
-    public static final String COMMON = "";
-    public static final String PRODUCT = "product";
+    public static final String EMPTY = "";
+    public static final String SELECTED_PRODUCT_TYPE = "product";
     public static final String MEAL_NUMBER = "meal_number";
     public static final String MEAL_ID = "meal_id";
 
@@ -80,6 +81,7 @@ public class ParamName {
     public static final String ALL_MENUS = "menus";
 
     public static final String MENU = "menu";
+    public static final String MENU_CREATION = "create_menu";
 
     public static final String REMOVE = "remove";
     public static final String APPEND = "append";

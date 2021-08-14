@@ -2,7 +2,6 @@ package com.kotov.restaurant.controller.command.impl.client;
 
 import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.controller.command.Command;
-import com.kotov.restaurant.controller.command.PagePath;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.Address;
@@ -20,28 +19,28 @@ import java.util.List;
 import java.util.Map;
 
 import static com.kotov.restaurant.controller.command.AttributeName.*;
+import static com.kotov.restaurant.controller.command.PagePath.CART_PAGE;
 
 public class CheckCartCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
-    private static final UserService service = ServiceProvider.getInstance().getUserService();
+    private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(USER_ATTR);
+        User user = (User) session.getAttribute(SESSION_USER);
         long userId = user.getId();
         try {
-            Map<Meal, Integer> cart = service.findMealsInCartByUserId(userId);
-            List<Address> addresses = service.findUserAddresses(userId);
+            Map<Meal, Integer> cart = userService.findMealsInCartByUserId(userId);              // pagination ?
+            List<Address> addresses = userService.findUserAddresses(userId);
             request.setAttribute(CART, cart);
-            request.setAttribute(ADDRESSES, addresses);
+            request.setAttribute(ADDRESS_LIST, addresses);
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Command cannot be completed:", e);
-            throw new CommandException("Command cannot be completed:", e);
+            logger.log(Level.ERROR, "Impossible to check user cart:", e);
+            throw new CommandException("Impossible to check user cart:", e);
         }
-        router.setPagePath(PagePath.CART_PAGE);
-        logger.log(Level.DEBUG, "Method execute is completed successfully");
+        router.setPagePath(CART_PAGE);
         return router;
     }
 }

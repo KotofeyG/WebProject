@@ -25,12 +25,6 @@ public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public void init() {
-        ConnectionPool.getInstance();
-        logger.log(Level.INFO, "Connection pool has been initialized");
-    }
-
-    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
     }

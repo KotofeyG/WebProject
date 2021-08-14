@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
                 optionalUser = userDao.findUserByLoginAndPassword(login, passwordHash);
             }
         } catch (DaoException e) {
-            logger.log(Level.ERROR, "Impossible to find user by login and password: ", e);
-            throw new ServiceException("Impossible to find user by login and password: ", e);
+            logger.log(Level.ERROR, "Impossible to find user by login and password:", e);
+            throw new ServiceException("Impossible to find user by login and password:", e);
         }
         return optionalUser;
     }
@@ -51,14 +51,30 @@ public class UserServiceImpl implements UserService {
         try {
             List<User> users = userDao.findAllEntities();
             for (User user : users) {
-                Optional<Address> addressOptional = userDao.findAddressByUserId(user.getId());
-                addressOptional.ifPresent(user::setAddress);
+                List<Address> addresses = userDao.findUserAddresses(user.getId());
+                user.setAddresses(addresses);
             }
             return users;
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to find all users: ", e);
             throw new ServiceException("Impossible to find all users: ", e);
         }
+    }
+
+    @Override
+    public Optional<User> findUserById(long id) throws ServiceException {
+        try {
+            Optional<User> optionalUser = userDao.findEntityById(id);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                user.setAddresses(userDao.findUserAddresses(id));
+            }
+            return optionalUser;
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to find user with id " + id, e);
+            throw new ServiceException("Impossible to find user with id " + id, e);
+        }
+
     }
 
     @Override
@@ -72,18 +88,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Address> findUserAddresses(String userIdStr) throws ServiceException {
+        long userId = Long.parseLong(userIdStr);
+        return findUserAddresses(userId);
+    }
+
+    @Override
     public boolean updateUserStatusesById(String statusStr, String[] userIdArray) throws ServiceException {
         boolean result = false;
         if (userIdArray != null) {
             try {
                 List<Long> userIdList = convertArrayToList(userIdArray);
                 User.Status status = User.Status.valueOf(statusStr);
-                userDao.updateUserStatusesById(status, userIdList);
-                result = true;
+                result = userDao.updateUserStatusesById(status, userIdList);
                 logger.log(Level.DEBUG, "updateUserStatuses service method is completed successfully. Result is: " + result);
-            } catch (DaoException | IllegalArgumentException e) {
+            } catch (DaoException e) {
                 logger.log(Level.ERROR, "Impossible to update user statuses:", e);
                 throw new ServiceException("Impossible to update user statuses:", e);
+            } catch (IllegalArgumentException e) {
+                logger.log(Level.ERROR, "This enum type has no constant with the specified name: " + statusStr);
             }
         }
         return result;
@@ -95,9 +118,8 @@ public class UserServiceImpl implements UserService {
         if (userIdArray != null) {
             try {
                 List<Long> userIdList = convertArrayToList(userIdArray);
-                userDao.deleteEntitiesById(userIdList);
-                result = true;
-                logger.log(Level.DEBUG, "removeUsers service method is completed successfully. Result is: " + result);
+                result = userDao.deleteEntitiesById(userIdList);
+                logger.log(Level.INFO, "removeUsers service method is completed successfully. Result is: " + result);
             } catch (DaoException e) {
                 logger.log(Level.ERROR, "Impossible to remove users:", e);
                 throw new ServiceException("Impossible to remove users:", e);
@@ -109,8 +131,10 @@ public class UserServiceImpl implements UserService {
     private List<Long> convertArrayToList(String[] idArray) throws ServiceException {
         List<Long> idList = new ArrayList<>();
         try {
-            for (String idStr : idArray) {
-                idList.add(Long.parseLong(idStr));
+            if (idArray != null) {
+                for (String idStr : idArray) {
+                    idList.add(Long.parseLong(idStr));
+                }
             }
             return idList;
         } catch (IllegalArgumentException e) {
@@ -121,7 +145,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException {
-        boolean result;
         String login = dataCheckResult.get(LOGIN);
         String password = dataCheckResult.get(PASSWORD);
         String confirmPassword = dataCheckResult.get(CONFIRM_PASSWORD);
@@ -131,20 +154,22 @@ public class UserServiceImpl implements UserService {
 
         try {
             String loginCheckResult = UserValidator.isLoginValid(login)
-                    ? (!userDao.isLoginExist(login) ? TRUE : NOT_UNIQUE_LOGIN_MESSAGE)
-                    : INVALID_LOGIN_MESSAGE;
+                    ? (!userDao.isLoginExist(login) ? TRUE : NOT_UNIQUE_LOGIN_RESULT)
+                    : INVALID_LOGIN_RESULT;
             String passwordCheckResult = UserValidator.isPasswordValid(password)
                     ? (password.equals(confirmPassword) ? TRUE : PASSWORD_MISMATCH)
-                    : INVALID_PASSPORT_MESSAGE;
+                    : INVALID_PASSPORT_RESULT;
             String emailCheckResult = UserValidator.isEmailValid(email)
-                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL)
-                    : INVALID_EMAIL_MESSAGE;
+                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL_RESULT)
+                    : INVALID_EMAIL_RESULT;
             String mobileNumberCheckResult = UserValidator.isMobileNumberValid(mobileNumber)
-                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER)
-                    : INVALID_MOBILE_NUMBER_MESSAGE;
+                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER_RESULT)
+                    : INVALID_MOBILE_NUMBER_RESULT;
 
-            if (parseBoolean(loginCheckResult) && parseBoolean(passwordCheckResult)
-                    && parseBoolean(emailCheckResult) && parseBoolean(mobileNumberCheckResult)) {
+            boolean result = parseBoolean(loginCheckResult) && parseBoolean(passwordCheckResult)
+                    && parseBoolean(emailCheckResult) && parseBoolean(mobileNumberCheckResult);
+
+            if (result) {
                 User.Role role;
                 if (roleStr != null) {
                     role = User.Role.valueOf(roleStr.toUpperCase());
@@ -154,7 +179,6 @@ public class UserServiceImpl implements UserService {
                 User user = new User(login, email, mobileNumber, LocalDateTime.now(), role);
                 String passwordHash = PasswordEncryptor.encrypt(password);
                 userDao.insertNewEntity(user, passwordHash);
-                result = true;
             } else {
                 dataCheckResult.remove(USER_ROLE, roleStr);
                 dataCheckResult.remove(CONFIRM_PASSWORD, confirmPassword);
@@ -162,13 +186,12 @@ public class UserServiceImpl implements UserService {
                 dataCheckResult.replace(PASSWORD, passwordCheckResult);
                 dataCheckResult.replace(EMAIL, emailCheckResult);
                 dataCheckResult.replace(MOBILE_NUMBER, mobileNumberCheckResult);
-                result = false;
             }
+            return result;
         } catch (DaoException | IllegalArgumentException e) {
             logger.log(Level.ERROR, "Impossible to create new user: ", e);
             throw new ServiceException("Impossible to create new user: ", e);
         }
-        return result;
     }
 
     @Override
@@ -179,6 +202,12 @@ public class UserServiceImpl implements UserService {
             logger.log(Level.ERROR, "Impossible to find meals in cart for user: ", e);
             throw new ServiceException("Impossible to find meals in cart for user: ", e);
         }
+    }
+
+    @Override
+    public Map<Meal, Integer> findMealsInCartByUserId(String userIdStr) throws ServiceException {
+        long userId = Long.parseLong(userIdStr);
+        return findMealsInCartByUserId(userId);
     }
 
     @Override
@@ -295,10 +324,10 @@ public class UserServiceImpl implements UserService {
             String patronymicCheckResult = UserValidator.isNameValid(patronymic) ? TRUE : INVALID_PATRONYMIC;
             String lastNameCheckResult = UserValidator.isNameValid(lastName) ? TRUE : INVALID_LAST_NAME;
             String emailCheckResult = UserValidator.isEmailValid(email)
-                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL)
+                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL_RESULT)
                     : INVALID_EMAIL;
             String mobileNumberCheckResult = UserValidator.isMobileNumberValid(mobileNumber)
-                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER)
+                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER_RESULT)
                     : INVALID_MOBILE_NUMBER;
             boolean result = parseBoolean(firstNameCheckResult)
                     && parseBoolean(patronymicCheckResult)

@@ -4,9 +4,7 @@ public class MenuValidator {
     private MenuValidator() {
     }
 
-    public static boolean areMenuParametersValid(String title, String type, String[] mealsId) {
-        return title != null && !title.isBlank()
-                && type != null && !type.isBlank()
-                && mealsId != null;
+    public static boolean areMenuParametersValid(String title, String type) {
+        return title != null && !title.isBlank() && type != null && !type.isBlank();
     }
 }

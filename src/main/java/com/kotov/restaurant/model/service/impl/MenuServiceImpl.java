@@ -52,8 +52,11 @@ public class MenuServiceImpl implements MenuService {
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Meal cannot be added:", e);
             throw new ServiceException("Meal cannot be added:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARN, "Price parameter doesn't contain number: " + priceStr);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARN, "This enum type has no constant with the specified name: " + type);
         }
-        logger.log(Level.DEBUG, "Method addNewMeal is completed successfully. Result is: " + result);
         return result;
     }
 
@@ -61,7 +64,7 @@ public class MenuServiceImpl implements MenuService {
     public boolean addNewMenu(String title, String type, String[] mealIdArray) throws ServiceException {
         boolean result = false;
         try {
-            if (MenuValidator.areMenuParametersValid(title, type, mealIdArray) && !menuDao.isMenuExist(title)) {
+            if (MenuValidator.areMenuParametersValid(title, type) && !menuDao.isMenuExist(title)) {
                 Menu menu = new Menu(title, Menu.Type.valueOf(type.toUpperCase()));
                 List<Long> mealIdList = convertArrayToList(mealIdArray);
                 long menuId = menuDao.insertNewEntity(menu);                                // autocommit(false)?
@@ -82,8 +85,7 @@ public class MenuServiceImpl implements MenuService {
         if (mealIdArray != null) {
             List<Long> mealIdList = convertArrayToList(mealIdArray);
             try {
-                mealDao.updateMealStatusesById(status, mealIdList);
-                result = true;
+                result = mealDao.updateMealStatusesById(status, mealIdList);
             } catch (DaoException e) {
                 logger.log(Level.ERROR, "Meal statuses cannot be updated:", e);
                 throw new ServiceException("Meal statuses cannot be updated:", e);
@@ -91,6 +93,26 @@ public class MenuServiceImpl implements MenuService {
         }
         logger.log(Level.DEBUG, "Method updateStatuses is completed successfully. Result is: " + result);
         return result;
+    }
+
+    @Override
+    public int getMealCountForMenu(long menuId) throws ServiceException {
+        try {
+            return menuDao.getMealCountForMenu(menuId);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Error with users count .", e);
+            throw new ServiceException("Error with users count .", e);
+        }
+    }
+
+    @Override
+    public List<Meal> findMealsForMenuByPresence(long menuId, int page) throws ServiceException {
+        try {
+            return menuDao.findMealsForMenuByPresence(menuId, page);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Meals cannot be found:", e);
+            throw new ServiceException("Meals cannot be found:", e);
+        }
     }
 
     @Override
@@ -109,8 +131,7 @@ public class MenuServiceImpl implements MenuService {
         if (mealIdArray != null) {
             try {
                 List<Long> mealIdList = convertArrayToList(mealIdArray);
-                mealDao.deleteEntitiesById(mealIdList);
-                result = true;
+                result = mealDao.deleteEntitiesById(mealIdList);
             } catch (DaoException e) {
                 logger.log(Level.ERROR, "Meals cannot be removed:", e);
                 throw new ServiceException("Meals cannot be removed:", e);
@@ -123,8 +144,10 @@ public class MenuServiceImpl implements MenuService {
     private List<Long> convertArrayToList(String[] idArray) throws ServiceException {
         List<Long> idList = new ArrayList<>();
         try {
-            for (String idStr : idArray) {
-                idList.add(Long.parseLong(idStr));
+            if (idArray != null) {
+                for (String idStr : idArray) {
+                    idList.add(Long.parseLong(idStr));
+                }
             }
             return idList;
         } catch (IllegalArgumentException e) {
@@ -134,31 +157,39 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public void addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException {
+    public boolean addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException {
+        boolean result = false;
         try {
             long menuId = Long.parseLong(menuIdStr);
             long mealId = Long.parseLong(mealIdStr);
             menuDao.insertMealToMenu(menuId, mealId);
-        } catch (DaoException | IllegalArgumentException e) {
+        } catch (DaoException e) {
             logger.log(Level.ERROR, "Meal cannot be added to menu:", e);
             throw new ServiceException("Meal cannot be added to menu:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARN, "One of the parameters doesn't contain a parsable long. menuIdStr: " + menuIdStr + ", mealIdStr: " + mealIdStr);
         }
+        return result;
     }
 
     @Override
-    public void deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException {
+    public boolean deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException {
+        boolean result = false;
         try {
             long menuId = Long.parseLong(menuIdStr);
             long mealId = Long.parseLong(mealIdStr);
-            menuDao.deleteMealFromMenu(menuId, mealId);
-        } catch (DaoException | IllegalArgumentException e) {
+            result = menuDao.deleteMealFromMenu(menuId, mealId);
+        } catch (DaoException e) {
             logger.log(Level.ERROR, "Meal cannot be deleted from menu:", e);
             throw new ServiceException("Meal cannot be deleted from menu:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARN, "One of the parameters doesn't contain a parsable long. menuIdStr: " + menuIdStr + ", mealIdStr: " + mealIdStr);
         }
+        return result;
     }
 
     @Override
-    public List<Meal> findMealsByType(String mealType) throws ServiceException {
+    public List<Meal> findMealsByType(String mealType) throws ServiceException {                //check null
         List<Meal> meals = new ArrayList<>();
         try {
             Meal.Type type = Meal.Type.valueOf(mealType.toUpperCase());
@@ -181,29 +212,6 @@ public class MenuServiceImpl implements MenuService {
             throw new ServiceException("Meals cannot be found:", e);
         }
     }
-
-//    @Override
-//    public Map<Meal, String> findAllMeals1() throws ServiceException {
-//        try {
-//            List<Meal> meals = mealDao.findAllEntities();
-//            Map<Meal, String> result = new LinkedHashMap<>();
-//            for (Meal meal : meals) {
-//                byte[] imageBytes = meal.getImage().getBinaryStream().readAllBytes();
-//                byte[] encodeBase64 = Base64.getEncoder().encode(imageBytes);
-//                String base64DataString = new String(encodeBase64, StandardCharsets.UTF_8);
-//                String src = "data:image/jpeg;base64," + base64DataString;
-//                result.put(meal, src);
-//            }
-//            return result;
-//        } catch (DaoException e) {
-//            logger.log(Level.ERROR, "Meals cannot be found:", e);
-//            throw new ServiceException("Meals cannot be found:", e);
-//        } catch (SQLException e) {
-//            throw new ServiceException("Image InputStream cannot be received. Error accessing BLOB value:", e);
-//        } catch (IOException e) {
-//            throw new ServiceException("Image bytes cannot be read from InputStream:", e);
-//        }
-//    }
 
     @Override
     public List<Menu> findAllMenu() throws ServiceException {
@@ -232,8 +240,8 @@ public class MenuServiceImpl implements MenuService {
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Menu cannot be found:", e);
             throw new ServiceException("Menu cannot be found:", e);
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.ERROR, "Menu cannot be found as menuIdStr does not contain a parsable long:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.ERROR, "Menu cannot be found as menuIdStr does not contain a parsable long:" + menuIdStr);
         }
         return optionalMenu;
     }
@@ -243,13 +251,12 @@ public class MenuServiceImpl implements MenuService {
         boolean result = false;
         try {
             long id = Long.parseLong(menuIdStr);
-            if (menuDao.deleteEntityById(id))
-                result = true;
+            result = menuDao.deleteEntityById(id);
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Menu cannot be found:", e);
             throw new ServiceException("Menu cannot be found:", e);
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.WARN, "Menu cannot be deleted as menuIdStr does not contain a parsable long:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARN, "Menu cannot be deleted as menuIdStr doesn't contain a parsable long: " + menuIdStr);
         }
         return result;
     }

@@ -20,6 +20,8 @@ public interface UserDao extends BaseDao<User> {
 
     Optional<User> findUserByLoginAndPassword(String login, String passwordHah)  throws DaoException;
 
+    Optional<Address> findAddressById(long addressId) throws DaoException;
+
     Optional<Address> findAddressByUserId(long userId) throws DaoException;
 
     List<Address> findUserAddresses(long userId) throws DaoException;
@@ -44,7 +46,7 @@ public interface UserDao extends BaseDao<User> {
 
     boolean updateUserPassword(long userId, String passwordHash) throws DaoException;
 
-    void updateUserStatusesById(User.Status status, List<Long> userIdList) throws DaoException;
+    boolean updateUserStatusesById(User.Status status, List<Long> userIdList) throws DaoException;
 
     Map<Meal, Integer> findMealsInCartByUserId(long userId) throws DaoException;
 

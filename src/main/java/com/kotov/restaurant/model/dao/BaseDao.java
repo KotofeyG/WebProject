@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BaseDao<T extends AbstractEntity> {
-    /* param indexes for statement */
+    int PAGE_SIZE = 3;
     int FIRST_PARAM_INDEX = 1;
     int SECOND_PARAM_INDEX = 2;
     int THIRD_PARAM_INDEX = 3;
@@ -26,5 +26,17 @@ public interface BaseDao<T extends AbstractEntity> {
 
     boolean deleteEntityById(long id) throws DaoException;
 
-    void deleteEntitiesById(List<Long> idList) throws DaoException;
+    boolean deleteEntitiesById(List<Long> idList) throws DaoException;
+
+    default String buildPageableQuery(String mainQuery, int pageNumber) {
+        int limit = PAGE_SIZE;
+        int offset = (limit * pageNumber) - limit;
+        StringBuilder queryBuilder = new StringBuilder(mainQuery);
+        queryBuilder.append(" LIMIT ");
+        if (offset > 0) {
+            queryBuilder.append(offset).append(", ");
+        }
+        queryBuilder.append(limit);
+        return queryBuilder.toString();
+    }
 }

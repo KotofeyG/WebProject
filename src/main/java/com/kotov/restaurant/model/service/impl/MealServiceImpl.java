@@ -15,15 +15,18 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public boolean insertMealToUserCart(long userId, String mealIdStr, String mealQuantityStr) throws ServiceException {
-        long mealId = Long.parseLong(mealIdStr);
-        int mealQuantity = Integer.parseInt(mealQuantityStr);
+        boolean result = false;
         try {
-            boolean result = mealDao.insertMealToUserCart(userId, mealId, mealQuantity);
+            long mealId = Long.parseLong(mealIdStr);
+            int mealQuantity = Integer.parseInt(mealQuantityStr);
+            result = mealDao.insertMealToUserCart(userId, mealId, mealQuantity);
             logger.log(Level.DEBUG, "Method addNewMeal is completed successfully. Result is: " + result);
-            return result;
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Meal cannot be added:", e);
             throw new ServiceException("Meal cannot be added:", e);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARN, "Parameters doesn't contain a parsable values: " + mealIdStr + ", " + mealQuantityStr);
         }
+        return result;
     }
 }

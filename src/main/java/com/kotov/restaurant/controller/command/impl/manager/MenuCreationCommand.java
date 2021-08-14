@@ -20,36 +20,35 @@ import static com.kotov.restaurant.controller.command.PagePath.MENU_CREATION_PAG
 
 public class MenuCreationCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
-    private static final MenuService service = ServiceProvider.getInstance().getMenuService();
+    private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         String currentPage = (String) request.getSession().getAttribute(CURRENT_PAGE);
         try {
-            if (currentPage.equals(MENU_CREATION_PAGE)) {
+            if (MENU_CREATION_PAGE.equals(currentPage)) {
                 String title = request.getParameter(TITLE);
                 String type = request.getParameter(TYPE);
                 String[] mealIdArray = request.getParameterValues(SELECTED);
-                if (service.addNewMenu(title, type, mealIdArray)) {
-                    request.setAttribute(MENU_CREATION_RESULT, VALID);
+                if (menuService.addNewMenu(title, type, mealIdArray)) {
+                    request.setAttribute(MENU_CREATION_RESULT, Boolean.TRUE);
                 } else {
-                    request.setAttribute(MENU_CREATION_RESULT, INVALID);
+                    request.setAttribute(MENU_CREATION_RESULT, Boolean.FALSE);
                 }
             }
-            List<Meal> meals = service.findAllMeals();
+            List<Meal> meals = menuService.findAllMeals();
             if (meals.size() != 0) {
                 request.setAttribute(MEAL_SEARCH_RESULT, Boolean.TRUE);
             } else {
                 request.setAttribute(MEAL_SEARCH_RESULT, Boolean.FALSE);
             }
-            request.setAttribute(ALL_MEALS, meals);
+            request.setAttribute(MEAL_LIST, meals);
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Method execute cannot be completed:", e);
             throw new CommandException("Method execute cannot be completed:", e);
         }
         router.setPagePath(MENU_CREATION_PAGE);
-        logger.log(Level.DEBUG, " New menu was created successfully");
         return router;
     }
 }

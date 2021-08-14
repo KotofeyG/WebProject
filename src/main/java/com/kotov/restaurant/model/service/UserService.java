@@ -15,7 +15,11 @@ public interface UserService {
 
     List<User> findAllUsers() throws ServiceException;
 
+    Optional<User> findUserById(long id) throws ServiceException;
+
     List<Address> findUserAddresses(long userId) throws ServiceException;
+
+    List<Address> findUserAddresses(String userIdStr) throws ServiceException;
 
     boolean updateUserStatusesById(String statusStr, String[] userIdArray) throws ServiceException;
 
@@ -24,6 +28,8 @@ public interface UserService {
     boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException;
 
     Map<Meal, Integer> findMealsInCartByUserId(long userId) throws ServiceException;
+
+    Map<Meal, Integer> findMealsInCartByUserId(String userIdStr) throws ServiceException;
 
     boolean deleteMealsFromCartByUserId(long userId, String[] mealIdArray) throws ServiceException;
 

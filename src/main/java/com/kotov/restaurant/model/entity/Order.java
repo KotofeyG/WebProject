@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Order extends AbstractEntity {
     private Map<Meal, Integer> meals;
+    private long userId;
     private Address address;
     private LocalTime deliveryTime;
     private boolean isCash;
@@ -15,8 +16,9 @@ public class Order extends AbstractEntity {
 
     public enum Status {
         IN_PROCESS("В обработке"),
-        APPROVED("Одобрено"),
-        REJECTED("Отклонен");
+        APPROVED("Одобрен"),
+        REJECTED("Отклонен"),
+        PAID("Оплачен");
 
         String value;
 
@@ -36,10 +38,14 @@ public class Order extends AbstractEntity {
     public Order() {
     }
 
-    public Order(Map<Meal, Integer> meals, LocalDateTime created, Status status) {
+    public Order(Map<Meal, Integer> meals, long userId, Address address, LocalTime deliveryTime, boolean isCash) {
         this.meals = meals;
-        this.created = created;
-        this.status = status;
+        this.userId = userId;
+        this.address = address;
+        this.deliveryTime = deliveryTime;
+        this.isCash = isCash;
+        this.created = LocalDateTime.now();
+        this.status = Status.IN_PROCESS;
     }
 
     public Map<Meal, Integer> getMeals() {
@@ -48,6 +54,14 @@ public class Order extends AbstractEntity {
 
     public void setMeals(Map<Meal, Integer> meals) {
         this.meals = meals;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public Address getAddress() {
@@ -99,6 +113,9 @@ public class Order extends AbstractEntity {
         if (meals != null ? !meals.equals(other.meals) : other.meals != null) {
             return false;
         }
+        if (userId != other.userId) {
+            return false;
+        }
         if (address != null ? !address.equals(other.address) : other.address != null) {
             return false;
         }
@@ -119,6 +136,7 @@ public class Order extends AbstractEntity {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (meals != null ? meals.hashCode() : 0);
+        result = prime * result + Long.hashCode(userId);
         result = prime * result + (address != null ? address.hashCode() : 0);
         result = prime * result + Boolean.hashCode(isCash);
         result = prime * result + (deliveryTime != null ? deliveryTime.hashCode() : 0);
@@ -131,6 +149,7 @@ public class Order extends AbstractEntity {
     public String toString() {
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" ,meals = ").append(meals);
+        result.append(" ,userId = ").append(userId);
         result.append(" ,address = ").append(address);
         result.append(" ,isCash = ").append(isCash);
         result.append(" ,deliveryTime = ").append(deliveryTime);

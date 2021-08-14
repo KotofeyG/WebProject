@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
-import static com.kotov.restaurant.controller.command.ParamName.CURRENT_PAGE;
+import static com.kotov.restaurant.controller.command.AttributeName.CURRENT_PAGE;
 
 @WebFilter(urlPatterns = {"*.jsp"}, dispatcherTypes = {DispatcherType.FORWARD}
         , initParams = {@WebInitParam(name = "PAGES_ROOT_DIRECTORY", value = "/jsp", description = "Pages Param")

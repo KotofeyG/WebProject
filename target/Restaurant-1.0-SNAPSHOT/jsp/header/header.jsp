@@ -5,13 +5,13 @@
 <fmt:message key="header.brand" var="brand"/>
 <fmt:message key="header.language_code" var="language"/>
 <fmt:message key="header.dropdown_menu_title" var="menu"/>
-<fmt:message key="header.rolls" var="rolls_menu"/>
-<fmt:message key="header.nigiri" var="nigiri_menu"/>
-<fmt:message key="header.sashimi" var="sashimi_menu"/>
-<fmt:message key="header.soups" var="soups_menu"/>
-<fmt:message key="header.main_dishes" var="main_dishes_menu"/>
-<fmt:message key="header.salads" var="salads_menu"/>
-<fmt:message key="header.appetizers" var="appetizers_menu"/>
+<fmt:message key="header.rolls" var="rolls_option"/>
+<fmt:message key="header.nigiri" var="nigiri_option"/>
+<fmt:message key="header.sashimi" var="sashimi_option"/>
+<fmt:message key="header.soups" var="soups_option"/>
+<fmt:message key="header.main_dishes" var="main_dishes_option"/>
+<fmt:message key="header.salads" var="salads_option"/>
+<fmt:message key="header.appetizers" var="appetizers_option"/>
 <fmt:message key="header.registration" var="registration"/>
 <fmt:message key="header.sign_in" var="sign_in"/>
 <fmt:message key="header.logout" var="logout"/>
@@ -19,11 +19,12 @@
 <fmt:message key="header.name" var="name"/>
 <fmt:message key="header.password" var="password"/>
 <fmt:message key="header.invalid_login_psw" var="invalid_message"/>
+<fmt:message key="header.wrong_locale" var="wrong_locale_message"/>
 
 
 <%--Temporary messages--%>
 <fmt:message key="sign_up.registration" var="registration"/>
-<fmt:message key="main.order" var="orders"/>
+<fmt:message key="main.order" var="order_book_mark"/>
 <fmt:message key="main.settings" var="settings"/>
 <fmt:message key="main.reviews" var="reviews"/>
 <fmt:message key="main.cart" var="cart_icon"/>
@@ -32,7 +33,7 @@
 
 <jsp:useBean id="user" scope="session" type="com.kotov.restaurant.model.entity.User"/>
 
-<%--@elvariable id="authorization_data" type="java.lang.Boolean"--%>
+<%--@elvariable id="authentication_result" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
@@ -55,13 +56,13 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span> ${menu}</a>
                 <ul class="dropdown-menu">
-                    <li><a href="${abs}/controller?command=product_command&product=roll">${rolls_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=nigiri">${nigiri_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=sashimi">${sashimi_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=soup">${soups_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=main_dish">${main_dishes_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=salad">${salads_menu}</a></li>
-                    <li><a href="${abs}/controller?command=product_command&product=appetizer">${appetizers_menu}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=roll">${rolls_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=nigiri">${nigiri_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=sashimi">${sashimi_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=soup">${soups_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=main_dish">${main_dishes_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=salad">${salads_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_products_command&product=appetizer">${appetizers_option}</a></li>
                 </ul>
             </li>
             <c:choose>
@@ -101,7 +102,7 @@
                                         <label for="user-psw"><span class="glyphicon glyphicon-eye-open"></span> ${password}</label>
                                         <input type="password" id="user-psw" class="form-control" name="password" placeholder="${password}">
                                     </form>
-                                    <c:if test="${authorization_data eq 'false'}"><b>${invalid_message}</b></c:if>
+                                    <c:if test="${authentication_result eq 'false'}"><b>${invalid_message}</b></c:if>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" form="log-form" class="btn btn-secondary" data-bs-dismiss="modal">${sign_in}</button>
@@ -114,5 +115,7 @@
         </ul>
     </div>
 </nav>
+<%--@elvariable id="wrong_locale" type="java.lang.Boolean"--%>
+<c:if test="${wrong_locale eq 'true'}"><h4>${wrong_locale_message}</h4></c:if>
 </body>
 </html>

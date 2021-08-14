@@ -32,7 +32,7 @@
                     <span class="glyphicon glyphicon-plus-sign"></span> ${menu_creation}
                 </button>
             </a>
-            <button type="submit" class="btn btn-success" name="command" value="menu_adding_to_main_command">
+            <button type="submit" class="btn btn-success" name="command" value="add_menu_to_main_page_command">
                 <span class="glyphicon glyphicon-edit"></span> ${menu_adding_to_main_page}
             </button>
             <button type="submit" class="btn btn-warning" name="command" value="menu_update_command">

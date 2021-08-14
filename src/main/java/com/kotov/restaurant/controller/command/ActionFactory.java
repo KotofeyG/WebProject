@@ -8,7 +8,7 @@ public class ActionFactory {
     private static final Logger logger = LogManager.getLogger();
 
     public static Command getCommand(String commandStr) {
-        Command command = CommandType.DEFAULT_COMMAND.getCurrentCommand();
+        Command command = CommandType.NON_EXISTENT_COMMAND.getCurrentCommand();
         try {
             if (commandStr != null) {
                 CommandType commandType = CommandType.valueOf(commandStr.toUpperCase());

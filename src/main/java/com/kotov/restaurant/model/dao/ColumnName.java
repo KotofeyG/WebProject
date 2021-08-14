@@ -44,7 +44,7 @@ public class ColumnName {
 
     /* address table */
     public static final String ADDRESS_ID = "address.id";
-    public static final String CITY = "address.city_id";
+    public static final String ADDRESS_CITY_ID = "address.city_id";
     public static final String STREET = "address.street";
     public static final String BUILDING = "address.building";
     public static final String BLOCK = "address.block";
@@ -52,6 +52,10 @@ public class ColumnName {
     public static final String ENTRANCE = "address.entrance";
     public static final String FLOOR = "address.floor";
     public static final String INTERCOM_CODE = "address.intercom_code";
+
+    /* city_names table */
+    public static final String CITY_ID = "city_names.id";
+    public static final String CITY = "city_names.city";
 
     /* discount_cards table */
     public static final String DISCOUNT_CARD_ID = "discount_cards.id";
@@ -112,7 +116,9 @@ public class ColumnName {
     public static final String ORDER_CASH = "orders.cash";
     public static final String ORDER_SHIPPING = "orders.shipping";
     public static final String ORDER_SUB_PRICE = "orders.sub_price";
+
     public static final String ORDER_USER_ID = "orders.user_id";
+    public static final String DELIVERY_TIME = "orders.delivery_time";
     public static final String ORDER_ORDER_STATUS_ID = "orders.order_status_id";
     public static final String ORDER_CREDIT_CARD_ID = "orders.credit_card_id";
 
@@ -120,13 +126,14 @@ public class ColumnName {
     public static final String ORDER_STATUS_ID = "order_statuses.orders.id";
     public static final String ORDER_STATUS = "order_statuses.status";
 
-    /* orders_has_meals table */
-    public static final String ORDER_HAS_MEAL_ID = "orders_has_meals.id";
-    public static final String ORDER_HAS_MEAL_QUANTITY = "orders_has_meals.quantity";
-    public static final String ORDER_HAS_MEAL_TOTAL_PRICE = "orders_has_meals.total_price";
-    public static final String ORDER_HAS_MEAL_ORDER_ID = "orders_has_meals.order_id";
-    public static final String ORDER_HAS_MEAL_MEAL_ID = "orders_has_meals.meal_id";
-    public static final String ORDER_HAS_MEAL_BOOKING_ID = "orders_has_meals.booking_id";
+    /* orders_have_meals table */
+    public static final String ORDER_HAS_MEAL_ID = "orders_have_meals.id";
+    public static final String ORDER_HAS_MEAL_QUANTITY = "orders_have_meals.quantity";
+    public static final String ORDER_HAS_MEAL_TOTAL_PRICE = "orders_have_meals.total_price";
+    public static final String ORDER_HAS_MEAL_ORDER_ID = "orders_have_meals.order_id";
+    public static final String ORDER_HAS_MEAL_MEAL_ID = "orders_have_meals.meal_id";
+    public static final String ORDER_HAS_MEAL_BOOKING_ID = "orders_have_meals.booking_id";
+    public static final String ORDER_QUANTITY = "orders_have_meals.quantity";
 
     /* booking table */
     public static final String BOOKING_ID = "booking.orders.id";

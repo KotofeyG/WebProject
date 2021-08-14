@@ -13,6 +13,7 @@
 <header><%@include file="../header/header.jsp" %></header>
 <div class="container-fluid">
     <div class="row">
+
     </div>
 </div>
 <footer><%@include file="../footer/footer.jsp" %></footer>

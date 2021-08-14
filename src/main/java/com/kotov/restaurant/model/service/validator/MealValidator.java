@@ -6,6 +6,8 @@ import java.util.Map;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 
 public class MealValidator {
+    private static final String AVAILABLE_TYPE_OF_MEALS_REGEX = "roll|nigiri|sashimi|soup|main_dish|salad|appetizer";
+
     private MealValidator() {
     }
 
@@ -20,5 +22,9 @@ public class MealValidator {
                 && price != null && !price.isBlank()
                 && recipe != null && !recipe.isBlank()
                 && image != null;
+    }
+
+    public static boolean isMealTypeExist(String meal) {
+        return meal != null && meal.matches(AVAILABLE_TYPE_OF_MEALS_REGEX);
     }
 }

@@ -26,8 +26,5 @@
     </c:choose>
 </li>
 <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_orders_confirmation_command">${orders_confirmation}</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=go_to_bill_creation_command">${bill_creation}</a>
+    <a class="nav-link active" aria-current="page" href="${abs}/controller?command=show_active_orders_command">${orders_confirmation}</a>
 </li>

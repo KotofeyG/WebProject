@@ -9,12 +9,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="${abs}/css/non_existent_command.css">
     <title>${title}</title>
 </head>
 <body>
-    <b>Несуществующая команда</b>
-    <div class="container-fluid">
-        <a class="navbar-brand" href="${abs}/controller?command=go_to_main_command"><b>${home}</b></a>
-    </div>
+<div>
+    <h1>${title}</h1>
+    <a href="${abs}/controller?command=go_to_main_command"><h4>${home}</h4></a>
+</div>
 </body>
 </html>

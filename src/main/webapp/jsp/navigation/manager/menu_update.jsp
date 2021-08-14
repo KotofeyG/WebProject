@@ -21,9 +21,10 @@
 <fmt:message key="menu_update.type_change" var="type_change"/>
 <fmt:message key="menu_update.new_title" var="new_title"/>
 <fmt:message key="menu_update.new_type" var="new_type"/>
+<fmt:message key="menu_update.action_error_result" var="action_error_message"/>
 <fmt:message key="meal_management.empty_picture" var="empty_picture"/>
 
-<jsp:useBean id="meals" scope="request" type="java.util.Map"/>
+<jsp:useBean id="marked_meals" scope="request" type="java.util.Map"/>
 
 <!DOCTYPE html>
 <html>
@@ -67,7 +68,7 @@
         <div class="scroll-table-body">
             <table class="table-condensed table-bordered mealTable">
                 <tbody>
-                <c:forEach items="${meals}" var="entry">
+                <c:forEach items="${marked_meals}" var="entry">
                     <tr>
                         <td>${entry.key.id}</td>
                         <td>${entry.key.title}</td>
@@ -97,6 +98,9 @@
             </table>
         </div>
     </div>
+    <%--@elvariable id="action_result" type="java.lang.Boolean"--%>
+    <c:if test="${action_result eq 'false'}">${action_error_message}</c:if>
+
     <div id="title_change" class="modal fade" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
