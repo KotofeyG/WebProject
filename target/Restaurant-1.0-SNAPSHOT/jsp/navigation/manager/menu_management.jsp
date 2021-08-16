@@ -15,38 +15,46 @@
 
 <!DOCTYPE html>
 <html>
+<%@include file="../../header/header.jsp" %>
 <head>
+    <script src="${abs}/js/message.js"></script>
+    <link rel="stylesheet" href="${abs}/css/meal_management.css">
     <title>${menu_title}</title>
 </head>
 <body>
-<%@include file="../../header/header.jsp" %>
 <div class="container-fluid">
     <form action="${abs}/controller" method="post">
         <c:choose>
-            <c:when test="${menu_search_result eq 'true'}"><%@include file="fragment/menu_table.jspf"%></c:when>
-            <c:otherwise>${negative_menu_search_message}</c:otherwise>
+            <c:when test="${menu_search_result eq 'true'}">
+                <div class="button-group">
+                    <a href="controller?command=menu_creation_command">
+                        <button type="button" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-plus-sign"></span> ${menu_creation}
+                        </button>
+                    </a>
+                    <button type="submit" class="btn btn-success" name="command" value="add_menu_to_main_page_command">
+                        <span class="glyphicon glyphicon-edit"></span> ${menu_adding_to_main_page}
+                    </button>
+                    <button type="submit" class="btn btn-warning" name="command" value="menu_update_command">
+                        <span class="glyphicon glyphicon-edit"></span> ${menu_update}
+                    </button>
+                    <button type="submit" class="btn btn-danger" name="command" value="menu_delete_command">
+                        <span class="glyphicon glyphicon-minus-sign"></span> ${menu_deletion}
+                    </button>
+                </div>
+                <c:choose>
+                    <c:when test="${unselected_menu eq 'true'}">
+                        <div class="alert alert-warning" id="message"><b class="invalid_message">${action_negative_message}</b></div>
+                    </c:when>
+                    <c:when test="${unselected_menu eq 'false'}">
+                        <div class="alert alert-success" id="message"><b class="valid_message">${action_positive_message}</b></div>
+                    </c:when>
+                </c:choose>
+                <%@include file="fragment/menu_table.jspf"%>
+            </c:when>
+            <c:otherwise><h1>${negative_menu_search_message}</h1></c:otherwise>
         </c:choose>
-        <div class="container text-center">
-            <a href="controller?command=menu_creation_command">
-                <button type="button" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-plus-sign"></span> ${menu_creation}
-                </button>
-            </a>
-            <button type="submit" class="btn btn-success" name="command" value="add_menu_to_main_page_command">
-                <span class="glyphicon glyphicon-edit"></span> ${menu_adding_to_main_page}
-            </button>
-            <button type="submit" class="btn btn-warning" name="command" value="menu_update_command">
-                <span class="glyphicon glyphicon-edit"></span> ${menu_update}
-            </button>
-            <button type="submit" class="btn btn-danger" name="command" value="menu_delete_command">
-                <span class="glyphicon glyphicon-minus-sign"></span> ${menu_deletion}
-            </button>
-        </div>
     </form>
-    <c:choose>
-        <c:when test="${unselected_menu eq 'true'}">${action_negative_message}</c:when>
-        <c:when test="${unselected_menu eq 'false'}">${action_positive_message}</c:when>
-    </c:choose>
 </div>
 </body>
 </html>

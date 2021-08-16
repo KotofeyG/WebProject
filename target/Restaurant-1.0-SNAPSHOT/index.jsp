@@ -8,6 +8,5 @@
 <head><title>${title}</title></head>
     <body>
         <jsp:forward page="/jsp/navigation/main.jsp"/>
-<%--            <jsp:forward page="/WEB-INF/main.jsp"/>--%>
     </body>
 </html>

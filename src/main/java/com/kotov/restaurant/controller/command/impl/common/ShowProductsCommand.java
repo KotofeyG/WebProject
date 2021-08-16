@@ -9,7 +9,7 @@ import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.Menu;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
-import com.kotov.restaurant.model.service.validator.MealValidator;
+import com.kotov.restaurant.validator.MealValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;

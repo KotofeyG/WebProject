@@ -38,7 +38,7 @@ public class MealListActionCommand implements Command {
                 };
                 request.setAttribute(MEAL_ACTION_RESULT, result);
             }
-            List<Meal> meals = menuService.findAllMeals();                                      // pagination ?
+            List<Meal> meals = menuService.findAllMeals();
             if (meals.size() != 0) {
                 request.setAttribute(MEAL_SEARCH_RESULT, Boolean.TRUE);
             } else {

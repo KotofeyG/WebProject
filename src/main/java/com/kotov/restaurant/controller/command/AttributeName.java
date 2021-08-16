@@ -2,6 +2,7 @@ package com.kotov.restaurant.controller.command;
 
 public class AttributeName {
     public static final String PAGEABLE = "pageable";
+    public static final String WRONG_COMMAND = "wrong_command";
 
     public static final String ADDRESS_ADDING_RESULT = "address_adding_result";
     public static final String DISCOUNT_CARD_ADDING_RESULT = "discount_card_adding_result";

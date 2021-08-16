@@ -71,7 +71,7 @@
 <%@include file="../../header/header.jsp" %>
 <div class="container-fluid">
     <div class="scroll-table">
-        <table class="table-condensed table-bordered mealTable">
+        <table class="table-condensed table-bordered meal-table">
             <caption><h3 class="text-center">${title}</h3></caption>
             <thead>
             <tr>
@@ -84,7 +84,7 @@
             </thead>
         </table>
         <div class="scroll-table-body">
-            <table class="table-condensed table-bordered mealTable">
+            <table class="table-condensed table-bordered meal-table">
                 <tbody>
                 <c:forEach items="${cart}" var="entry">
                     <input type="hidden" name="meal_id" value="${entry.key.id}" form="order">
@@ -117,8 +117,8 @@
     <div class="row">
         <form action="${abs}/controller" method="post">
             <input type="hidden" name="command" value="delete_from_cart_command">
-            <c:forEach items="${cart.keySet()}" var="meal">
-                <input type="hidden" name="meal_id" value="${meal.id}">
+            <c:forEach items="${cart.keySet()}" var="order">
+                <input type="hidden" name="meal_id" value="${order.id}">
             </c:forEach>
             <div class="col-sm-1"></div>
             <div class="col-sm-1">

@@ -24,7 +24,7 @@
 <%@include file="../../header/header.jsp" %>
 <div class="container-fluid">
     <div class="scroll-table">
-        <table class="table-condensed table-bordered mealTable">
+        <table class="table-condensed table-bordered meal-table">
             <caption><h3 class="text-center">${title}</h3></caption>
             <thead>
             <tr>
@@ -37,7 +37,7 @@
             </thead>
         </table>
         <div class="scroll-table-body">
-            <table class="table-condensed table-bordered mealTable">
+            <table class="table-condensed table-bordered meal-table">
                 <tbody>
                 <c:forEach items="${cart}" var="entry">
                     <input type="hidden" name="meal_id" value="${entry.key.id}" >

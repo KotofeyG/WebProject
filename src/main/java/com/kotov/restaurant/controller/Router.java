@@ -7,8 +7,9 @@ public class Router {
         FORWARD, REDIRECT
     }
 
-    private String pagePath = PagePath.INDEX_PAGE;                          // index.jsp?
-    private RouteType route = RouteType.FORWARD;
+    private String pagePath = PagePath.INDEX_PAGE;
+    private RouteType routerType = RouteType.FORWARD;
+    private Integer errorCode;
 
     public String getPagePath() {
         return pagePath;
@@ -18,11 +19,23 @@ public class Router {
         this.pagePath = pagePath;
     }
 
-    public RouteType getRoute() {
-        return route;
+    public RouteType getRouterType() {
+        return routerType;
     }
 
-    public void setRoute(RouteType route) {
-        this.route = route;
+    public void setRouterType(RouteType routerType) {
+        this.routerType = routerType;
+    }
+
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public boolean hasError() {
+        return errorCode != null;
     }
 }

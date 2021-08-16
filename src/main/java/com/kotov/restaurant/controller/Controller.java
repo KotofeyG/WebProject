@@ -3,7 +3,6 @@ package com.kotov.restaurant.controller;
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.controller.command.ActionFactory;
 import com.kotov.restaurant.exception.CommandException;
-import com.kotov.restaurant.model.pool.ConnectionPool;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,19 +38,16 @@ public class Controller extends HttpServlet {
         Command command = ActionFactory.getCommand(commandStr);
         try {
             Router router = command.execute(req);
-            switch (router.getRoute()) {
-                case FORWARD -> getServletContext().getRequestDispatcher(router.getPagePath()).forward(req, resp);
-                case REDIRECT -> resp.sendRedirect(router.getPagePath());
+            if (router.hasError()) {
+                resp.sendError(router.getErrorCode());
+            } else if (router.getRouterType() == Router.RouteType.REDIRECT){
+                resp.sendRedirect(router.getPagePath());
+            } else {
+                getServletContext().getRequestDispatcher(router.getPagePath()).forward(req, resp);
             }
         } catch (CommandException e) {
             logger.log(Level.ERROR, "Internal error has occurred:", e);
             resp.sendError(INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public void destroy() {
-        ConnectionPool.getInstance().destroyPool();
-        logger.log(Level.INFO, "Connection pool has destroyed");
     }
 }

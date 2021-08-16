@@ -2,16 +2,21 @@
 <%@include file="../../imports.jspf" %>
 <%@taglib prefix="ctg" uri="custom_tags" %>
 
-<fmt:message key="order_confirmation.title" var="title"/>
+<fmt:message key="order_confirmation.title" var="order_confirmation_title"/>
 <fmt:message key="order_confirmation.approval" var="approve"/>
 <fmt:message key="order_confirmation.rejection" var="reject"/>
+<fmt:message key="order_confirmation.choice" var="choice"/>
 <fmt:message key="order_confirmation.order_id" var="order_id"/>
 <fmt:message key="order_confirmation.username" var="username"/>
 <fmt:message key="order_confirmation.total_price" var="total_price_column"/>
+<fmt:message key="main.rub" var="rub"/>
 <fmt:message key="order_confirmation.meals" var="meals"/>
 <fmt:message key="order_confirmation.address" var="address"/>
+<fmt:message key="order_confirmation.mobile_number" var="mobile_number"/>
 <fmt:message key="order_confirmation.delivery_time" var="delivery_time"/>
 <fmt:message key="order_confirmation.payment_type" var="payment_type"/>
+<fmt:message key="order_confirmation.cash_payment" var="cash_payment"/>
+<fmt:message key="order_confirmation.cashless_payments" var="cashless_payments"/>
 <fmt:message key="order_confirmation.order_time" var="order_time"/>
 <fmt:message key="order_confirmation.order_editing" var="edit_order"/>
 <fmt:message key="order_confirmation.order_status" var="order_status"/>
@@ -32,11 +37,15 @@
 
 <!DOCTYPE html>
 <html>
+<%@include file="../../header/header.jsp" %>
 <head>
+    <script src="${abs}/js/message.js"></script>
+    <link rel="stylesheet" href="${abs}/css/meal_management.css">
     <title>${title}</title>
 </head>
 <body>
-<%@include file="../../header/header.jsp" %>
+<c:choose>
+    <c:when test="${zero_number_of_orders eq 'true'}">
 <div class="container-fluid">
     <div class="scroll-table">
         <div class="row">
@@ -55,11 +64,19 @@
                 </div>
             </form>
         </div>
-        <table class="table-condensed table-bordered mealTable">
-            <caption><h3 class="text-center">${title}</h3></caption>
+        <c:choose>
+            <c:when test="${action_result eq 'true'}">
+                <div class="alert alert-success" id="message"><b class="valid_message">${positive_result}</b></div>
+            </c:when>
+            <c:when test="${action_result eq 'false'}">
+                <div class="alert alert-warning" id="message"><b class="invalid_message">${negative_result}</b></div>
+            </c:when>
+        </c:choose>
+        <table class="table-condensed table-bordered meal-table">
+            <caption><h3 class="text-center">${order_confirmation_title}</h3></caption>
             <thead>
             <tr>
-                <th></th>
+                <th>${choice}</th>
                 <th>${order_id}</th>
                 <th>${username}</th>
                 <th>${total_price_column}</th>
@@ -68,34 +85,38 @@
                 <th>${payment_type}</th>
                 <th>${order_time}</th>
                 <th>${order_status}</th>
-                <th>${edit_order}</th>
             </tr>
             </thead>
         </table>
         <div class="scroll-table-body">
-            <table class="table-condensed table-bordered mealTable">
+            <table class="table-condensed table-bordered meal-table">
                 <tbody>
-                <c:forEach items="${orders}" var="meal">
+                <c:forEach items="${orders}" var="order">
                     <tr>
                         <td>
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="selected" value="${meal.key.id}" form="order_status_changing">
+                                <input type="radio" class="form-check-input" name="selected" value="${order.key.id}" form="order_status_changing">
                             </label>
                         </td>
-                        <td>${meal.key.id}</td>
-                        <td>
-                                ${login} ${meal.value.login}
-                            <c:if test="${not empty meal.value.firstName}"><br/>${first_name} ${meal.value.firstName}</c:if>
-                            <c:if test="${not empty meal.value.patronymic}"><br/>${patronymic} ${meal.value.patronymic}</c:if>
-                            <c:if test="${not empty meal.value.lastName}"><br/>${last_name} ${meal.value.lastName}</c:if>
+                        <td>${order.key.id}</td>
+                        <td id="user-info">
+                                ${login} ${order.value.login}
+                            <c:if test="${not empty order.value.firstName}"><br/>${first_name} ${order.value.firstName}</c:if>
+                            <c:if test="${not empty order.value.patronymic}"><br/>${patronymic} ${order.value.patronymic}</c:if>
+                            <c:if test="${not empty order.value.lastName}"><br/>${last_name} ${order.value.lastName}</c:if>
                         </td>
-                        <td><ctg:totalCost mealList="${meal.key.meals}"/></td>
-                        <td><ctg:AddressInfo address="${meal.key.address}"/></td>
-                        <td>${meal.key.deliveryTime}</td>
-                        <td>${meal.key.cash}</td>
-                        <td>${meal.key.created}</td>
-                        <td>${meal.key.status.value}</td>
-                        <td><a href="${abs}/controller?command=edit_order_command&order_id=${meal.key.id}">${edit}</a></td>
+                        <td><ctg:totalCost mealList="${order.key.meals}"/> ${rub}</td>
+                        <td id="address-info"><ctg:AddressInfo address="${order.key.address}"/><br/>${mobile_number}${order.value.mobileNumber}</td>
+                        <td>${order.key.deliveryTime}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${order.key.cash eq 'true'}">${cash_payment}</c:when>
+                                <c:otherwise>${cashless_payments}</c:otherwise>
+                            </c:choose>
+
+                        </td>
+                        <td>${order.key.created}</td>
+                        <td>${order.key.status.value}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -106,14 +127,13 @@
         <div class="col-sm-5"></div>
         <div class="col-sm-3">
             <c:choose>
-                <c:when test="${action_result eq 'true'}">${positive_result}</c:when>
-                <c:when test="${action_result eq 'false'}">${negative_result}</c:when>
-            </c:choose>
-            <c:choose>
-                <c:when test="${zero_number_of_orders eq 'true'}"><br/>${zero_orders_message}</c:when>
+                <c:when test="${zero_number_of_orders eq 'true'}"><br/></c:when>
             </c:choose>
         </div>
     </div>
 </div>
+    </c:when>
+    <c:otherwise><h1>${zero_orders_message}</h1></c:otherwise>
+</c:choose>
 </body>
 </html>

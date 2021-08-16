@@ -11,7 +11,7 @@ import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.MealService;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
-import com.kotov.restaurant.model.service.validator.MealValidator;
+import com.kotov.restaurant.validator.MealValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

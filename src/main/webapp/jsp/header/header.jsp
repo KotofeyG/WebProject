@@ -18,7 +18,7 @@
 <fmt:message key="header.authorization" var="authorization"/>
 <fmt:message key="header.name" var="name"/>
 <fmt:message key="header.password" var="password"/>
-<fmt:message key="header.invalid_login_psw" var="invalid_message"/>
+
 <fmt:message key="header.wrong_locale" var="wrong_locale_message"/>
 
 
@@ -33,7 +33,7 @@
 
 <jsp:useBean id="user" scope="session" type="com.kotov.restaurant.model.entity.User"/>
 
-<%--@elvariable id="authentication_result" type="java.lang.Boolean"--%>
+
 
 <!DOCTYPE html>
 <html>
@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="${abs}/css/main.css">
+    <link rel="stylesheet" href="${abs}/css/header.css">
     <title>${title}</title>
 </head>
 <body>
@@ -102,7 +102,7 @@
                                         <label for="user-psw"><span class="glyphicon glyphicon-eye-open"></span> ${password}</label>
                                         <input type="password" id="user-psw" class="form-control" name="password" placeholder="${password}">
                                     </form>
-                                    <c:if test="${authentication_result eq 'false'}"><b>${invalid_message}</b></c:if>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" form="log-form" class="btn btn-secondary" data-bs-dismiss="modal">${sign_in}</button>

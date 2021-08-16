@@ -1,0 +1,27 @@
+body {
+    text-align: center;
+    margin: 0;
+    background: url("../images/error_command_background.jpg") no-repeat;
+    background-size: cover;
+}
+
+div {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+}
+
+h1, h2 {
+    color: white;
+}
+
+a {
+    font-size: large;
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    color: darkgreen;
+    transition: 0.5s;
+}

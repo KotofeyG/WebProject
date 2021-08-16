@@ -8,6 +8,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/main.jsp" value="file://$PROJECT_DIR$/src/main/webapp/jsp" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/client/cart.jsp" value="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/client" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/client/settings.jsp" value="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/client" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager/fragment/meal_table.jspf" value="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager/fragment" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager/menu_creation.jsp" value="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager/menu_management.jsp" value="file://$PROJECT_DIR$/src/main/webapp/jsp/navigation/manager" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/main.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages" />

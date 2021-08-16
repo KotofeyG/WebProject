@@ -32,7 +32,7 @@
 <body>
 <div class="container-fluid">
     <div class="scroll-table">
-        <table class="table-condensed table-bordered mealTable">
+        <table class="table-condensed table-bordered meal-table">
             <caption><h3 class="text-center">${title}</h3></caption>
             <thead>
             <tr>
@@ -50,32 +50,32 @@
             </thead>
         </table>
         <div class="scroll-table-body">
-            <table class="table-condensed table-bordered mealTable">
+            <table class="table-condensed table-bordered meal-table">
                 <tbody>
-                <c:forEach items="${orders}" var="meal">
+                <c:forEach items="${orders}" var="order">
                     <tr>
                         <td>
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="selected" value="${meal.id}">
+                                <input type="radio" class="form-check-input" name="selected" value="${order.id}">
                             </label>
                         </td>
-                        <td>${meal.id}</td>
-                        <td><ctg:totalCost mealList="${meal.meals}"/></td>
-                        <td><ctg:AddressInfo address="${meal.address}"/></td>
-                        <td>${meal.deliveryTime}</td>
-                        <td>${meal.cash}</td>
-                        <td>${meal.created}</td>
-                        <td>${meal.status.value}</td>
-                        <td><a href="${abs}/controller?command=editing_order_command&order_id=${meal.id}">${edit}</a>
+                        <td>${order.id}</td>
+                        <td><ctg:totalCost mealList="${order.meals}"/></td>
+                        <td><ctg:AddressInfo address="${order.address}"/></td>
+                        <td>${order.deliveryTime}</td>
+                        <td>${order.cash}</td>
+                        <td>${order.created}</td>
+                        <td>${order.status.value}</td>
+                        <td><a href="${abs}/controller?command=editing_order_command&order_id=${order.id}">${edit}</a>
                         <td>
                             <form action="controller" method="post">
                                 <input type="hidden" name="command" value="order_action_command">
-                                <input type="hidden" name="selected" value="${meal.id}"/>
+                                <input type="hidden" name="selected" value="${order.id}"/>
                                 <c:choose>
-                                    <c:when test="${meal.status eq 'IN_PROCESS'}"><button type="submit" class="btn-danger" name="action" value="reject">${rejection}</c:when>
-                                    <c:when test="${meal.status eq 'APPROVED'}"><button type="submit" class="btn-success" name="action" value="pay">${payment}</c:when>
-                                    <c:when test="${meal.status eq 'REJECTED'}"><button class="btn-default" disabled>${rejected}</c:when>
-                                    <c:when test="${meal.status eq 'PAID'}"><button class="btn-default" disabled>${paid}</c:when>
+                                    <c:when test="${order.status eq 'IN_PROCESS'}"><button type="submit" class="btn-danger" name="action" value="reject">${rejection}</c:when>
+                                    <c:when test="${order.status eq 'APPROVED'}"><button type="submit" class="btn-success" name="action" value="pay">${payment}</c:when>
+                                    <c:when test="${order.status eq 'REJECTED'}"><button class="btn-default" disabled>${rejected}</c:when>
+                                    <c:when test="${order.status eq 'PAID'}"><button class="btn-default" disabled>${paid}</c:when>
                                 </c:choose>
                             </form>
                         </td>

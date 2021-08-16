@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
@@ -26,8 +27,9 @@ public class MenuCreationCommand implements Command {
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         String currentPage = (String) request.getSession().getAttribute(CURRENT_PAGE);
+        String product = request.getParameter(SELECTED_PRODUCT_TYPE);
         try {
-            if (MENU_CREATION_PAGE.equals(currentPage)) {
+            if (product == null && MENU_CREATION_PAGE.equals(currentPage)) {
                 String title = request.getParameter(TITLE);
                 String type = request.getParameter(TYPE);
                 String[] mealIdArray = request.getParameterValues(SELECTED);
@@ -37,13 +39,14 @@ public class MenuCreationCommand implements Command {
                     request.setAttribute(MENU_CREATION_RESULT, Boolean.FALSE);
                 }
             }
-            List<Meal> meals = menuService.findAllMeals();
+            List<Meal> meals = menuService.findMealsByType(Objects.requireNonNullElseGet(product, Meal.Type.ROLL::toString));
             if (meals.size() != 0) {
                 request.setAttribute(MEAL_SEARCH_RESULT, Boolean.TRUE);
             } else {
                 request.setAttribute(MEAL_SEARCH_RESULT, Boolean.FALSE);
             }
             request.setAttribute(MEAL_LIST, meals);
+            request.setAttribute(CURRENT_PRODUCT_TYPE, product != null ? product : Meal.Type.ROLL.toString());
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Method execute cannot be completed:", e);
             throw new CommandException("Method execute cannot be completed:", e);

@@ -19,7 +19,7 @@
 <jsp:useBean id="users" scope="request" type="java.util.List"/>
 
 <div class="scroll-table">
-    <table class="table-condensed table-bordered mealTable">              <%--change mealTable--%>
+    <table class="table-condensed table-bordered meal-table">              <%--change mealTable--%>
         <caption><h3 class="text-center">${user_list}</h3></caption>
         <thead>
         <tr>
@@ -37,7 +37,7 @@
         </thead>
     </table>
     <div class="scroll-table-body">
-        <table class="table-condensed table-bordered mealTable">            <%--change mealTable--%>
+        <table class="table-condensed table-bordered meal-table">            <%--change mealTable--%>
             <tbody>
             <c:forEach items="${users}" var="user">
                 <tr>

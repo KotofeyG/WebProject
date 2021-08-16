@@ -13,7 +13,18 @@ public class Menu extends AbstractEntity {
     private LocalDate updated;
 
     public enum Type {
-        ROLL, NIGIRI, SASHIMI, SOUP, MAIN_DISH, SALAD, APPETIZER;
+        ROLL("роллы"), NIGIRI("суши"), SASHIMI("сашими"), SOUP("супы")
+        , MAIN_DISH("вторые блюда"), SALAD("салаты"), APPETIZER("закуски");
+
+        private String value;
+
+        Type(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
 
         @Override
         public String toString() {

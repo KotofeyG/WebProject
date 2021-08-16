@@ -2,7 +2,7 @@ package com.kotov.restaurant.controller.command.impl.common;
 
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.controller.Router;
-import com.kotov.restaurant.model.service.validator.LocaleValidator;
+import com.kotov.restaurant.validator.LocaleValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;

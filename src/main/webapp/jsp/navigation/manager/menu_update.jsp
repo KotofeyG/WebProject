@@ -12,8 +12,11 @@
 <fmt:message key="menu_update.meal_image" var="meal_image"/>
 <fmt:message key="menu_update.meal_type" var="meal_type"/>
 <fmt:message key="menu_update.meal_price" var="meal_price"/>
+<fmt:message key="main.rub" var="rub"/>
 <fmt:message key="menu_update.meal_ingredients" var="meal_ingredients"/>
 <fmt:message key="menu_update.meal_status" var="meal_status"/>
+<fmt:message key="meal_management.active" var="active"/>
+<fmt:message key="meal_management.archive" var="archive"/>
 <fmt:message key="menu_update.meal_add_delete" var="add_delete"/>
 <fmt:message key="menu_update.append_meal" var="append"/>
 <fmt:message key="menu_update.remove_meal" var="remove"/>
@@ -28,14 +31,16 @@
 
 <!DOCTYPE html>
 <html>
+<%@include file="../../header/header.jsp" %>
 <head>
+    <script src="${abs}/js/message.js"></script>
+    <link rel="stylesheet" href="${abs}/css/meal_management.css">
     <title>${title}</title>
 </head>
 <body>
 <div class="container-fluid">
-    <%@include file="../../header/header.jsp" %>
     <div class="scroll-table">
-        <table class="table-condensed table-bordered mealTable">
+        <table class="table-condensed table-bordered meal-table">
             <caption><h3 class="text-center">${dish_list}</h3></caption>
             <thead>
             <tr>
@@ -49,8 +54,8 @@
                     <button class="btn-success" type="button" data-toggle="modal" data-target="#title_change">${change}</button>
                 </td>
                 <td colspan="2">
-                    <b>${menu_type} ${requestScope.selected_menu.type}</b>
-                    <button class="btn-success" type="button" data-toggle="modal" data-target="#type_change">${change}</button>
+                    <b>${menu_type} ${requestScope.selected_menu.type.value}</b>
+<%--                    <button class="btn-success" type="button" data-toggle="modal" data-target="#type_change">${change}</button>--%>
                 </td>
             </tr>
             <tr>
@@ -66,17 +71,22 @@
             </thead>
         </table>
         <div class="scroll-table-body">
-            <table class="table-condensed table-bordered mealTable">
+            <table class="table-condensed table-bordered meal-table">
                 <tbody>
                 <c:forEach items="${marked_meals}" var="entry">
                     <tr>
                         <td>${entry.key.id}</td>
                         <td>${entry.key.title}</td>
-                        <td> <img src="${entry.key.image}" class="img-thumbnail" alt="${empty_picture}"/></td>
-                        <td>${entry.key.type}</td>
-                        <td>${entry.key.price}</td>
+                        <td> <img src="${entry.key.image}" class="img-thumbnail" alt="${empty_picture}" width="153px"/></td>
+                        <td>${entry.key.type.value}</td>
+                        <td>${entry.key.price}  ${rub}</td>
                         <td>${entry.key.recipe}</td>
-                        <td>${entry.key.active}</td>
+                        <td>
+                              <c:choose>
+                                 <c:when test="${entry.key.active eq 'true'}">${active}</c:when>
+                                 <c:otherwise>${archive}</c:otherwise>
+                              </c:choose>
+                        </td>
                         <td>
                             <form action="controller" method="post">
                                 <input type="hidden" name="command" value="menu_update_command">

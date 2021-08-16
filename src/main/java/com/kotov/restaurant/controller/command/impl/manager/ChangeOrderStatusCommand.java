@@ -60,7 +60,7 @@ public class ChangeOrderStatusCommand implements Command {
                     logger.log(Level.WARN, "User with id " + order.getUserId() + " doesn't exist");
                 }
             }
-            if (activeOrders.size() == 0) {
+            if (activeOrders.isEmpty()) {
                 request.setAttribute(ZERO_NUMBER_OF_ORDERS, Boolean.TRUE);
             }
             request.setAttribute(ORDER, activeOrders);

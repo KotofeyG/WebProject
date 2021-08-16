@@ -23,6 +23,7 @@ import java.util.Optional;
 
 public class OrderServiceImpl implements OrderService {
     private static final Logger logger = LogManager.getLogger();
+    private static final long DEFAULT_DELIVERY_TIME = 1;
     private static final UserDao userDao = DaoProvider.getInstance().getUserDao();
     private static final MealDao mealDao = DaoProvider.getInstance().getMealDao();
     private static final OrderDao orderDao = DaoProvider.getInstance().getOrderDao();
@@ -64,7 +65,12 @@ public class OrderServiceImpl implements OrderService {
             }
             long addressId = Long.parseLong(addressIdStr);
             Address address = userDao.findAddressById(addressId).get();
-            LocalTime deliveryTime = LocalTime.parse(time);
+            LocalTime deliveryTime;
+            if (time != null) {
+                deliveryTime = LocalTime.parse(time);
+            } else {
+                deliveryTime = LocalTime.now().plusHours(DEFAULT_DELIVERY_TIME);
+            }
             boolean isCash = Boolean.parseBoolean(paymentType);
 
             Order order = new Order(orderedMeals, userId, address, deliveryTime, isCash);

@@ -36,6 +36,7 @@ public class PagePath {
     /* error pages */
     public static final String INTERNAL_SERVER_ERROR_PAGE = "/jsp/error/internal_server_error.jsp";
     public static final String NON_EXISTENT_COMMAND_PAGE = "/jsp/error/non_existent_command.jsp";
+    public static final String ERROR_400_PAGE = "/jsp/error/error400.jsp";
 
     private PagePath() {
     }

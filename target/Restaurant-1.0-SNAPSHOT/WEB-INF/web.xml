@@ -17,8 +17,21 @@
             <taglib-location>/WEB_INF/tld/custom.tld</taglib-location>
         </taglib>
     </jsp-config>
+
+    <error-page>
+        <error-code>400</error-code>
+        <location>/jsp/error/error400.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/jsp/error/error403.jsp</location>
+    </error-page>
+
 <!--    <error-page>-->
 <!--        <error-code>500</error-code>-->
 <!--        <location>/jsp/error/internal_server_error.jsp</location>-->
 <!--    </error-page>-->
+
+
 </web-app>

@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="${abs}/css/non_existent_command.css">
+    <link rel="stylesheet" href="${abs}/css/error400.css">
     <title>${title}</title>
 </head>
 <body>

@@ -1,98 +1,27 @@
-.wrapper {
-    min-height: 100vh;
-    width: 100%;
-    background-image: url("../images/sushi_samurai.png");
-    background-size: 500px 650px;
-    background-repeat: no-repeat;
-    background-position: center;
+body {
+    margin: 0;
+    background: url("../images/background.jpg") no-repeat;
+    background-size: cover;
 }
 
-.image-table {
-    width: 125px;
-}
-
-.error-500 {
-    min-height: 100vh;
-    width: 100%;
-    background-image: url("../images/error/internal_server_error.jpg.webp");
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.mealTable {
-    /*border: 3px solid black;*/
-    color: black;
-    text-align: center;
-    background-color: grey;
-    position: center;
-    font-size: medium;
-    margin: auto;
-}
-
-.form-group-menu-creation {
+.authentication_error {
     position: relative;
-    left: 29%;
+    left: 45%;
 }
 
-.form-group-menu-update {
-    position: relative;
-    left: 29%;
-}
-
-.text-center {
-    color: black;
-}
-
-.btn-default {
-    /*position: relative;*/
-    /*left: 610px;*/
-    background: grey;
-    color: black;
-}
-
-.btn-success {
-    background-color: darkgreen;
-}
-
-.btn-warning {
-    background-color: chocolate;
-}
-
-.btn-danger {
-    background-color: brown;
-}
-
-.scroll-table-body {
-    height: 350px;
-    overflow-x: auto;
-}
-
-.scroll-table table {
-    width: 95%;
-    table-layout: fixed;
-}
-
-.scroll-table thead th {
+#message {
+    position: absolute;
+    left: 35%;
+    width: 30%;
     text-align: center;
-    font-weight: bold;
-    border: none;
-    /*background: #d8d8d8;*/
+    z-index:99999999;
+    padding: 5px;
 }
 
-td {
-    word-wrap: break-word;
+.valid_message {
+    color: darkgreen;
 }
 
-/* Стили для скролла */
-::-webkit-scrollbar {
-    width: 0;
+.invalid_message {
+    color: red;
 }
-
-/*::-webkit-scrollbar-track {*/
-/*    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
-/*}*/
-/*::-webkit-scrollbar-thumb {*/
-/*    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
-/*}*/
-
-
