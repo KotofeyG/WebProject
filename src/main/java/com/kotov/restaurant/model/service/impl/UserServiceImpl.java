@@ -9,7 +9,6 @@ import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.UserService;
 import com.kotov.restaurant.validator.AddressValidator;
-import com.kotov.restaurant.validator.DiscountCardValidator;
 import com.kotov.restaurant.util.PasswordEncryptor;
 import com.kotov.restaurant.validator.UserValidator;
 import org.apache.logging.log4j.Level;
@@ -39,11 +38,11 @@ public class UserServiceImpl implements UserService {
                 String passwordHash = PasswordEncryptor.encrypt(password);
                 optionalUser = userDao.findUserByLoginAndPassword(login, passwordHash);
             }
+            return optionalUser;
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to find user by login and password:", e);
             throw new ServiceException("Impossible to find user by login and password:", e);
         }
-        return optionalUser;
     }
 
     @Override
@@ -74,7 +73,6 @@ public class UserServiceImpl implements UserService {
             logger.log(Level.ERROR, "Impossible to find user with id " + id, e);
             throw new ServiceException("Impossible to find user with id " + id, e);
         }
-
     }
 
     @Override
@@ -88,25 +86,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Address> findUserAddresses(String userIdStr) throws ServiceException {
-        long userId = Long.parseLong(userIdStr);
-        return findUserAddresses(userId);
-    }
-
-    @Override
-    public boolean updateUserStatusesById(String statusStr, String[] userIdArray) throws ServiceException {
+    public boolean updateUserStatusesById(User.Status status, String[] userIdArray) throws ServiceException {
         boolean result = false;
         if (userIdArray != null) {
             try {
                 List<Long> userIdList = convertArrayToList(userIdArray);
-                User.Status status = User.Status.valueOf(statusStr);
                 result = userDao.updateUserStatusesById(status, userIdList);
                 logger.log(Level.DEBUG, "updateUserStatuses service method is completed successfully. Result is: " + result);
             } catch (DaoException e) {
                 logger.log(Level.ERROR, "Impossible to update user statuses:", e);
                 throw new ServiceException("Impossible to update user statuses:", e);
-            } catch (IllegalArgumentException e) {
-                logger.log(Level.ERROR, "This enum type has no constant with the specified name: " + statusStr);
             }
         }
         return result;
@@ -121,30 +110,16 @@ public class UserServiceImpl implements UserService {
                 result = userDao.deleteEntitiesById(userIdList);
                 logger.log(Level.INFO, "removeUsers service method is completed successfully. Result is: " + result);
             } catch (DaoException e) {
-                logger.log(Level.ERROR, "Impossible to remove users:", e);
-                throw new ServiceException("Impossible to remove users:", e);
+                logger.log(Level.ERROR, "Impossible to delete users:", e);
+                throw new ServiceException("Impossible to delete users:", e);
             }
         }
         return result;
     }
 
-    private List<Long> convertArrayToList(String[] idArray) throws ServiceException {
-        List<Long> idList = new ArrayList<>();
-        try {
-            if (idArray != null) {
-                for (String idStr : idArray) {
-                    idList.add(Long.parseLong(idStr));
-                }
-            }
-            return idList;
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.ERROR, "Variable idStr does not contain a parsable long:", e);
-            throw new ServiceException("Variable idStr does not contain a parsable long:", e);
-        }
-    }
-
     @Override
     public boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException {
+        boolean result;
         String login = dataCheckResult.get(LOGIN);
         String password = dataCheckResult.get(PASSWORD);
         String confirmPassword = dataCheckResult.get(CONFIRM_PASSWORD);
@@ -166,16 +141,11 @@ public class UserServiceImpl implements UserService {
                     ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER_RESULT)
                     : INVALID_MOBILE_NUMBER_RESULT;
 
-            boolean result = parseBoolean(loginCheckResult) && parseBoolean(passwordCheckResult)
+            result = parseBoolean(loginCheckResult) && parseBoolean(passwordCheckResult)
                     && parseBoolean(emailCheckResult) && parseBoolean(mobileNumberCheckResult);
 
             if (result) {
-                User.Role role;
-                if (roleStr != null) {
-                    role = User.Role.valueOf(roleStr.toUpperCase());
-                } else {
-                    role = User.Role.CLIENT;
-                }
+                User.Role role = roleStr != null ? User.Role.valueOf(roleStr.toUpperCase()) : User.Role.CLIENT;
                 User user = new User(login, email, mobileNumber, LocalDateTime.now(), role);
                 String passwordHash = PasswordEncryptor.encrypt(password);
                 userDao.insertNewEntity(user, passwordHash);
@@ -187,11 +157,14 @@ public class UserServiceImpl implements UserService {
                 dataCheckResult.replace(EMAIL, emailCheckResult);
                 dataCheckResult.replace(MOBILE_NUMBER, mobileNumberCheckResult);
             }
-            return result;
-        } catch (DaoException | IllegalArgumentException e) {
+        } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to create new user: ", e);
             throw new ServiceException("Impossible to create new user: ", e);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.ERROR, "Impossible to create new user. This enum type has no constant with the specified name: " + roleStr, e);
+            result = false;
         }
+        return result;
     }
 
     @Override
@@ -205,28 +178,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<Meal, Integer> findMealsInCartByUserId(String userIdStr) throws ServiceException {
-        long userId = Long.parseLong(userIdStr);
-        return findMealsInCartByUserId(userId);
-    }
-
-    @Override
     public boolean deleteMealsFromCartByUserId(long userId, String[] mealIdArray) throws ServiceException {
-        boolean result = false;
         List<Long> mealIdList = convertArrayToList(mealIdArray);
         try {
-            result = userDao.deleteMealsFromCartByUserId(userId, mealIdList);
+            return userDao.deleteMealsFromCartByUserId(userId, mealIdList);
         } catch (DaoException e) {
-            logger.log(Level.ERROR, "Impossible to delete meals from cart for user: ", e);
-            throw new ServiceException("Impossible to delete meals from cart for user: ", e);
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.ERROR, "mealIdStr doesn't contain a parsable long: ", e);
+            logger.log(Level.ERROR, "Impossible to delete meals from cart for user with id " + userId, e);
+            throw new ServiceException("Impossible to delete meals from cart for user with id " + userId, e);
         }
-        return result;
+    }
+
+    private List<Long> convertArrayToList(String[] idArray) {
+        List<Long> idList = new ArrayList<>();
+        try {
+            if (idArray != null) {
+                for (String idStr : idArray) {
+                    idList.add(Long.parseLong(idStr));
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARN, "Variable idStr does not contain a parsable long:", e);
+            idList.clear();
+        }
+        return idList;
     }
 
     @Override
-    public boolean addUserAddress(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+    public boolean insertUserAddress(long userId, Map<String, String> dataCheckResult) throws ServiceException {
         String city = dataCheckResult.get(CITY);
         String street = dataCheckResult.get(STREET);
         String building = dataCheckResult.get(BUILDING);
@@ -257,12 +235,7 @@ public class UserServiceImpl implements UserService {
         boolean result = parseBoolean(cityCheckResult) && parseBoolean(streetCheckResult) && parseBoolean(buildingCheckResult) && optionalFieldsResult;
 
         if (result) {
-            Address.City enumCity = null;
-            for (Address.City next : Address.City.values()) {
-                if (next.getRussianName().equals(city)) {
-                    enumCity = next;
-                }
-            }
+            Address.City enumCity = Address.City.valueOf(city);
             Address address = new Address(enumCity, street, Integer.parseInt(building));
             if (!block.isEmpty()) {
                 address.setBlock(block);
@@ -282,8 +255,8 @@ public class UserServiceImpl implements UserService {
             try {
                 result = userDao.insertUserAddress(userId, address);
             } catch (DaoException e) {
-                logger.log(Level.ERROR, "Impossible to add address to user:", e);
-                throw new ServiceException("Impossible to add address to user:", e);
+                logger.log(Level.ERROR, "Impossible to add address to user with id " + userId, e);
+                throw new ServiceException("Impossible to add address to user with id " + userId, e);
             }
         } else {
             dataCheckResult.replace(CITY, cityCheckResult);
@@ -300,73 +273,78 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addDiscountCardToUser(long userId, String number) throws ServiceException {
+    public boolean updateFirstNameById(long userId, String firstName) throws ServiceException {
         try {
-            return DiscountCardValidator.isCardNumberValid(number)
-                    && userDao.isDiscountCardActive(number)
-                    && userDao.addDiscountCardToUser(userId, number);
+            return UserValidator.isNameValid(firstName) && userDao.updateUserFirstName(userId, firstName);
         } catch (DaoException e) {
-            logger.log(Level.ERROR, "Impossible to add discount card to user:", e);
-            throw new ServiceException("Impossible to add discount card to user:", e);
+            logger.log(Level.ERROR, "Impossible to change user first name:", e);
+            throw new ServiceException("Impossible to change user first name:", e);
         }
     }
 
     @Override
-    public boolean changeUserPersonalData(long userId, Map<String, String> dataCheckResult) throws ServiceException {
-        String firstName = dataCheckResult.get(FIRST_NAME);
-        String patronymic = dataCheckResult.get(PATRONYMIC);
-        String lastName = dataCheckResult.get(LAST_NAME);
-        String mobileNumber = dataCheckResult.get(MOBILE_NUMBER);
-        String email = dataCheckResult.get(EMAIL);
-
+    public boolean updatePatronymicById(long userId, String patronymic) throws ServiceException {
         try {
-            String firstNameCheckResult = UserValidator.isNameValid(firstName) ? TRUE : INVALID_FIRST_NAME;
-            String patronymicCheckResult = UserValidator.isNameValid(patronymic) ? TRUE : INVALID_PATRONYMIC;
-            String lastNameCheckResult = UserValidator.isNameValid(lastName) ? TRUE : INVALID_LAST_NAME;
-            String emailCheckResult = UserValidator.isEmailValid(email)
-                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_EMAIL_RESULT)
-                    : INVALID_EMAIL;
+            System.out.println(UserValidator.isNameValid(patronymic));
+            return UserValidator.isNameValid(patronymic) && userDao.updateUserPatronymic(userId, patronymic);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to change user patronymic:", e);
+            throw new ServiceException("Impossible to change user patronymic:", e);
+        }
+    }
+
+    @Override
+    public boolean updateLastNameById(long userId, String lastName) throws ServiceException {
+        try {
+            return UserValidator.isNameValid(lastName) && userDao.updateUserLastName(userId, lastName);
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to change user last name:", e);
+            throw new ServiceException("Impossible to change user last name:", e);
+        }
+    }
+
+    @Override
+    public boolean updateMobileNumberById(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+        String mobileNumber = dataCheckResult.get(MOBILE_NUMBER);
+        try {
             String mobileNumberCheckResult = UserValidator.isMobileNumberValid(mobileNumber)
-                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MOBILE_NUMBER_RESULT)
-                    : INVALID_MOBILE_NUMBER;
-            boolean result = parseBoolean(firstNameCheckResult)
-                    && parseBoolean(patronymicCheckResult)
-                    && parseBoolean(lastNameCheckResult)
-                    && parseBoolean(emailCheckResult)
-                    && parseBoolean(mobileNumberCheckResult);
+                    ? (!userDao.isMobileNumberExist(mobileNumber) ? TRUE : NOT_UNIQUE_MESSAGE)
+                    : INVALID_MESSAGE;
+            boolean result = parseBoolean(mobileNumberCheckResult);
             if (result) {
-                if (!firstName.isEmpty()) {
-                    result &= userDao.updateUserFirstName(userId, firstName);
-                }
-                if (!patronymic.isEmpty()) {
-                    result &= userDao.updateUserPatronymic(userId, patronymic);
-                }
-                if (!lastName.isEmpty()) {
-                    result &= userDao.updateUserLastName(userId, lastName);
-                }
-                if (!mobileNumber.isEmpty()) {
-                    result &= userDao.updateUserMobileNumber(userId, mobileNumber);
-                }
-                if (!email.isEmpty()) {
-                    result &= userDao.updateUserEmail(userId, email);
-                }
+                result = userDao.updateUserMobileNumber(userId, mobileNumber);
             } else {
-                dataCheckResult.replace(FIRST_NAME, firstNameCheckResult);
-                dataCheckResult.replace(PATRONYMIC, patronymicCheckResult);
-                dataCheckResult.replace(LAST_NAME, lastNameCheckResult);
                 dataCheckResult.replace(MOBILE_NUMBER, mobileNumberCheckResult);
-                dataCheckResult.replace(EMAIL, emailCheckResult);
-                logger.log(Level.DEBUG, "Personal data is invalid for user with id " + userId);
             }
             return result;
         } catch (DaoException e) {
-            logger.log(Level.ERROR, "Impossible to change user personal data:", e);
-            throw new ServiceException("Impossible to change user personal data:", e);
+            logger.log(Level.ERROR, "Impossible to change user mobile number:", e);
+            throw new ServiceException("Impossible to change user mobile number:", e);
         }
     }
 
     @Override
-    public boolean changeAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+    public boolean updateEmailById(long userId, Map<String, String> dataCheckResult) throws ServiceException {
+        String email = dataCheckResult.get(EMAIL);
+        try {
+            String emailCheckResult = UserValidator.isEmailValid(email)
+                    ? (!userDao.isEmailExist(email) ? TRUE : NOT_UNIQUE_MESSAGE)
+                    : INVALID_MESSAGE;
+            boolean result = parseBoolean(emailCheckResult);
+            if (result) {
+                result = userDao.updateUserEmail(userId, email);
+            } else {
+                dataCheckResult.replace(EMAIL, emailCheckResult);
+            }
+            return result;
+        } catch (DaoException e) {
+            logger.log(Level.ERROR, "Impossible to change user email:", e);
+            throw new ServiceException("Impossible to change user email:", e);
+        }
+    }
+
+    @Override
+    public boolean updateAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException {
         String oldPassword = dataCheckResult.get(OLD_PASSWORD);
         String oldPasswordHash = PasswordEncryptor.encrypt(oldPassword);
         try {
@@ -393,8 +371,8 @@ public class UserServiceImpl implements UserService {
             }
             return result;
         } catch (DaoException e) {
-            logger.log(Level.ERROR, "Impossible to change user personal data:", e);
-            throw new ServiceException("Impossible to change user personal data:", e);
+            logger.log(Level.ERROR, "Impossible to change user password:", e);
+            throw new ServiceException("Impossible to change user password:", e);
         }
     }
 }

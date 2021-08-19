@@ -8,9 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/jsp/*"}, initParams = {
-        @WebInitParam(name = "INDEX_PATH", value = "/index.jsp")
-})
+@WebFilter(urlPatterns = {"/jsp/*"}, initParams = {@WebInitParam(name = "INDEX_PATH", value = "/index.jsp")})
 public class JspSecurityFilter implements Filter {
     private String indexPath;
 

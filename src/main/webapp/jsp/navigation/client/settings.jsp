@@ -1,8 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="../../imports.jspf" %>
+<%@taglib prefix="ctg" uri="custom_tags" %>
 
 <fmt:message key="settings.title" var="title"/>
-<fmt:message key="settings.addresses" var="addresses"/>
+<fmt:message key="settings.addresses" var="user_addresses"/>
 <fmt:message key="settings.adding_address" var="add_address"/>
 <fmt:message key="settings.changing_personal_data" var="change_personal_data"/>
 <fmt:message key="settings.changing_password" var="change_psw"/>
@@ -48,9 +49,11 @@
 <fmt:message key="settings.not_unique_email_message" var="not_unique_email_message"/>
 <fmt:message key="settings.address_adding_message" var="address_adding_message"/>
 <fmt:message key="settings.personal_data_changing_message" var="personal_data_changing_message"/>
-<fmt:message key="settings.password_changing_message" var="password_changing_message"/>
+<fmt:message key="settings.password_changing_message" var="password_change_message"/>
 <fmt:message key="settings.discount_card_adding_positive_message" var="discount_card_adding_positive_message"/>
 <fmt:message key="settings.discount_card_adding_negative_message" var="discount_card_adding_negative_message"/>
+
+<jsp:useBean id="addresses" scope="request" type="java.util.List"/>
 
 <%--@elvariable id="valid_city" type="java.lang.String"--%>
 <%--@elvariable id="valid_street" type="java.lang.String"--%>
@@ -75,39 +78,91 @@
 <%--@elvariable id="invalid_intercom_code" type="java.lang.Boolean"--%>
 <%--@elvariable id="address_adding_result" type="java.lang.Boolean"--%>
 <%--@elvariable id="discount_card_adding_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="personal_data_changing_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="password_changing_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="invalid_first_name" type="java.lang.Boolean"--%>
-<%--@elvariable id="invalid_patronymic" type="java.lang.Boolean"--%>
-<%--@elvariable id="invalid_last_name" type="java.lang.Boolean"--%>
-<%--@elvariable id="invalid_mobile_number" type="java.lang.String"--%>
-<%--@elvariable id="invalid_email" type="java.lang.String"--%>
+<%--@elvariable id="personal_data_change_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="password_change_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="first_name_change_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="patronymic_change_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="last_name_change_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="mobile_number_change_result" type="java.lang.String"--%>
+<%--@elvariable id="email_change_result" type="java.lang.String"--%>
 <%--@elvariable id="password_changing_result" type="java.lang.String"--%>
 
 <!DOCTYPE html>
 <html>
+<%@include file="../../header/header.jsp" %>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="${abs}/js/show_hide_address.js"></script>
+    <script src="${abs}/js/message.js"></script>
+    <link rel="stylesheet" href="${abs}/css/settings.css">
     <title>${title}</title>
 </head>
 <body>
-<%@include file="../../header/header.jsp" %>
+
+<c:choose>
+    <c:when test="${first_name_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${personal_data_changing_message}</b></div></c:when>
+    <c:when test="${first_name_change_result eq 'false'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_first_name_message}</b></div></c:when>
+    <c:when test="${patronymic_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${personal_data_changing_message}</b></div></c:when>
+    <c:when test="${patronymic_change_result eq 'false'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_patronymic_message}</b></div></c:when>
+    <c:when test="${last_name_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${personal_data_changing_message}</b></div></c:when>
+    <c:when test="${last_name_change_result eq 'false'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_last_name_message}</b></div></c:when>
+    <c:when test="${mobile_number_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${personal_data_changing_message}</b></div></c:when>
+    <c:when test="${mobile_number_change_result eq 'invalid_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_mobile_number_message}</b></div></c:when>
+    <c:when test="${mobile_number_change_result eq 'not_unique_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${not_unique_mobile_number_message}</b></div></c:when>
+    <c:when test="${email_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${personal_data_changing_message}</b></div></c:when>
+    <c:when test="${email_change_result eq 'invalid_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_email_message}</b></div></c:when>
+    <c:when test="${email_change_result eq 'not_unique_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${not_unique_email_message}</b></div></c:when>
+    <c:when test="${password_change_result eq 'true'}"><div class="alert alert-success" id="message"><b class="valid_message">${password_change_message}</b></div></c:when>
+    <c:when test="${password_change_result eq 'incorrect_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${incorrect_password_message}</b></div></c:when>
+    <c:when test="${password_change_result eq 'invalid_message'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_passport_message}</b></div></c:when>
+    <c:when test="${password_change_result eq 'password_mismatch'}"><div class="alert alert-warning" id="message"><b class="invalid_message">${password_mismatch_message}</b></div></c:when>
+</c:choose>
+
+
+
+<%--<c:choose>--%>
+<%--    <c:when test="${password_change_result eq 'incorrect_message'}">${incorrect_password_message}</c:when>--%>
+<%--    <c:when test="${password_change_result eq 'invalid_message'}">${invalid_passport_message}</c:when>--%>
+<%--    <c:when test="${password_change_result eq 'password_mismatch'}">${password_mismatch_message}</c:when>--%>
+<%--    <c:when test="${password_change_result eq 'true'}">${password_change_message}</c:when>--%>
+<%--</c:choose>--%>
+
+
+
+
+<%--<c:choose>--%>
+<%--    <c:when test="${mobile_number_change_result eq 'true'}">${invalid_mobile_number_message}</c:when>--%>
+<%--    <c:when test="${mobile_number_change_result eq 'invalid_message'}">${invalid_mobile_number_message}</c:when>--%>
+<%--    <c:when test="${mobile_number_change_result eq 'not_unique_message'}">${not_unique_mobile_number_message}</c:when>--%>
+<%--</c:choose>--%>
+
 <div class="row">
-    <div class="col-sm-1"></div>
-    <h3 class="col-sm-3">${addresses}</h3>
+    <%--    <div class="col-sm-1"></div>--%>
+    <h3 class="col-sm-3 indent">${user_addresses}</h3>
 </div>
+
+<table class="checkout_table" id="checkout_table">
+    <tbody>
+    <c:forEach items="${addresses}" var="address">
+        <tr>
+            <td><ctg:AddressInfo address="${address}"/></td>
+            <td class="controls"><a href="#" class="del">×</a></td>
+        </tr>
+    </c:forEach>
+    </tbody>
+</table>
+<%--<a href="#" class="edit" data-id="2848">Удалить</a> |--%>
+<%--×--%>
 <div class="row">
-    <div class="col-sm-4"></div>
-    <button class="col-sm-2 btn btn-success">${add_address}</button>
+    <div class="col-sm-2"></div>
+    <button class="col-sm-2 btn btn-success" data-toggle="collapse" data-target="#address">${add_address}</button>
 </div>
-<div class="address">
+<div class="address collapse ${address_adding_result eq 'true' or address_adding_result eq 'false' ? 'in' : ''}"
+     id="address">
     <form action="${abs}/controller" method="post">
-        <input type="hidden" name="command" value="setting_action_list_command">
-        <input type="hidden" name="action" value="address">
+        <input type="hidden" name="command" value="add_new_address_command">
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-4">
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-4 indent">
                 <label for="city">${city}</label>
                 <input type="text" class="form-control" id="city" name="city" value="${valid_city}" list="cities">
                 <datalist id="cities">
@@ -122,16 +177,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-4">
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-4 indent">
                 <label for="street">${street}</label>
                 <input type="text" class="form-control" id="street" name="street" value="${valid_street}">
                 <c:if test="${invalid_street eq 'true'}">${invalid_street_message}</c:if>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-2">
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-2 indent">
                 <label for="building">${building}</label>
                 <input type="number" class="form-control" id="building" name="building" value="${valid_building}">
                 <c:if test="${invalid_building eq 'true'}">${invalid_building_message}</c:if>
@@ -143,8 +198,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-2">
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-2 indent">
                 <label for="flat">${flat}</label>
                 <input type="number" class="form-control" id="flat" name="flat" value="${valid_flat}">
                 <c:if test="${invalid_flat eq 'true'}">${invalid_flat_message}</c:if>
@@ -156,8 +211,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-2">
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-2 indent">
                 <label for="floor">${floor}</label>
                 <input type="number" class="form-control" id="floor" name="floor" value="${valid_floor}">
                 <c:if test="${invalid_floor eq 'true'}">${invalid_floor_message}</c:if>
@@ -170,9 +225,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1">
-                <button type="submit" class="btn btn-default">${add}</button>
+            <%--            <div class="col-sm-1"></div>--%>
+            <div class="col-sm-1 indent">
+                <button type="submit" class="btn btn-primary">${add}</button>
             </div>
             <div class="col-sm-2">
                 <c:if test="${address_adding_result eq 'true'}">${address_adding_message}</c:if>
@@ -180,148 +235,119 @@
         </div>
     </form>
 </div>
+<br/><br/>
 <div class="row">
-    <div class="col-sm-1"></div>
-    <h3 class="col-sm-3">${discounts}</h3>
+    <div class="col-sm-2"></div>
+    <button class="col-sm-2 btn btn-success" data-toggle="collapse"
+            data-target="#personal_data">${change_personal_data}</button>
 </div>
-<div class="row">
-    <div class="col-sm-4"></div>
-    <button class="col-sm-2 btn btn-success">${add_discount_card}</button>
-</div>
-<div class="discount_card">
-    <form action="${abs}/controller" method="post">
-        <input type="hidden" name="command" value="setting_action_list_command">
-        <input type="hidden" name="action" value="discount_card">
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="form-group col-sm-4">
-                <label for="card_number">${card_number}</label>
-                <input type="text" class="form-control" id="card_number" name="card_number">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1">
-                <button type="submit" class="btn btn-default">${add}</button>
-            </div>
-            <div class="col-sm-3">
-                <c:choose>
-                    <c:when test="${discount_card_adding_result eq 'true'}">${discount_card_adding_positive_message}</c:when>
-                    <c:when test="${discount_card_adding_result eq 'false'}">${discount_card_adding_negative_message}</c:when>
-                </c:choose>
-            </div>
-        </div>
-    </form>
-</div>
-<form action="${abs}/controller" method="post">
-    <input type="hidden" name="command" value="setting_action_list_command">
-    <input type="hidden" name="action" value="personal_data">
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <h3 class="col-sm-3">${personal_data}</h3>
-    </div>
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <button class="col-sm-2 btn btn-success">${change_personal_data}</button>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-3">
-            <label for="first_name">${first_name}</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" value="${valid_first_name}">
-            <c:if test="${invalid_first_name eq 'true'}">${invalid_first_name_message}</c:if>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-3">
-            <label for="patronymic">${patronymic}</label>
-            <input type="text" class="form-control" id="patronymic" name="patronymic" value="${valid_patronymic}">
-            <c:if test="${invalid_patronymic eq 'true'}">${invalid_patronymic_message}</c:if>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-3">
-            <label for="last_name">${last_name}</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" value="${valid_last_name}">
-            <c:if test="${invalid_last_name eq 'true'}">${invalid_last_name_message}</c:if>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-3">
-            <label for="mobile_number">${mobile_number}</label>
-            <input type="tel" class="form-control" id="mobile_number" name="mobile_number"
-                   value="${valid_mobile_number}">
-            <c:choose>
-                <c:when test="${invalid_mobile_number eq 'invalid_message'}">${invalid_mobile_number_message}</c:when>
-                <c:when test="${invalid_mobile_number eq 'not_unique_message'}">${not_unique_mobile_number_message}</c:when>
-            </c:choose>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-3">
-            <label for="email_address">${email}</label>
-            <input type="email" class="form-control" id="email_address" name="email_address" value="${valid_email}">
-            <c:choose>
-                <c:when test="${invalid_email eq 'invalid_message'}">${invalid_email_message}</c:when>
-                <c:when test="${invalid_email eq 'not_unique_message'}">${not_unique_email_message}</c:when>
-            </c:choose>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-1">
-            <button type="submit" class="btn btn-default">${change}</button>
-        </div>
-        <div class="col-sm-3">
-            <c:if test="${personal_data_changing_result eq 'true'}">${personal_data_changing_message}</c:if>
-        </div>
-    </div>
-</form>
 
+    <div class="collapse ${personal_data_change_result eq 'true' or personal_data_change_result eq 'false' ? 'in' : ''}"
+         id="personal_data">
+        <div class="row">
+            <h3 class="col-sm-3 indent">${personal_data}</h3>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-3 indent">
+                <label for="first_name">${first_name}</label>
+                <input type="text" class="form-control" id="first_name" name="value">
+            </div>
+            <div class="form-group col-sm-1">
+                <button type="submit" class="btn btn-primary" name="type" value="first_name">${change}</button>
+            </div>
+        </div>
+
+        <form action="${abs}/controller" method="post">
+            <input type="hidden" name="command" value="change_personal_data_command">
+        <div class="row">
+            <div class="form-group col-sm-3 indent">
+                <label for="patronymic">${patronymic}</label>
+                <input type="text" class="form-control" id="patronymic" name="value">
+            </div>
+            <div class="form-group col-sm-1">
+                <button type="submit" class="btn btn-primary" name="type" value="patronymic">${change}</button>
+            </div>
+        </div>
+        </form>
+        <form action="${abs}/controller" method="post">
+            <input type="hidden" name="command" value="change_personal_data_command">
+        <div class="row">
+            <div class="form-group col-sm-3 indent">
+                <label for="last_name">${last_name}</label>
+                <input type="text" class="form-control" id="last_name" name="value">
+            </div>
+            <div class="form-group col-sm-1">
+                <button type="submit" class="btn btn-primary" name="type" value="last_name">${change}</button>
+            </div>
+        </div>
+        </form>
+        <form action="${abs}/controller" method="post">
+            <input type="hidden" name="command" value="change_personal_data_command">
+        <div class="row">
+            <div class="form-group col-sm-3 indent">
+                <label for="mobile_number">${mobile_number}</label>
+                <input type="tel" class="form-control" id="mobile_number" name="value">
+            </div>
+            <div class="form-group col-sm-1">
+                <button type="submit" class="btn btn-primary" name="type" value="mobile_number">${change}</button>
+            </div>
+        </div>
+        </form>
+        <form action="${abs}/controller" method="post">
+            <input type="hidden" name="command" value="change_personal_data_command">
+        <div class="row">
+            <div class="form-group col-sm-3 indent">
+                <label for="email_address">${email}</label>
+                <input type="email" class="form-control" id="email_address" name="value">
+            </div>
+            <div class="form-group col-sm-1">
+                <button type="submit" class="btn btn-primary" name="type" value="email_address">${change}</button>
+            </div>
+        </div>
+        </form>
+    </div>
+
+<br/><br/>
+<div class="row">
+    <div class="col-sm-2"></div>
+    <button class="col-sm-2 btn btn-success" data-toggle="collapse" data-target="#psw_change">${change_psw}</button>
+</div>
 <form action="${abs}/controller" method="post">
-    <input type="hidden" name="command" value="setting_action_list_command">
+    <input type="hidden" name="command" value="change_user_password_command">
     <input type="hidden" name="action" value="new_password">
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <button class="col-sm-2 btn btn-success">${change_psw}</button>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-2">
-            <label for="old_psw">${old_psw}</label>
-            <input type="text" class="form-control" id="old_psw" name="old_password">
+
+    <div class="collapse ${password_change_result eq 'true' or password_change_result eq 'password_mismatch'
+    or password_change_result eq 'invalid_message' or password_change_result eq 'incorrect_message' ? 'in' : ''}"
+         id="psw_change">
+        <div class="row">
+            <%--        <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-4 indent">
+                <label for="old_psw">${old_psw}</label>
+                <input type="text" class="form-control" id="old_psw" name="old_password">
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-2">
-            <label for="new_psw">${new_psw}</label>
-            <input type="text" class="form-control" id="new_psw" name="new_password">
+        <div class="row">
+            <%--        <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-4 indent">
+                <label for="new_psw">${new_psw}</label>
+                <input type="text" class="form-control" id="new_psw" name="new_password">
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="form-group col-sm-2">
-            <label for="psw_confirmation">${psw_confirmation}</label>
-            <input type="text" class="form-control" id="psw_confirmation" name="confirm_password">
+        <div class="row">
+            <%--        <div class="col-sm-1"></div>--%>
+            <div class="form-group col-sm-4 indent">
+                <label for="psw_confirmation">${psw_confirmation}</label>
+                <input type="text" class="form-control" id="psw_confirmation" name="confirm_password">
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-1">
-            <button type="submit" class="btn btn-default">${change}</button>
-        </div>
-        <div class="col-sm-2">
-            <c:choose>
-                <c:when test="${password_changing_result eq 'incorrect_message'}">${incorrect_password_message}</c:when>
-                <c:when test="${password_changing_result eq 'invalid_message'}">${invalid_passport_message}</c:when>
-                <c:when test="${password_changing_result eq 'password_mismatch'}">${password_mismatch_message}</c:when>
-                <c:when test="${password_changing_result eq 'true'}">${password_changing_message}</c:when>
-            </c:choose>
+        <div class="row">
+            <%--        <div class="col-sm-1"></div>--%>
+            <div class="col-sm-1 indent">
+                <button type="submit" class="btn btn-primary">${change}</button>
+            </div>
+            <div class="col-sm-2">
+
+            </div>
         </div>
     </div>
 </form>

@@ -10,18 +10,15 @@ import com.kotov.restaurant.model.service.ServiceProvider;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.kotov.restaurant.controller.command.PagePath.MENU_MANAGEMENT_PAGE;
-import static com.kotov.restaurant.controller.command.ParamName.*;
+import static com.kotov.restaurant.controller.command.ParamName.SELECTED_MENU;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
+import static com.kotov.restaurant.controller.command.PagePath.MENU_MANAGEMENT_PAGE;
 
 public class AddMenuToMainPageCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
     @Override
@@ -34,23 +31,18 @@ public class AddMenuToMainPageCommand implements Command {
             if (menuOptional.isPresent()) {
                 Menu menu = menuOptional.get();
                 servletContext.setAttribute(menu.getType().toString(), menu);
-                request.setAttribute(UNSELECTED_MENU, Boolean.FALSE);
-            } else {
-                request.setAttribute(UNSELECTED_MENU, Boolean.TRUE);
-            }
-            List<Menu> menus = menuService.findAllMenu();                               // pagination?
-            if (menus.size() != 0) {
                 request.setAttribute(MENU_SEARCH_RESULT, Boolean.TRUE);
+                logger.log(Level.INFO, "Menu was added to main page. Result is " + menu);
             } else {
                 request.setAttribute(MENU_SEARCH_RESULT, Boolean.FALSE);
             }
+            List<Menu> menus = menuService.findAllMenu();
             request.setAttribute(MENU_LIST, menus);
-            logger.log(Level.INFO, "Menu were added to main page. Result is " + menus);
+            router.setPagePath(MENU_MANAGEMENT_PAGE);
+            return router;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Impossible to add menu to main page:", e);
             throw new CommandException("Impossible to add menu to main page:", e);
         }
-        router.setPagePath(MENU_MANAGEMENT_PAGE);
-        return router;
     }
 }

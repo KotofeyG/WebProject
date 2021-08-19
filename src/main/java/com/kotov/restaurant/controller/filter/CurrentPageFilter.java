@@ -34,8 +34,4 @@ public class CurrentPageFilter implements Filter {
         httpRequest.getSession().setAttribute(CURRENT_PAGE, currentPage);
         chain.doFilter(request, response);
     }
-
-    @Override
-    public void destroy() {
-    }
 }

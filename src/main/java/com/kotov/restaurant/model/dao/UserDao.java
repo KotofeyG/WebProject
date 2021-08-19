@@ -22,17 +22,13 @@ public interface UserDao extends BaseDao<User> {
 
     Optional<Address> findAddressById(long addressId) throws DaoException;
 
-    Optional<Address> findAddressByUserId(long userId) throws DaoException;
-
     List<Address> findUserAddresses(long userId) throws DaoException;
+
+    Map<Meal, Integer> findMealsInCartByUserId(long userId) throws DaoException;
 
     boolean insertUserAddress(long userId, Address address) throws DaoException;
 
     long insertNewEntity(User user, String passwordHash) throws DaoException;
-
-    boolean isDiscountCardActive(String number) throws DaoException;
-
-    boolean addDiscountCardToUser(long userId, String number) throws DaoException;
 
     boolean updateUserFirstName(long userId, String firstName) throws DaoException;
 
@@ -47,8 +43,6 @@ public interface UserDao extends BaseDao<User> {
     boolean updateUserPassword(long userId, String passwordHash) throws DaoException;
 
     boolean updateUserStatusesById(User.Status status, List<Long> userIdList) throws DaoException;
-
-    Map<Meal, Integer> findMealsInCartByUserId(long userId) throws DaoException;
 
     boolean deleteMealsFromCartByUserId(long userId, List<Long> mealIdList) throws DaoException;
 }

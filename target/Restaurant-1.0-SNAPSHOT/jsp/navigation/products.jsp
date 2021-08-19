@@ -9,6 +9,8 @@
 
 <fmt:message key="main.to_cart" var="to_cart"/>
 <fmt:message key="main.wrong_parameter" var="wrong_parameter_message"/>
+<fmt:message key="main.positive_result_of_insert" var="positive_result_of_insert"/>
+<fmt:message key="main.negative_result_of_insert" var="negative_result_of_insert"/>
 <fmt:message key="main.zero_number_of_meals" var="zero_number_of_meals_message"/>
 
 
@@ -16,12 +18,15 @@
 
 
 <%--@elvariable id="current_product_type" type="java.lang.String"--%>
+<%--@elvariable id="page" type="java.lang.Integer"--%>
+<%--@elvariable id="result_of_insert" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="${abs}/js/plus_minus_input_counter.js"></script>
+<%--    <script src="${abs}/js/total_cost.js"></script>--%>
     <link rel="stylesheet" href="${abs}/css/products.css">
     <title>${title}</title>
 </head>
@@ -30,12 +35,14 @@
 <body class="catalog-body">
 <%--@elvariable id="wrong_parameter" type="java.lang.Boolean"--%>
 <%--@elvariable id="zero_number_of_meals" type="java.lang.Boolean"--%>
+<%--@elvariable id="pagination_item" type="com.kotov.restaurant.controller.command.PaginationItem"--%>
 <c:choose>
+
+    <c:when test="${result_of_insert eq 'true'}">${positive_result_of_insert}</c:when>
+    <c:when test="${result_of_insert eq 'false'}">${negative_result_of_insert}</c:when>
     <c:when test="${wrong_parameter eq 'true'}"><h1>${wrong_parameter_message}</h1></c:when>
-    <c:when test="${zero_number_of_meals eq 'true'}"><h1>${zero_number_of_meals_message}</h1></c:when>
+    <c:when test="${current_menu.isEmpty()}"><h1>${zero_number_of_meals_message}</h1></c:when>
 </c:choose>
-
-
     <div class="box box_padding catalog-wrapp">
         <div class="catalog">
             <c:forEach items="${current_menu.meals}" var="order">
@@ -58,19 +65,19 @@
                         <div class="">
                             <div class="product__cost">
                                 <div class="product__price">
-                                        ${order.price} ${rub}
+                                    <b id="total_price">${order.price}</b> ${rub}
                                 </div>
                             </div>
                             <c:if test="${user.role eq 'CLIENT'}">
                                 <form action="${abs}/controller" method="post">
-                                    <input type="hidden" name="command" value="add_to_cart_command">
+                                    <input type="hidden" name="command" value="add_meal_to_cart_command">
                                     <input type="hidden" name="selected" value="${order.id}">
                                     <input type="hidden" name="product" value="${current_menu.type.toString()}">
-                                    <input type="hidden" name="">
+                                    <input type="hidden" name="page" value="${page}">
                                     <div class="product__actions">
                                         <div class="counter">
                                             <div class="counter__btn counter__btn_minus">-</div>
-                                            <input type="text" class="counter__number" name="meal_number" value="1">
+                                            <input type="text" class="counter__number" id="meal_number" name="meal_number" value="1">
                                             <div class="counter__btn counter__btn_plus">+</div>
                                         </div>
                                         <button type="submit" class="btn btn_type_light js_add-to-cart">${to_cart}</button>
@@ -87,19 +94,19 @@
         <div class="col-sm-6"></div>
         <div class="col-sm-3">
             <c:choose>
-                <c:when test="${zero_number_of_meals ne 'true' or wrong_parameter eq 'true'}">
+                <c:when test="${current_menu.isEmpty() ne 'true' or wrong_parameter eq 'true'}">
                 <ul class="pagination">
                     <li>
-                        <a class="page-link ${pageable.isFirstPage() ? 'disabled' : ''}" href="${abs}/controller?command=show_products_command&product=${current_product_type}&page=${pageable.currentPage - 1}">${previous}</a>
+                        <a class="page-link ${pagination_item.isFirstPage() ? 'disabled' : ''}" href="${abs}/controller?command=show_product_info_command&product=${current_product_type}&page=${pagination_item.currentPage - 1}">${previous}</a>
                     </li>
-                    <c:forEach var="i" begin="1" end="${pageable.pageCount()}">
-                        <li class="${pageable.currentPage eq i ? 'active': ''}">
-                            <a class="page-link" href="${abs}/controller?command=show_products_command&product=${current_product_type}&page=${i}">${i}</a>
+                    <c:forEach var="i" begin="1" end="${pagination_item.pageCount()}">
+                        <li class="${pagination_item.currentPage eq i ? 'active': ''}">
+                            <a class="page-link" href="${abs}/controller?command=show_product_info_command&product=${current_product_type}&page=${i}">${i}</a>
                         </li>
                     </c:forEach>
                     <li>
-                        <a class="page-link ${pageable.isLastPage() ? 'disabled' : ''}"
-                           href="${abs}/controller?command=show_products_command&product=${current_product_type}&page=${pageable.currentPage + 1}">${next}</a>
+                        <a class="page-link ${pagination_item.isLastPage() ? 'disabled' : ''}"
+                           href="${abs}/controller?command=show_product_info_command&product=${current_product_type}&page=${pagination_item.currentPage + 1}">${next}</a>
                     </li>
                 </ul>
                 </c:when>

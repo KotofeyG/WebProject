@@ -10,31 +10,32 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface MenuService {
-    int getMealCountForMenu(long menuId) throws ServiceException;
-
-    List<Meal> findMealsForMenuByPresence(long menuId, int page) throws ServiceException;
-
-    boolean addNewMeal(Map<String, String> dataCheckResult, InputStream image) throws ServiceException;
-
-    boolean addNewMenu(String title, String type, String[] mealIdArray) throws ServiceException;
-
-    boolean updateMealStatusesById(boolean status, String[] mealIdArray) throws ServiceException;
-
-    List<Meal> findMealsForMenu(long menuId) throws ServiceException;
-
-    boolean removeMealsById(String[] mealIdArray) throws ServiceException;
-
-    boolean addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException;
-
-    boolean deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException;
-
-    List<Meal> findMealsByType(String mealType) throws ServiceException;
 
     List<Meal> findAllMeals() throws ServiceException;
 
     List<Menu> findAllMenu() throws ServiceException;
 
+    List<Meal> findMealsByType(String mealType) throws ServiceException;
+
     Optional<Menu> findMenuById(String menuIdStr) throws ServiceException;
 
+    List<Meal> findMealsForMenuByPresence(long menuId, int page) throws ServiceException;
+
+    int getMealCountForMenu(long menuId) throws ServiceException;
+
+    boolean addMealToUserCart(long userId, String mealIdStr, String mealQuantityStr) throws ServiceException;
+
+    boolean insertNewMeal(Map<String, String> dataCheckResult, InputStream image) throws ServiceException;
+
+    boolean insertNewMenu(String title, String type, String[] mealIdArray) throws ServiceException;
+
+    boolean addMealToMenu(String menuIdStr, String mealIdStr) throws ServiceException;
+
+    boolean updateMealStatusesById(boolean status, String[] mealIdArray) throws ServiceException;
+
+    boolean deleteMealsById(String[] mealIdArray) throws ServiceException;
+
     boolean deleteMenuById(String menuIdStr) throws ServiceException;
+
+    boolean deleteMealFromMenu(String menuIdStr, String mealIdStr) throws ServiceException;
 }

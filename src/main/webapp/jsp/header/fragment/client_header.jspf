@@ -1,12 +1,12 @@
 <li class="nav-item">
     <a class="nav-link active" aria-current="page"
-       href="${abs}/controller?command=check_order_command">${order_book_mark}</a>
+       href="${abs}/controller?command=show_user_orders_command">${order_book_mark}</a>
 </li>
 <li class="nav-item">
     <a class="nav-link active" aria-current="page"
-       href="${abs}/controller?command=go_to_settings_command">${settings}</a>
+       href="${abs}/controller?command=settings_management_command">${settings}</a>
 </li>
 <li class="nav-item">
     <a class="nav-link active" aria-current="page"
-       href="${abs}/controller?command=check_cart_command">${cart_icon}</a>
+       href="${abs}/controller?command=cart_management_command">${cart_icon}</a>
 </li>

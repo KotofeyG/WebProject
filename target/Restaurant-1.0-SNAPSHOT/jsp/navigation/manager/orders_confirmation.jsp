@@ -33,7 +33,6 @@
 <jsp:useBean id="orders" scope="request" type="java.util.Map"/>
 
 <%--@elvariable id="action_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="zero_number_of_orders" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
@@ -45,93 +44,95 @@
 </head>
 <body>
 <c:choose>
-    <c:when test="${zero_number_of_orders eq 'true'}">
-<div class="container-fluid">
-    <div class="scroll-table">
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <form action="${abs}/controller" method="post" id="order_status_changing">
-                <input type="hidden" name="command" value="change_order_status_command">
-                <div class="col-sm-1">
-                    <button type="submit" class="btn btn-success" name="action" value="approve">
-                        <span class="glyphicon glyphicon-ok"></span> ${approve}
-                    </button>
+    <c:when test="${orders.isEmpty() ne 'true'}">
+        <div class="container-fluid">
+            <div class="scroll-table">
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <form action="${abs}/controller" method="post" id="order_status_changing">
+                        <input type="hidden" name="command" value="change_order_status_command">
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-success" name="action" value="approve">
+                                <span class="glyphicon glyphicon-ok"></span> ${approve}
+                            </button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-warning" name="action" value="reject">
+                                <span class="glyphicon glyphicon-remove"></span> ${reject}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-sm-1">
-                    <button type="submit" class="btn btn-warning" name="action" value="reject">
-                        <span class="glyphicon glyphicon-remove"></span> ${reject}
-                    </button>
-                </div>
-            </form>
-        </div>
-        <c:choose>
-            <c:when test="${action_result eq 'true'}">
-                <div class="alert alert-success" id="message"><b class="valid_message">${positive_result}</b></div>
-            </c:when>
-            <c:when test="${action_result eq 'false'}">
-                <div class="alert alert-warning" id="message"><b class="invalid_message">${negative_result}</b></div>
-            </c:when>
-        </c:choose>
-        <table class="table-condensed table-bordered meal-table">
-            <caption><h3 class="text-center">${order_confirmation_title}</h3></caption>
-            <thead>
-            <tr>
-                <th>${choice}</th>
-                <th>${order_id}</th>
-                <th>${username}</th>
-                <th>${total_price_column}</th>
-                <th>${address}</th>
-                <th>${delivery_time}</th>
-                <th>${payment_type}</th>
-                <th>${order_time}</th>
-                <th>${order_status}</th>
-            </tr>
-            </thead>
-        </table>
-        <div class="scroll-table-body">
-            <table class="table-condensed table-bordered meal-table">
-                <tbody>
-                <c:forEach items="${orders}" var="order">
+                <c:choose>
+                    <c:when test="${action_result eq 'true'}">
+                        <div class="alert alert-success" id="message"><b class="valid_message">${positive_result}</b>
+                        </div>
+                    </c:when>
+                    <c:when test="${action_result eq 'false'}">
+                        <div class="alert alert-warning" id="message"><b class="invalid_message">${negative_result}</b>
+                        </div>
+                    </c:when>
+                </c:choose>
+                <table class="table-condensed table-bordered meal-table">
+                    <caption><h3 class="text-center">${order_confirmation_title}</h3></caption>
+                    <thead>
                     <tr>
-                        <td>
-                            <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="selected" value="${order.key.id}" form="order_status_changing">
-                            </label>
-                        </td>
-                        <td>${order.key.id}</td>
-                        <td id="user-info">
-                                ${login} ${order.value.login}
-                            <c:if test="${not empty order.value.firstName}"><br/>${first_name} ${order.value.firstName}</c:if>
-                            <c:if test="${not empty order.value.patronymic}"><br/>${patronymic} ${order.value.patronymic}</c:if>
-                            <c:if test="${not empty order.value.lastName}"><br/>${last_name} ${order.value.lastName}</c:if>
-                        </td>
-                        <td><ctg:totalCost mealList="${order.key.meals}"/> ${rub}</td>
-                        <td id="address-info"><ctg:AddressInfo address="${order.key.address}"/><br/>${mobile_number}${order.value.mobileNumber}</td>
-                        <td>${order.key.deliveryTime}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${order.key.cash eq 'true'}">${cash_payment}</c:when>
-                                <c:otherwise>${cashless_payments}</c:otherwise>
-                            </c:choose>
-
-                        </td>
-                        <td>${order.key.created}</td>
-                        <td>${order.key.status.value}</td>
+                        <th>${choice}</th>
+                        <th>${order_id}</th>
+                        <th>${username}</th>
+                        <th>${total_price_column}</th>
+                        <th>${address}</th>
+                        <th>${delivery_time}</th>
+                        <th>${payment_type}</th>
+                        <th>${order_time}</th>
+                        <th>${order_status}</th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                </table>
+                <div class="scroll-table-body">
+                    <table class="table-condensed table-bordered meal-table">
+                        <tbody>
+                        <c:forEach items="${orders}" var="order">
+                            <tr>
+                                <td>
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="selected"
+                                               value="${order.key.id}" form="order_status_changing">
+                                    </label>
+                                </td>
+                                <td>${order.key.id}</td>
+                                <td id="user-info">
+                                        ${login} ${order.value.login}
+                                    <c:if test="${not empty order.value.firstName}"><br/>${first_name} ${order.value.firstName}</c:if>
+                                    <c:if test="${not empty order.value.patronymic}"><br/>${patronymic} ${order.value.patronymic}</c:if>
+                                    <c:if test="${not empty order.value.lastName}"><br/>${last_name} ${order.value.lastName}</c:if>
+                                </td>
+                                <td><ctg:totalCost mealList="${order.key.meals}"/> ${rub}</td>
+                                <td id="address-info"><ctg:AddressInfo
+                                        address="${order.key.address}"/><br/>${mobile_number}${order.value.mobileNumber}
+                                </td>
+                                <td>${order.key.deliveryTime}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${order.key.cash eq 'true'}">${cash_payment}</c:when>
+                                        <c:otherwise>${cashless_payments}</c:otherwise>
+                                    </c:choose>
+
+                                </td>
+                                <td>${order.key.created}</td>
+                                <td>${order.key.status.value}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-3">
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5"></div>
-        <div class="col-sm-3">
-            <c:choose>
-                <c:when test="${zero_number_of_orders eq 'true'}"><br/></c:when>
-            </c:choose>
-        </div>
-    </div>
-</div>
     </c:when>
     <c:otherwise><h1>${zero_orders_message}</h1></c:otherwise>
 </c:choose>

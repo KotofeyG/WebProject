@@ -89,7 +89,7 @@
                         </td>
                         <td>
                             <form action="controller" method="post">
-                                <input type="hidden" name="command" value="menu_update_command">
+                                <input type="hidden" name="command" value="update_menu_command">
                                 <input type="hidden" name="selected" value="${entry.key.id}"/>
                                 <input type="hidden" name="selected_menu" value="${requestScope.selected_menu.id}"/>
                                 <c:choose>

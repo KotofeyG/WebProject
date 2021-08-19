@@ -20,18 +20,19 @@ public class MealDaoImpl implements MealDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connection_pool = ConnectionPool.getInstance();
 
-    private static final String FIND_MEAL_BY_TITLE = "SELECT id FROM meals WHERE title=?";
     private static final String FIND_MEAL_BY_ID = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
-            " JOIN meal_types ON meal_types.id=type_id WHERE meals.id=?";
+            " JOIN meal_types ON meal_types.id=type_id" +
+            " WHERE meals.id=?";
+    private static final String FIND_MEAL_BY_TITLE = "SELECT id FROM meals WHERE title=?";
     private static final String FIND_ALL_MEALS = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
             " JOIN meal_types ON meal_types.id=type_id";
     private static final String FIND_ALL_MEALS_BY_TYPE = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active FROM meals" +
             " JOIN meal_types ON meal_types.id=type_id AND meal_types.type=?";
-    private static final String INSERT_NEW_MEAL = "INSERT INTO meals (title, image, type_id, price, recipe, created, active) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_NEW_MEAL = "INSERT INTO meals (title, image, type_id, price, recipe, created, active)" +
+            " VALUES(?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_MEAL_TO_CART = "INSERT INTO carts (user_id, meal_id, quantity) VALUES(?, ?, ?)";
     private static final String UPDATE_MEAL_STATUS = "UPDATE meals SET active=? WHERE id=?";
     private static final String DELETE_MEAL = "DELETE FROM meals WHERE id=?";
-    private static final String MEAL_ORDER_BY_TITLE = " ORDER BY meals.title ";
 
     @Override
     public Optional<Meal> findEntityById(long id) throws DaoException {
@@ -63,7 +64,7 @@ public class MealDaoImpl implements MealDao {
                 Meal meal = MealCreator.create(resultSet);
                 meals.add(meal);
             }
-            logger.log(Level.DEBUG, "findAllEntities method was completed successfully. All meals were found");
+            logger.log(Level.DEBUG, "findAllEntities method was completed successfully. " +meals.size() + " All meals were found");
             return meals;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find all meals. Database access error:", e);
@@ -78,7 +79,7 @@ public class MealDaoImpl implements MealDao {
 
     @Override
     public boolean deleteEntityById(long id) {
-        return false;
+        throw new UnsupportedOperationException("deleteEntityById(long id) method is not supported");
     }
 
     @Override
@@ -97,8 +98,8 @@ public class MealDaoImpl implements MealDao {
             long mealId = 0;
             if (resultSet.next()) {
                 mealId = resultSet.getLong(FIRST_PARAM_INDEX);
+                logger.log(Level.INFO, "insertNewEntity method was completed successfully. Meal with id " + mealId + " was added");
             }
-            logger.log(Level.INFO, "insertNewEntity method was completed successfully. Meal with id " + mealId + " was added");
             return mealId;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to insert meal into database. Database access error:", e);
@@ -115,7 +116,7 @@ public class MealDaoImpl implements MealDao {
                 statement.addBatch();
             }
             boolean result = statement.executeBatch().length == idList.size();
-            logger.log(Level.DEBUG, result ?"deleteEntities method was completed successfully. Meals with id " + idList + " were deleted"
+            logger.log(Level.INFO, result ? "deleteEntities method was completed successfully. Meals with id " + idList + " were deleted"
                     : "Meals with id " + idList + " weren't deleted");
             return result;
         } catch (SQLException e) {

@@ -14,9 +14,8 @@
 <fmt:message key="meal_management.action_result_positive_message" var="action_result_positive_message"/>
 <fmt:message key="meal_management.action_result_negative_message" var="action_result_negative_message"/>
 
-<%--@elvariable id="meal_search_result" type="java.lang.Boolean"--%>
 <%--@elvariable id="meal_action_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="meal_creation_data" type="java.lang.String"--%>
+<%--@elvariable id="meal_creation_result" type="java.lang.String"--%>
 
 <!DOCTYPE html>
 <html>
@@ -31,7 +30,7 @@
     <form action="${abs}/controller" method="post">
         <input type="hidden" name="command" value="meal_list_action_command">
         <c:choose>
-            <c:when test="${meal_search_result eq 'true'}">
+            <c:when test="${meals.isEmpty() ne 'true'}">
                 <div class="button-group">
                     <button type="button" data-toggle="modal" data-target="#create-meal-modal" class="btn btn-primary">
                         <span class="glyphicon glyphicon-plus-sign"></span> ${new_dish_adding}
@@ -47,13 +46,13 @@
                     </button>
                 </div>
                 <c:choose>
-                    <c:when test="${meal_creation_data eq 'valid'}">
+                    <c:when test="${meal_creation_result eq 'valid'}">
                         <div class="alert alert-success" id="message"><b class="valid_message">${valid_meal_creation_data}</b></div>
                     </c:when>
-                    <c:when test="${meal_creation_data eq 'invalid'}">
+                    <c:when test="${meal_creation_result eq 'invalid'}">
                         <div class="alert alert-warning" id="message"><b class="invalid_message">${invalid_meal_creation_data}</b></div>
                     </c:when>
-                    <c:when test="${meal_creation_data eq 'not_unique'}">
+                    <c:when test="${meal_creation_result eq 'not_unique'}">
                         <div class="alert alert-warning" id="message"><b class="invalid_message">${not_unique_meal_creation_data}</b></div>
                     </c:when>
                     <c:when test="${meal_action_result eq 'true'}">

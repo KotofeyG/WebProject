@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
+import static com.kotov.restaurant.controller.command.ParamName.USER;
 
 @WebFilter(urlPatterns = {"/*"})
 public class CommandAccessFilter implements Filter {
@@ -35,9 +36,8 @@ public class CommandAccessFilter implements Filter {
             Optional<Object> optionalUser = Optional.ofNullable(session.getAttribute(SESSION_USER));
             if (optionalUser.isPresent()) {
                 User user = (User) optionalUser.get();
-                User.Role role = user.getRole();
-                logger.log(Level.DEBUG, "User role is " + role);
-                if (allowedRoles.contains(role)) {
+                logger.log(Level.DEBUG, "User role is " + user.getRole());
+                if (allowedRoles.contains(user.getRole())) {
                     filterChain.doFilter(request, response);
                 } else {
                     response.sendError(403);

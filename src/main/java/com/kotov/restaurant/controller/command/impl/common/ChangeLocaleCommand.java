@@ -6,13 +6,10 @@ import com.kotov.restaurant.validator.LocaleValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
 public class ChangeLocaleCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Router execute(HttpServletRequest request) {
@@ -21,13 +18,11 @@ public class ChangeLocaleCommand implements Command {
         String currentPage = (String) session.getAttribute(CURRENT_PAGE);
         String newLocale = request.getParameter(SESSION_LOCALE);
         logger.log(Level.DEBUG, "Locale parameter is " + newLocale);
-
         if (LocaleValidator.isLocaleExist(newLocale)) {
             session.setAttribute(SESSION_LOCALE, newLocale);
         } else {
             request.setAttribute(WRONG_LOCALE, Boolean.TRUE);
         }
-
         router.setPagePath(currentPage);
         return router;
     }

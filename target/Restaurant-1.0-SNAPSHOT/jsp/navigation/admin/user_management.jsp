@@ -18,8 +18,7 @@
 <fmt:message key="registration.mobile_number" var="mobile_number"/>
 <fmt:message key="registration.sign_up_2" var="sign_up"/>
 
-<%--@elvariable id="result" type="java.lang.Boolean"--%>
-<%--@elvariable id="user_search_result" type="java.lang.Boolean"--%>
+<%--@elvariable id="user_action_result" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
@@ -32,7 +31,7 @@
     <form action="${abs}/controller" method="post">
         <input type="hidden" name="command" value="user_list_action_command">
         <c:choose>
-            <c:when test="${user_search_result eq 'true'}"><%@include file="fragment/user_table.jspf" %></c:when>
+            <c:when test="${not users.isEmpty()}"><%@include file="fragment/user_table.jspf" %></c:when>
             <c:otherwise>${negative_user_search_message}</c:otherwise>
         </c:choose>
         <div class="container text-center">
@@ -52,8 +51,8 @@
     </form>
     <div class="row center-block">
     <c:choose>
-        <c:when test="${result eq 'true'}"><b>${positive_action_message}</b></c:when>
-        <c:when test="${result eq 'false'}"><b>${negative_action_message}</b></c:when>
+        <c:when test="${user_action_result eq 'true'}"><b>${positive_action_message}</b></c:when>
+        <c:when test="${user_action_result eq 'false'}"><b>${negative_action_message}</b></c:when>
     </c:choose>
     </div>
     <div id="create-manager-modal" class="modal fade">

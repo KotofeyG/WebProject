@@ -12,18 +12,15 @@ import com.kotov.restaurant.model.service.ServiceProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-import static com.kotov.restaurant.controller.command.AttributeName.ACTION_RESULT;
-import static com.kotov.restaurant.controller.command.AttributeName.ORDER;
-import static com.kotov.restaurant.controller.command.PagePath.ORDERS_PAGE;
 import static com.kotov.restaurant.controller.command.ParamName.*;
+import static com.kotov.restaurant.controller.command.AttributeName.ORDER_LIST;
+import static com.kotov.restaurant.controller.command.AttributeName.ACTION_RESULT;
+import static com.kotov.restaurant.controller.command.PagePath.ORDER_PAGE;
 
 public class OrderActionCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 
     @Override
@@ -31,30 +28,25 @@ public class OrderActionCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(AttributeName.SESSION_USER);
-        long userId = user.getId();
         String action = request.getParameter(ACTION);
-        String orderIdStr = request.getParameter(SELECTED);
-        boolean result;
+        String orderId = request.getParameter(SELECTED);
         try {
-            if (PAY.equals(action)) {
-                result = orderService.changeOrderStatus(orderIdStr, Order.Status.PAID);
-            } else if (REJECT.equals(action)) {
-                result = orderService.changeOrderStatus(orderIdStr, Order.Status.REJECTED);
-            } else {
-                result = false;
-            }
-            if (result) {
-                request.setAttribute(ACTION_RESULT, Boolean.TRUE);
-            } else {
-                request.setAttribute(ACTION_RESULT, Boolean.FALSE);
-            }
-            List<Order> orders = orderService.findOrdersByUserId(userId);
-            request.setAttribute(ORDER, orders);
+            boolean actionResult = switch (action) {
+                case PAY -> orderService.updateOrderStatus(orderId, Order.Status.PAID);
+                case REJECT -> orderService.updateOrderStatus(orderId, Order.Status.REJECTED);
+                default -> {
+                    logger.log(Level.WARN, "Unexpected value: " + action);
+                    yield false;
+                }
+            };
+            request.setAttribute(ACTION_RESULT, actionResult);
+            List<Order> orders = orderService.findOrdersByUserId(user.getId());
+            request.setAttribute(ORDER_LIST, orders);
+            router.setPagePath(ORDER_PAGE);
+            return router;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Impossible to do action with order:", e);
             throw new CommandException("Impossible to do action with order:", e);
         }
-        router.setPagePath(ORDERS_PAGE);
-        return router;
     }
 }

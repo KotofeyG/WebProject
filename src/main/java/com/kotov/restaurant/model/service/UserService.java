@@ -19,25 +19,27 @@ public interface UserService {
 
     List<Address> findUserAddresses(long userId) throws ServiceException;
 
-    List<Address> findUserAddresses(String userIdStr) throws ServiceException;
+    Map<Meal, Integer> findMealsInCartByUserId(long userId) throws ServiceException;
 
-    boolean updateUserStatusesById(String statusStr, String[] userIdArray) throws ServiceException;
+    boolean updateUserStatusesById(User.Status status, String[] userIdArray) throws ServiceException;
 
-    boolean deleteUsersById(String[] userIdArray) throws ServiceException;
+    boolean updateFirstNameById(long userId, String firstName) throws ServiceException;
+
+    boolean updatePatronymicById(long userId, String patronymic) throws ServiceException;
+
+    boolean updateLastNameById(long userId, String lastName) throws ServiceException;
+
+    boolean updateMobileNumberById(long userId, Map<String, String> dataCheckResult) throws ServiceException;
+
+    boolean updateEmailById(long userId, Map<String, String> dataCheckResult) throws ServiceException;
+
+    boolean updateAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException;
 
     boolean registerNewUser(Map<String, String> dataCheckResult) throws ServiceException;
 
-    Map<Meal, Integer> findMealsInCartByUserId(long userId) throws ServiceException;
+    boolean insertUserAddress(long userId, Map<String, String> dataCheckResult) throws ServiceException;
 
-    Map<Meal, Integer> findMealsInCartByUserId(String userIdStr) throws ServiceException;
+    boolean deleteUsersById(String[] userIdArray) throws ServiceException;
 
     boolean deleteMealsFromCartByUserId(long userId, String[] mealIdArray) throws ServiceException;
-
-    boolean addUserAddress(long userId, Map<String, String> dataCheckResult) throws ServiceException;
-
-    boolean addDiscountCardToUser(long userId, String number) throws ServiceException;
-
-    boolean changeUserPersonalData(long userId, Map<String, String> dataCheckResult) throws ServiceException;
-
-    boolean changeAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException;
 }

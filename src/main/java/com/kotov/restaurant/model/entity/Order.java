@@ -17,8 +17,8 @@ public class Order extends AbstractEntity {
     public enum Status {
         IN_PROCESS("В обработке"),
         APPROVED("Одобрен"),
-        REJECTED("Отклонен"),
-        PAID("Оплачен");
+        PAID("Оплачен"),
+        REJECTED("Отклонен");
 
         String value;
 

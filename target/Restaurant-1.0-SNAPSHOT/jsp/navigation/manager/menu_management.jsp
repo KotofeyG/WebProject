@@ -11,7 +11,7 @@
 <fmt:message key="menu_management.action_positive_message" var="action_positive_message"/>
 
 <%--@elvariable id="menu_search_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="unselected_menu" type="java.lang.Boolean"--%>
+<%--@elvariable id="menu_action_result" type="java.lang.Boolean"--%>
 
 <!DOCTYPE html>
 <html>
@@ -25,9 +25,9 @@
 <div class="container-fluid">
     <form action="${abs}/controller" method="post">
         <c:choose>
-            <c:when test="${menu_search_result eq 'true'}">
+            <c:when test="${menus.isEmpty() eq 'false'}">
                 <div class="button-group">
-                    <a href="controller?command=menu_creation_command">
+                    <a href="controller?command=show_menu_creation_info_command">
                         <button type="button" class="btn btn-primary">
                             <span class="glyphicon glyphicon-plus-sign"></span> ${menu_creation}
                         </button>
@@ -35,7 +35,7 @@
                     <button type="submit" class="btn btn-success" name="command" value="add_menu_to_main_page_command">
                         <span class="glyphicon glyphicon-edit"></span> ${menu_adding_to_main_page}
                     </button>
-                    <button type="submit" class="btn btn-warning" name="command" value="menu_update_command">
+                    <button type="submit" class="btn btn-warning" name="command" value="show_menu_details_command">
                         <span class="glyphicon glyphicon-edit"></span> ${menu_update}
                     </button>
                     <button type="submit" class="btn btn-danger" name="command" value="menu_delete_command">
@@ -43,11 +43,11 @@
                     </button>
                 </div>
                 <c:choose>
-                    <c:when test="${unselected_menu eq 'true'}">
-                        <div class="alert alert-warning" id="message"><b class="invalid_message">${action_negative_message}</b></div>
-                    </c:when>
-                    <c:when test="${unselected_menu eq 'false'}">
+                    <c:when test="${menu_action_result eq 'true'}">
                         <div class="alert alert-success" id="message"><b class="valid_message">${action_positive_message}</b></div>
+                    </c:when>
+                    <c:when test="${menu_action_result eq 'false'}">
+                        <div class="alert alert-warning" id="message"><b class="invalid_message">${action_negative_message}</b></div>
                     </c:when>
                 </c:choose>
                 <%@include file="fragment/menu_table.jspf"%>

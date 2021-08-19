@@ -17,12 +17,11 @@ public class AddressValidator {
     }
 
     public static boolean isCityValid(String city) {
-        boolean result = false;
-        for (Address.City next : Address.City.values()) {
-            if (next.getRussianName().equals(city)) {
-                result = true;
-                break;
-            }
+        boolean result = true;
+        try {
+            Address.City.valueOf(city);
+        } catch (IllegalArgumentException e) {
+            result = false;
         }
         return result;
     }

@@ -3,7 +3,7 @@ package com.kotov.restaurant.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidator {                                                                // check regexes
+public class UserValidator {
     private static final String LOGIN_REGEX = "[A-Za-z]\\w{2,20}";
     private static final String PASSPORT_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,24}$";
     private static final String NAME_PATTERN = "[\\p{Punct}&&[^-]]|-{2,}| {2,}|^[- ]|[- ]$";
@@ -24,14 +24,14 @@ public class UserValidator {                                                    
 
     public static boolean isNameValid(String name) {
         Matcher matcher = Pattern.compile(NAME_PATTERN).matcher(name);
-        return name != null && (name.isEmpty() || !matcher.find());
+        return name != null && (!name.isBlank() && !matcher.find());
     }
 
     public static boolean isEmailValid(String email) {
-        return email != null && (!email.isEmpty() || email.matches(EMAIL_REGEX));
+        return email != null && (email.matches(EMAIL_REGEX));
     }
 
     public static boolean isMobileNumberValid(String mobileNumber) {
-        return mobileNumber != null && (!mobileNumber.isEmpty() || mobileNumber.matches(MOBILE_NUMBER_REGEX));
+        return mobileNumber != null && (mobileNumber.matches(MOBILE_NUMBER_REGEX));
     }
 }

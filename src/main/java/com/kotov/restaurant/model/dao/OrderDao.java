@@ -4,6 +4,7 @@ import com.kotov.restaurant.exception.DaoException;
 import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.Order;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,9 @@ public interface OrderDao extends BaseDao<Order> {
 
     List<Order> findOrdersByUserId(long userId) throws DaoException;
 
+    List<Order> findOrdersByStatuses(EnumSet<Order.Status> statuses) throws DaoException;
+
     Map<Meal, Integer> findMealsForOrder(long orderId) throws DaoException;
 
-    boolean changeOrderStatus(long orderId, Order.Status status) throws DaoException;
+    boolean updateOrderStatus(long orderId, Order.Status status) throws DaoException;
 }

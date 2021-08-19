@@ -9,35 +9,26 @@ import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-import static com.kotov.restaurant.controller.command.AttributeName.*;
+import static com.kotov.restaurant.controller.command.AttributeName.USER_LIST;
 import static com.kotov.restaurant.controller.command.PagePath.USER_MANAGEMENT_PAGE;
 
 public class UserManagementCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
-    private static final UserService service = ServiceProvider.getInstance().getUserService();
+    private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         try {
-            List<User> users = service.findAllUsers();
-            if (users.size() == 0) {
-                request.setAttribute(USER_SEARCH_RESULT, Boolean.FALSE);
-            } else {
-                request.setAttribute(USER_SEARCH_RESULT, Boolean.TRUE);
-            }
-            request.setAttribute(ALL_USERS, users);
+            List<User> users = userService.findAllUsers();
+            request.setAttribute(USER_LIST, users);
+            router.setPagePath(USER_MANAGEMENT_PAGE);
+            return router;
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Method execute cannot be completed:", e);
-            throw new CommandException("Method execute cannot be completed:", e);
+            logger.log(Level.ERROR, "Users cannot be found:", e);
+            throw new CommandException("Users cannot be found:", e);
         }
-        router.setPagePath(USER_MANAGEMENT_PAGE);
-        logger.log(Level.DEBUG, "Method execute is completed successfully");
-        return router;
     }
 }

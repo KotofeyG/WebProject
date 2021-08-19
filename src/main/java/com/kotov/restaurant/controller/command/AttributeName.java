@@ -1,13 +1,15 @@
 package com.kotov.restaurant.controller.command;
 
 public class AttributeName {
-    public static final String PAGEABLE = "pageable";
+    public static final String PAGINATION_ITEM = "pagination_item";
     public static final String WRONG_COMMAND = "wrong_command";
+    public static final String RESULT_OF_INSERT = "result_of_insert";
+
 
     public static final String ADDRESS_ADDING_RESULT = "address_adding_result";
     public static final String DISCOUNT_CARD_ADDING_RESULT = "discount_card_adding_result";
-    public static final String PERSONAL_DATA_CHANGING_RESULT = "personal_data_changing_result";
-    public static final String PASSWORD_CHANGING_RESULT = "password_changing_result";
+    public static final String PERSONAL_DATA_CHANGE_RESULT = "personal_data_change_result";
+    public static final String PASSWORD_CHANGE_RESULT = "password_change_result";
 
     /* user registration attributes */
     public static final String VALID_LOGIN = "valid_login";
@@ -28,6 +30,12 @@ public class AttributeName {
     public static final String AUTHENTICATION_RESULT = "authentication_result";
 
     /* user setting attributes */
+    public static final String FIRST_NAME_CHANGE_RESULT = "first_name_change_result";
+    public static final String PATRONYMIC_CHANGE_RESULT = "patronymic_change_result";
+    public static final String LAST_NAME_CHANGE_RESULT = "last_name_change_result";
+    public static final String MOBILE_NUMBER_CHANGE_RESULT = "mobile_number_change_result";
+    public static final String EMAIL_CHANGE_RESULT = "email_change_result";
+
     public static final String VALID_CITY = "valid_city";
     public static final String VALID_STREET = "valid_street";
     public static final String VALID_BUILDING = "valid_building";
@@ -54,8 +62,8 @@ public class AttributeName {
     public static final String ADDRESS_LIST = "addresses";
 
     /* user management attributes */
-    public static final String ALL_USERS = "users";
-    public static final String USER_ACTION_RESULT = "result";
+    public static final String USER_LIST = "users";
+    public static final String USER_ACTION_RESULT = "user_action_result";
     public static final String USER_SEARCH_RESULT = "user_search_result";
 
     /* meal management attributes */
@@ -65,10 +73,11 @@ public class AttributeName {
     public static final String MEAL_SEARCH_RESULT = "meal_search_result";
     public static final String MEAL_ACTION_RESULT = "meal_action_result";
     public static final String MEAL_LIST = "meals";
+    public static final String MEAL_CREATION_RESULT = "meal_creation_result";
 
     /* menu management attributes */
     public static final String MENU_SEARCH_RESULT = "menu_search_result";
-    public static final String UNSELECTED_MENU = "unselected_menu";
+    public static final String MENU_ACTION_RESULT = "menu_action_result";
     public static final String MENU_DELETE_RESULT = "menu_delete_result";
     public static final String MARKED_MEALS = "marked_meals";
     public static final String CURRENT_MENU = "current_menu";
@@ -85,7 +94,7 @@ public class AttributeName {
     public static final String ZERO_NUMBER_OF_MEALS = "zero_number_of_meals";
 
     /* order attributes */
-    public static final String ORDER = "orders";
+    public static final String ORDER_LIST = "orders";
     public static final String CURRENT_ORDER = "order";
     public static final String ACTION_RESULT = "action_result";
     public static final String ZERO_NUMBER_OF_ORDERS = "zero_number_of_orders";

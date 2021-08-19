@@ -13,7 +13,7 @@ public interface MealDao extends BaseDao<Meal>{
 
     long insertNewEntity(Meal meal, InputStream image) throws DaoException;
 
-    boolean updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException;
-
     boolean insertMealToUserCart(long userId, long mealId, int mealQuantity) throws DaoException;
+
+    boolean updateMealStatusesById(boolean status, List<Long> mealIdList) throws DaoException;
 }

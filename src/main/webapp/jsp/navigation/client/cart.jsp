@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="../../imports.jspf" %>
 
-<fmt:message key="cart.title" var="title"/>
+<fmt:message key="cart.title" var="cart_title"/>
 <fmt:message key="cart.amount" var="amount"/>
 <fmt:message key="cart.deleting_position" var="deleting_position"/>
 <fmt:message key="cart.clearing_cart" var="clearing_cart"/>
@@ -61,18 +61,20 @@
 
 <!DOCTYPE html>
 <html>
+<%@include file="../../header/header.jsp" %>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="${abs}/js/plus_minus_input_counter.js"></script>
-    <link rel="stylesheet" href="${abs}/css/cart.css">
+    <script src="${abs}/js/message.js"></script>
+    <link rel="stylesheet" href="${abs}/css/meal_management.css">
+        <link rel="stylesheet" href="${abs}/css/cart.css">
     <title>${title}</title>
 </head>
 <body class="cart">
-<%@include file="../../header/header.jsp" %>
 <div class="container-fluid">
     <div class="scroll-table">
         <table class="table-condensed table-bordered meal-table">
-            <caption><h3 class="text-center">${title}</h3></caption>
+            <caption><h3 class="text-center">${cart_title}</h3></caption>
             <thead>
             <tr>
                 <th>${meal_image}</th>
@@ -116,7 +118,7 @@
     </div>
     <div class="row">
         <form action="${abs}/controller" method="post">
-            <input type="hidden" name="command" value="delete_from_cart_command">
+            <input type="hidden" name="command" value="delete_meals_from_cart_command">
             <c:forEach items="${cart.keySet()}" var="order">
                 <input type="hidden" name="meal_id" value="${order.id}">
             </c:forEach>

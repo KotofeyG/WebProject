@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.Base64;
 
 public class ImageEncoder {
+    private static final String IMAGE_TYPE = "data:image/jpeg;base64,";
+
     private ImageEncoder() {
     }
 
@@ -17,7 +19,7 @@ public class ImageEncoder {
             byte[] imageBytes = image.getBinaryStream().readAllBytes();
             byte[] encodeBase64 = Base64.getEncoder().encode(imageBytes);
             String base64DataString = new String(encodeBase64, StandardCharsets.UTF_8);
-            String src = "data:image/jpeg;base64," + base64DataString;
+            String src = IMAGE_TYPE + base64DataString;
             return src;
         } catch (SQLException e) {
             throw new DaoException("Image InputStream cannot be received. Error accessing BLOB value:", e);

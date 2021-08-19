@@ -56,13 +56,13 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span> ${menu}</a>
                 <ul class="dropdown-menu">
-                    <li><a href="${abs}/controller?command=show_products_command&product=roll">${rolls_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=nigiri">${nigiri_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=sashimi">${sashimi_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=soup">${soups_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=main_dish">${main_dishes_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=salad">${salads_option}</a></li>
-                    <li><a href="${abs}/controller?command=show_products_command&product=appetizer">${appetizers_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=roll">${rolls_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=nigiri">${nigiri_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=sashimi">${sashimi_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=soup">${soups_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=main_dish">${main_dishes_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=salad">${salads_option}</a></li>
+                    <li><a href="${abs}/controller?command=show_product_info_command&product=appetizer">${appetizers_option}</a></li>
                 </ul>
             </li>
             <c:choose>

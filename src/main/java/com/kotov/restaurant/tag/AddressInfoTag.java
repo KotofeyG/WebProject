@@ -12,7 +12,7 @@ public class AddressInfoTag extends TagSupport {
     private static final String CITY = "г.";
     private static final String STREET = "ул.";
     private static final String BUILDING = "д.";
-    private static final String BLOCK = "К";
+    private static final String BLOCK = "к";
     private static final String FLAT = "кв.";
     private static final String ENTRANCE = "под.";
     private static final String FLOOR = "этаж ";
@@ -33,6 +33,21 @@ public class AddressInfoTag extends TagSupport {
         StringBuilder view = new StringBuilder();
         view.append(CITY).append(address.getCity().getRussianName()).append(SEPARATOR).append(STREET).append(address.getStreet())
                 .append(SEPARATOR).append(BUILDING).append(address.getBuilding());
+        if (address.getBlock() != null) {
+            view.append(BLOCK).append(address.getBlock());
+        }
+        if (address.getEntrance() != 0) {
+            view.append(SEPARATOR).append(ENTRANCE).append(address.getEntrance());
+        }
+        if (address.getFlat() != 0) {
+            view.append(SEPARATOR).append(FLAT).append(address.getFlat());
+        }
+        if (address.getFloor() != 0) {
+            view.append(SEPARATOR).append(FLOOR).append(address.getFloor());
+        }
+        if (address.getIntercomCode() != null) {
+            view.append(SEPARATOR).append(INTERCOM_CODE).append(address.getIntercomCode());
+        }
         JspWriter out = pageContext.getOut();
         try {
             out.write(view.toString());
@@ -43,7 +58,7 @@ public class AddressInfoTag extends TagSupport {
     }
 
     @Override
-    public int doEndTag() throws JspException {
+    public int doEndTag() {
         return EVAL_PAGE;
     }
 }

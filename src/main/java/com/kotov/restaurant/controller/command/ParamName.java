@@ -1,6 +1,9 @@
 package com.kotov.restaurant.controller.command;
 
 public class ParamName {
+    public static final String PAGE_NUMBER = "page";
+    public static final int FIRST_PAGE = 1;
+
     public static final String DELIVERY_TIME = "delivery_time";
     public static final String PAYMENT_TYPE = "payment_type";
     public static final String APPROVE = "approve";
@@ -52,6 +55,7 @@ public class ParamName {
 
     /* user-meal action params */
     public static final String ACTION = "action";
+    public static final String VALUE = "value";
     public static final String BLOCK = "block";
     public static final String UNBLOCK = "unblock";
     public static final String DELETE = "delete";
@@ -75,7 +79,7 @@ public class ParamName {
     public static final String EMPTY = "";
     public static final String SELECTED_PRODUCT_TYPE = "product";
     public static final String MEAL_NUMBER = "meal_number";
-    public static final String MEAL_ID = "meal_id";
+    public static final String MEAL_ID_ARRAY = "meal_id";
 
     public static final String ALL_MEALS = "meals";
     public static final String ALL_MENUS = "menus";

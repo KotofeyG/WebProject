@@ -1,6 +1,5 @@
 package com.kotov.restaurant.util;
 
-import com.kotov.restaurant.exception.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,7 @@ public class PasswordEncryptor {
     private PasswordEncryptor() {
     }
 
-    public static String encrypt(String password) throws ServiceException {
+    public static String encrypt(String password) {
         StringBuilder hash = new StringBuilder();
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
         byte[] saltBytes = SALT_KEY.getBytes(StandardCharsets.UTF_8);
@@ -30,7 +29,6 @@ public class PasswordEncryptor {
             }
         } catch (NoSuchAlgorithmException e) {
             logger.log(Level.WARN, "Password wasn't encrypted.", e);
-            throw new ServiceException("Password wasn't encrypted:", e);
         }
         return hash.toString();
     }

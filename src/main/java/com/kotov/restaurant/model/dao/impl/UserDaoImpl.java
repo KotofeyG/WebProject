@@ -31,24 +31,26 @@ public class UserDaoImpl implements UserDao {
     private static final String FIND_USER_BY_ID_AND_PASSWORD = "SELECT id FROM users WHERE id=? AND password=?";
     private static final String FIND_USER_BY_LOGIN_AND_PASSWORD = "SELECT users.id, login, password, email_address" +
             ", first_name, patronymic, last_name, mobile_number, registered, role, status FROM users" +
-            " JOIN roles ON role_id=roles.id JOIN user_statuses ON status_id=user_statuses.id WHERE login=? AND password=?";
+            " JOIN roles ON role_id=roles.id" +
+            " JOIN user_statuses ON status_id=user_statuses.id" +
+            " WHERE login=? AND password=?";
     private static final String FIND_ALL_USER = "SELECT users.id, login, password, email_address" +
             ", first_name, patronymic, last_name, mobile_number, registered, role, status FROM users" +
             " JOIN roles ON role_id=roles.id" +
             " JOIN user_statuses ON status_id=user_statuses.id";
     private static final String FIND_ADDRESS_BY_ID = "SELECT address.id, city, street, building, block, flat, entrance, floor, intercom_code FROM address" +
-            " JOIN city_names ON city_names.id=city_id WHERE address.id=?";
+            " JOIN city_names ON city_names.id=city_id" +
+            " WHERE address.id=?";
     private static final String FIND_ADDRESS_BY_USER_ID = "SELECT address.id, city, street, building, block, flat, entrance, floor, intercom_code FROM address" +
-            " JOIN city_names ON city_names.id=city_id WHERE address.user_id=?";
+            " JOIN city_names ON city_names.id=city_id" +
+            " WHERE address.user_id=?";
     private static final String FIND_MEALS_FOR_USER_IN_CART = "SELECT meals.id, title, image, meal_types.type, price, recipe, created, active, quantity FROM meals" +
             " JOIN meal_types ON meal_types.id=type_id" +
             " JOIN carts ON meal_id=meals.id and user_id=?";
-    private static final String FIND_DISCOUNT_CARD_ACTIVATION_STATUS_BY_NUMBER = "SELECT active FROM discount_cards WHERE number=? AND user_id IS NULL";
-    private static final String INSERT_NEW_USER = "INSERT INTO users" +
-            " (login, password, email_address, mobile_number, registered, role_id, status_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    private static final String INSERT_NEW_ADDRESS_FOR_USER = "INSERT INTO address" +
-            " (city_id, street, building, block, flat, entrance, floor, intercom_code, user_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String ADD_DISCOUNT_CARD_TO_USER = "UPDATE discount_cards SET user_id=? WHERE number=?";
+    private static final String INSERT_NEW_USER = "INSERT INTO users (login, password, email_address, mobile_number, registered, role_id, status_id)" +
+            " VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_NEW_ADDRESS_FOR_USER = "INSERT INTO address (city_id, street, building, block, flat, entrance, floor, intercom_code, user_id)" +
+            " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_USER_STATUS_BY_USER_ID = "UPDATE users SET status_id=? WHERE id=?";
     private static final String UPDATE_USER_FIRST_NAME = "UPDATE users SET first_name=? WHERE id=?";
     private static final String UPDATE_USER_PATRONYMIC = "UPDATE users SET patronymic=? WHERE id=?";
@@ -92,8 +94,8 @@ public class UserDaoImpl implements UserDao {
             logger.log(Level.DEBUG, "findAllEntities method was completed successfully. " + users.size() + " were found");
             return users;
         } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to find all meals. Database access error:", e);
-            throw new DaoException("Impossible to find all meals. Database access error:", e);
+            logger.log(Level.ERROR, "Impossible to find users. Database access error:", e);
+            throw new DaoException("Impossible to find users. Database access error:", e);
         }
     }
 
@@ -104,7 +106,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteEntityById(long id) {
-        return false;
+        throw new UnsupportedOperationException("deleteEntityById(long id) method is not supported");
     }
 
     @Override
@@ -123,43 +125,12 @@ public class UserDaoImpl implements UserDao {
             long userId = 0;
             if (resultSet.next()) {
                 userId = resultSet.getLong(FIRST_PARAM_INDEX);
+                logger.log(Level.INFO, "insertNewEntity method was completed successfully. User with id " + userId + " was added");
             }
-            logger.log(Level.INFO, "insertNewEntity method was completed successfully. User with id " + userId + " was added");
             return userId;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to insert new user into database. Database access error:", e);
             throw new DaoException("Impossible to insert new user into database. Database access error:", e);
-        }
-    }
-
-    @Override
-    public boolean isDiscountCardActive(String number) throws DaoException {
-        boolean result = false;
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_DISCOUNT_CARD_ACTIVATION_STATUS_BY_NUMBER)) {
-            statement.setString(FIRST_PARAM_INDEX, number);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getBoolean(DISCOUNT_CARD_ACTIVE);
-            }
-        } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to check existence of discount card. Database access error:", e);
-            throw new DaoException("Impossible to check existence of discount card. Database access error:", e);
-        }
-        logger.log(Level.DEBUG, "isDiscountCardActive method was completed successfully. Result: " + result);
-        return result;
-    }
-
-    @Override
-    public boolean addDiscountCardToUser(long userId, String number) throws DaoException {
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(ADD_DISCOUNT_CARD_TO_USER)) {
-            statement.setLong(FIRST_PARAM_INDEX, userId);
-            statement.setString(SECOND_PARAM_INDEX, number);
-            return statement.executeUpdate() == 1;
-        } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to add discount card to user with id " + userId + " into database. Database access error:", e);
-            throw new DaoException("Impossible to add discount card to user with id " + userId + " into database. Database access error:", e);
         }
     }
 
@@ -170,7 +141,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(FIRST_PARAM_INDEX, firstName);
             statement.setLong(SECOND_PARAM_INDEX, userId);
             boolean result = statement.executeUpdate() == 1;
-            logger.log(Level.INFO, "Result of user first name update for user with id " + userId + " is " + result);
+            logger.log(Level.DEBUG, "Result of user first name update for user with id " + userId + " is " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update user first name. Database access error:", e);
@@ -185,7 +156,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(FIRST_PARAM_INDEX, patronymic);
             statement.setLong(SECOND_PARAM_INDEX, userId);
             boolean result = statement.executeUpdate() == 1;
-            logger.log(Level.INFO, "Result of user patronymic update for user with id " + userId + " is " + result);
+            logger.log(Level.DEBUG, "Result of user patronymic update for user with id " + userId + " is " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update user patronymic. Database access error:", e);
@@ -200,7 +171,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(FIRST_PARAM_INDEX, lastName);
             statement.setLong(SECOND_PARAM_INDEX, userId);
             boolean result = statement.executeUpdate() == 1;
-            logger.log(Level.INFO, "Result of user last name update for user with id " + userId + " is " + result);
+            logger.log(Level.DEBUG, "Result of user last name update for user with id " + userId + " is " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update user last name. Database access error:", e);
@@ -215,7 +186,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(FIRST_PARAM_INDEX, mobileNumber);
             statement.setLong(SECOND_PARAM_INDEX, userId);
             boolean result = statement.executeUpdate() == 1;
-            logger.log(Level.INFO, "Result of user mobile number update for user with id " + userId + " is " + result);
+            logger.log(Level.DEBUG, "Result of user mobile number update for user with id " + userId + " is " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update user mobile number. Database access error:", e);
@@ -230,7 +201,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(FIRST_PARAM_INDEX, email);
             statement.setLong(SECOND_PARAM_INDEX, userId);
             boolean result = statement.executeUpdate() == 1;
-            logger.log(Level.INFO, "Result of user email update for user with id " + userId + " is " + result);
+            logger.log(Level.DEBUG, "Result of user email update for user with id " + userId + " is " + result);
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to update user email. Database access error:", e);
@@ -263,12 +234,12 @@ public class UserDaoImpl implements UserDao {
                 statement.addBatch();
             }
             boolean result = statement.executeBatch().length == userIdList.size();
-            logger.log(Level.INFO, result ? "updateMealStatuses method was completed successfully. User statuses with user id list "
+            logger.log(Level.INFO, result ? "updateUserStatusesById method was completed successfully. User statuses with user id list "
                     + userIdList + " were updated to " + status + " statuses" : "User statuses with user id list " + userIdList + " weren't updated to " + status + " statuses");
             return result;
         } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to update meal statuses. Database access error:", e);
-            throw new DaoException("Impossible to update meal statuses. Database access error:", e);
+            logger.log(Level.ERROR, "Impossible to update users statuses. Database access error:", e);
+            throw new DaoException("Impossible to update users statuses. Database access error:", e);
         }
     }
 
@@ -289,8 +260,8 @@ public class UserDaoImpl implements UserDao {
                     userCart.put(meal, quantity);
                 }
             }
-            logger.log(Level.DEBUG, "findUserMealsInCart method was completed successfully. " +
-                    (userCart.size() != 0 ? userCart.size() + " different items were found in user cart with user id " + userId
+            logger.log(Level.DEBUG, "findMealsInCartByUserId method was completed successfully. " +
+                    (!userCart.isEmpty() ? userCart.size() + " different items were found in user cart with user id " + userId
                             : " User with id " + userId + " doesn't have any items in cart"));
             return userCart;
         } catch (SQLException e) {
@@ -329,8 +300,8 @@ public class UserDaoImpl implements UserDao {
                 statement.addBatch();
             }
             boolean result = statement.executeBatch().length == idList.size();
-            logger.log(Level.INFO, result ?"deleteEntities method was completed successfully. Users with id " + idList + " were deleted"
-                    : "Users with id " + idList + " weren't deleted" );
+            logger.log(Level.INFO, result ? "deleteEntitiesById method was completed successfully. Users with id " + idList + " were deleted"
+                    : "Users with id " + idList + " weren't deleted");
             return result;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to delete users from database. Database access error:", e);
@@ -410,9 +381,9 @@ public class UserDaoImpl implements UserDao {
             if (resultSet.next()) {
                 User user = UserCreator.create(resultSet);
                 userOptional = Optional.of(user);
-                logger.log(Level.DEBUG, "findUserByLoginAndPassword method was completed successfully." +
-                        (userOptional.isPresent() ? " User with id " + user.getId() + " was found" : " User with these login and password don't exist"));
             }
+            logger.log(Level.DEBUG, "findUserByLoginAndPassword method was completed successfully." +
+                    (userOptional.map(user -> " User with id " + user.getId() + " was found").orElse(" User with these login and password don't exist")));
             return userOptional;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find user in database. Database access error:", e);
@@ -430,31 +401,10 @@ public class UserDaoImpl implements UserDao {
             if (resultSet.next()) {
                 Address address = AddressCreator.create(resultSet);
                 addressOptional = Optional.of(address);
-                logger.log(Level.DEBUG, "findAddressById method was completed successfully." +
-                        (addressOptional.isPresent() ? " Address with id " + addressId + " was found"
-                                : " Address with id " + addressId + " doesn't exist"));
             }
-            return addressOptional;
-        } catch (SQLException e) {
-            logger.log(Level.ERROR, "Impossible to find address by user id from database. Database access error:", e);
-            throw new DaoException("Impossible to find address by user id from database. Database access error:", e);
-        }
-    }
-
-    @Override
-    public Optional<Address> findAddressByUserId(long userId) throws DaoException {
-        Optional<Address> addressOptional = Optional.empty();
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ADDRESS_BY_USER_ID)) {
-            statement.setLong(FIRST_PARAM_INDEX, userId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Address address = AddressCreator.create(resultSet);
-                addressOptional = Optional.of(address);
-                logger.log(Level.DEBUG, "findAddressByUserId method was completed successfully." +
-                        (addressOptional.isPresent() ? " Address with id " + address + " was found for user with id " + userId
-                                : " User with id " + userId + " doesn't have address"));
-            }
+            logger.log(Level.DEBUG, "findAddressById method was completed successfully." +
+                    (addressOptional.isPresent() ? " Address with id " + addressId + " was found"
+                            : " Address with id " + addressId + " doesn't exist"));
             return addressOptional;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find address by user id from database. Database access error:", e);
@@ -474,7 +424,7 @@ public class UserDaoImpl implements UserDao {
                 addresses.add(address);
             }
             logger.log(Level.DEBUG, "findUserAddresses method was completed successfully. " +
-                    (addresses.size() != 0 ? addresses.size() + " addresses were found for user with id " + userId
+                    (!addresses.isEmpty() ? addresses.size() + " addresses were found for user with id " + userId
                             : "User with id " + userId + " doesn't have any addresses"));
             return addresses;
         } catch (SQLException e) {

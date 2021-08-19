@@ -109,6 +109,10 @@ public class Menu extends AbstractEntity {
         return meals.size();
     }
 
+    public boolean isEmpty() {
+        return meals.isEmpty();
+    }
+
     @Override
     public boolean equals(Object otherObject) {
         if (!super.equals(otherObject)) {

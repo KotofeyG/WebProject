@@ -7,6 +7,8 @@
 }
 
 .counter {
+    /*position: relative;*/
+    margin-left: 15%;
     height: 34px;
     overflow: hidden;
     width: 100px;
@@ -59,7 +61,6 @@ input[type="text" i] {
 input {
     -webkit-writing-mode: horizontal-tb !important;
     text-rendering: auto;
-    /*color: -internal-light-dark(black, white);*/
     letter-spacing: normal;
     word-spacing: normal;
     text-transform: none;
@@ -68,7 +69,6 @@ input {
     display: inline-block;
     text-align: start;
     appearance: auto;
-    /*background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));*/
     -webkit-rtl-ordering: logical;
     cursor: text;
     margin: 0em;
@@ -76,69 +76,10 @@ input {
     padding: 1px 2px;
     border-width: 2px;
     border-style: inset;
-    /*border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));*/
     border-image: initial;
 }
 
-.btn {
-    padding-left: 14px;
-    padding-right: 14px;
-}
-
-.btn_type_light {
-    border: 1px solid #d8d8d8;
-    border-radius: 1px;
-    padding: 8px 40px 6px;
-    font-size: 14px;
-    line-height: 18px;
-    background-color: #fff;
-    color: #525252;
-    text-transform: uppercase;
-}
-
-.btn, .btn:active, .btn:focus {
-    margin: 0;
-}
-
-.btn {
-    display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    top: 0;
-    border: none;
-    outline: 0;
-    font-weight: 400;
-    line-height: 1;
-    cursor: pointer;
-    word-wrap: break-word;
-    text-decoration: none;
-    box-sizing: border-box;
-    text-align: center;
-    background-color: transparent;
-    font-family: Geometria, sans-serif;
-}
-
-button {
-    appearance: auto;
-    -webkit-writing-mode: horizontal-tb !important;
-    text-rendering: auto;
-    /*color: -internal-light-dark(black, white);*/
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    text-align: center;
-    align-items: flex-start;
-    cursor: default;
-    /*background-color: -internal-light-dark(rgb(239, 239, 239), rgb(59, 59, 59));*/
-    box-sizing: border-box;
-    margin: 0em;
-    font: 400 13.3333px Arial;
-    padding: 1px 6px;
-    border-width: 2px;
-    border-style: outset;
-    /*border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));*/
-    border-image: initial;
+.scroll-table table {
+    width: 50%;
+    table-layout: fixed;
 }

@@ -10,8 +10,6 @@ import com.kotov.restaurant.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
@@ -22,7 +20,6 @@ import static com.kotov.restaurant.controller.command.AttributeName.AUTHENTICATI
 import static com.kotov.restaurant.controller.command.PagePath.MAIN_PAGE;
 
 public class AuthenticationCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
     @Override
@@ -31,7 +28,6 @@ public class AuthenticationCommand implements Command {
         HttpSession session = request.getSession();
         String login = request.getParameter(LOGIN);
         String password = request.getParameter(PASSWORD);
-
         try {
             Optional<User> userOptional = userService.findUserByLoginAndPassword(login, password);
             if (userOptional.isPresent()) {
@@ -42,11 +38,10 @@ public class AuthenticationCommand implements Command {
                 request.setAttribute(AUTHENTICATION_RESULT, Boolean.FALSE);
             }
             router.setPagePath(MAIN_PAGE);
+            return router;
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Impossible to authentication user: ", e);
-            throw new CommandException("Impossible to authentication user: ", e);
+            logger.log(Level.ERROR, "Authentication cannot be completed:", e);
+            throw new CommandException("Authentication cannot be completed:", e);
         }
-
-        return router;
     }
 }

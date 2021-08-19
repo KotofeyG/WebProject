@@ -4,16 +4,12 @@ import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
-import com.kotov.restaurant.model.entity.Address;
-import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.OrderService;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -22,7 +18,6 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
 public class OrderMealsCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 
@@ -31,7 +26,7 @@ public class OrderMealsCommand implements Command {
         Router router = new Router();
         User user = (User) request.getSession().getAttribute(SESSION_USER);
         long userId = user.getId();
-        String[] mealIdArray = request.getParameterValues(MEAL_ID);
+        String[] mealIdArray = request.getParameterValues(MEAL_ID_ARRAY);
         String[] mealNumberArray = request.getParameterValues(MEAL_NUMBER);
         Map<String, String> orderedMeals = new LinkedHashMap<>();
         for (int i = 0; i < mealIdArray.length; i++) {
@@ -53,20 +48,17 @@ public class OrderMealsCommand implements Command {
                 dataCheckResult.put(INTERCOM_CODE, request.getParameter(INTERCOM_CODE));
                 // to do
             } else {
-                if (orderService.addOrder(orderedMeals, userId, addressIdStr, time, paymentType)) {
+                if (orderService.insertOrder(orderedMeals, userId, addressIdStr, time, paymentType)) {
                     //to do
                 }
             }
-            Map<Meal, Integer> cart = userService.findMealsInCartByUserId(userId);
-            List<Address> addresses = userService.findUserAddresses(userId);
-            request.setAttribute(CART, cart);
-            request.setAttribute(ADDRESS_LIST, addresses);
+            UserCommandsOverallControl.setCartInfoToAttribute(request);
+            router.setPagePath(CART_PAGE);
+            return router;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Command cannot be completed:", e);
             throw new CommandException("Command cannot be completed:", e);
         }
-        logger.log(Level.DEBUG, "Method execute is completed successfully");
-        router.setPagePath(CART_PAGE);
-        return router;
+
     }
 }

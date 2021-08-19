@@ -8,8 +8,6 @@ import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,35 +17,32 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.*;
 
 public class RegistrationCommand implements Command {
-    private static final Logger logger = LogManager.getLogger();
-    private static final UserService service = ServiceProvider.getInstance().getUserService();
+    private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         Map<String, String> dataCheckResult = new HashMap<>();
-
         dataCheckResult.put(LOGIN, request.getParameter(LOGIN));
         dataCheckResult.put(PASSWORD, request.getParameter(PASSWORD));
         dataCheckResult.put(CONFIRM_PASSWORD, request.getParameter(CONFIRM_PASSWORD));
         dataCheckResult.put(EMAIL, request.getParameter(EMAIL));
         dataCheckResult.put(MOBILE_NUMBER, request.getParameter(MOBILE_NUMBER));
         dataCheckResult.put(USER_ROLE, request.getParameter(USER_ROLE));
-
         try {
-            boolean result = service.registerNewUser(dataCheckResult);
+            boolean registrationResult = userService.registerNewUser(dataCheckResult);
             String currentPage = (String) request.getSession().getAttribute(CURRENT_PAGE);
             if (currentPage.equals(USER_MANAGEMENT_PAGE)) {
-                request.setAttribute(ALL_USERS, service.findAllUsers());                        // pagination?
+                request.setAttribute(USER_LIST, userService.findAllUsers());
                 router.setPagePath(USER_MANAGEMENT_PAGE);
             } else {
-                if (result) {
+                if (registrationResult) {
                     router.setPagePath(ACCOUNT_CREATION_DETAILS_PAGE);
                 } else {
                     router.setPagePath(REGISTRATION_PAGE);
                 }
             }
-            if (!result) {
+            if (!registrationResult) {
                 for (String key : dataCheckResult.keySet()) {
                     String validationResult = dataCheckResult.get(key);
                     if (Boolean.parseBoolean(validationResult)) {
@@ -71,10 +66,10 @@ public class RegistrationCommand implements Command {
                     }
                 }
             }
+            return router;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "User cannot be registered:", e);
             throw new CommandException("User cannot be registered:", e);
         }
-        return router;
     }
 }

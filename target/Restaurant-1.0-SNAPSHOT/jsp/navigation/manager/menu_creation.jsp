@@ -26,7 +26,6 @@
 <jsp:useBean id="meals" scope="request" type="java.util.List"/>
 
 <%--@elvariable id="menu_creation_result" type="java.lang.Boolean"--%>
-<%--@elvariable id="meal_search_result" type="java.lang.Boolean"--%>
 <%--@elvariable id="current_product_type" type="java.lang.String"--%>
 
 <!DOCTYPE html>
@@ -73,25 +72,25 @@
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=roll">${rolls_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=roll">${rolls_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=nigiri">${nigiri_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=nigiri">${nigiri_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=sashimi">${sashimi_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=sashimi">${sashimi_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=soup">${soups_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=soup">${soups_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=main_dish">${main_dishes_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=main_dish">${main_dishes_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=salad">${salads_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=salad">${salads_option}</a>
                                 </li>
                                 <li>
-                                    <a href="${abs}/controller?command=menu_creation_command&product=appetizer">${appetizers_option}</a>
+                                    <a href="${abs}/controller?command=show_menu_creation_info_command&product=appetizer">${appetizers_option}</a>
                                 </li>
                             </ul>
                         </div>
@@ -115,7 +114,7 @@
             </table>
         </form>
         <c:choose>
-        <c:when test="${meal_search_result eq 'true'}">
+        <c:when test="${meals.isEmpty() ne 'true'}">
         <div class="scroll-table-body">
             <table class="table-bordered meal-table">
                 <tbody>
@@ -124,7 +123,7 @@
                         <td class="meal-checkbox">
                             <label class="form-check-label">
                                 <input type="checkbox" class="form-check-input" name="selected"
-                                       value="${order.id}">
+                                       value="${order.id}" form="menu-form">
                             </label>
                         </td>
                         <td>${order.id}</td>
