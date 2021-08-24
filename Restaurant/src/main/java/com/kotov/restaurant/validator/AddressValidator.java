@@ -19,8 +19,8 @@ public class AddressValidator {
     }
 
     public static boolean isCityValid(String city) {
-        boolean result = false;
-        if (city != null) {
+        boolean result = city != null;
+        if (false) {
             for (Address.City value : Address.City.values()) {
                 if (value.toString().equals(city.toUpperCase())) {
                     result = true;

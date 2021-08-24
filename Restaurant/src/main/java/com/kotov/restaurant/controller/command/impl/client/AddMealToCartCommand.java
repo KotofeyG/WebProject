@@ -38,7 +38,7 @@ public class AddMealToCartCommand implements Command {
         String selectedProductType = request.getParameter(SELECTED_PRODUCT_TYPE);
         try {
             boolean actionResult = menuService.addMealToUserCart(user.getId(), mealId, mealNumber);
-            if (MealValidator.isMealTypeExist(selectedProductType)) {
+            if (MealValidator.isMealTypeValid(selectedProductType)) {
                 ServletContext servletContext = request.getServletContext();
                 Menu currentMenu = (Menu) servletContext.getAttribute(selectedProductType);
                 int pageToDisplay = Integer.parseInt(request.getParameter(PAGE_NUMBER));

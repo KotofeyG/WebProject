@@ -1,0 +1,70 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+
+<%--@elvariable id="valid_city" type="java.lang.String"--%>
+<%--@elvariable id="valid_street" type="java.lang.String"--%>
+<%--@elvariable id="valid_building" type="java.lang.String"--%>
+<%--@elvariable id="valid_block" type="java.lang.String"--%>
+<%--@elvariable id="valid_flat" type="java.lang.String"--%>
+<%--@elvariable id="valid_entrance" type="java.lang.String"--%>
+<%--@elvariable id="valid_floor" type="java.lang.String"--%>
+<%--@elvariable id="valid_intercom_code" type="java.lang.String"--%>
+
+<%--@elvariable id="invalid_city" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_street" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_building" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_block" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_flat" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_entrance" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_floor" type="java.lang.Boolean"--%>
+<%--@elvariable id="invalid_intercom_code" type="java.lang.Boolean"--%>
+
+<div class="row">
+    <div class="form-group col-sm-4 indent">
+        <label for="city">${city}</label>
+        <input type="text" class="form-control" id="city" name="city" value="${valid_city}" list="cities">
+        <datalist id="cities">
+            <option value="Minsk">Минск</option>
+            <option value="Brest">Брест</option>
+            <option value="Vitebsk">Витебск</option>
+            <option value="Gomel">Гомель</option>
+            <option value="Grodno">Гродно</option>
+            <option value="Mogilev">Могилёв</option>
+        </datalist>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-4 indent">
+        <label for="street">${street}</label>
+        <input type="text" class="form-control" id="street" name="street" value="${valid_street}">
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-2 indent">
+        <label for="building">${building}</label>
+        <input type="number" class="form-control" id="building" name="building" value="${valid_building}">
+    </div>
+    <div class="form-group col-sm-2">
+        <label for="block">${block}</label>
+        <input type="text" class="form-control" id="block" name="block" value="${valid_block}">
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-2 indent">
+        <label for="flat">${flat}</label>
+        <input type="number" class="form-control" id="flat" name="flat" value="${valid_flat}">
+    </div>
+    <div class="form-group col-sm-2">
+        <label for="entrance">${entrance}</label>
+        <input type="number" class="form-control" id="entrance" name="entrance" value="${valid_entrance}">
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-2 indent">
+        <label for="floor">${floor}</label>
+        <input type="number" class="form-control" id="floor" name="floor" value="${valid_floor}">
+    </div>
+    <div class="form-group col-sm-2">
+        <label for="intercom_code">${intercom_code}</label>
+        <input type="number" class="form-control" id="intercom_code" name="intercom_code" value="${valid_intercom_code}">
+    </div>
+</div>

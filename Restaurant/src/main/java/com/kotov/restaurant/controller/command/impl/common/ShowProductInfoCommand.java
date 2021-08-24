@@ -31,7 +31,7 @@ public class ShowProductInfoCommand implements Command {
         HttpSession session = request.getSession();
         String selectedProductType = request.getParameter(SELECTED_PRODUCT_TYPE);
         try {
-            if (MealValidator.isMealTypeExist(selectedProductType)) {
+            if (MealValidator.isMealTypeValid(selectedProductType)) {
                 ServletContext servletContext = request.getServletContext();
                 Menu currentMenu = (Menu) servletContext.getAttribute(selectedProductType);
                 int pageToDisplay = getPage(request);

@@ -1,0 +1,85 @@
+.del {
+    background: linear-gradient(#9595b6, #5a567f);
+    color: white !important;
+    width: 25px;
+    height: 25px;
+    font-size: 18px;
+    margin: auto;
+}
+
+.del span {
+    position: center;
+    margin: auto;
+}
+
+.absolute-cart {
+    position: absolute;
+    left: 50%;
+}
+
+.order_input {
+    position: absolute;
+    width: 50%;
+}
+
+label, h3 {
+    color: #d8d8d8;
+}
+
+.btn-primary {
+    margin-top: 25px;
+}
+
+.col-sm-2 {
+    width: 200px;
+    margin-left: 90px;
+}
+.col-sm-4 {
+    width: 490px;
+    margin-left: 90px;
+}
+
+#order {
+    margin-left: 80px;
+}
+
+button {
+    width: 170px;
+}
+
+.absolute-address-invalid-message {
+    position: absolute;
+    top: 90%;
+    left: 35%;
+    width: 30%;
+    text-align: center;
+    z-index:99999999;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#message1, #message2, #message3, #message4, #message5, #message6, #message7, #message8 {
+    position: relative;
+    padding: 5px;
+}
+
+#message {
+    position: absolute;
+    left: 35%;
+    width: 30%;
+    text-align: center;
+    z-index:99999999;
+    padding: 5px;
+}
+
+.valid_message {
+    color: darkgreen;
+}
+
+.invalid_message {
+    color: red;
+}
+
+.invalid_message {
+    font-size: 10px;
+}

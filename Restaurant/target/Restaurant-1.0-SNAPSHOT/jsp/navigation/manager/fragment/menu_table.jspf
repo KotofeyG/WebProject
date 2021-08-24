@@ -1,0 +1,48 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<fmt:message key="menu_management.menus" var="menu_list"/>
+<fmt:message key="menu_management.menu_choice" var="menu_choice"/>
+<fmt:message key="menu_management.menu_id" var="menu_id"/>
+<fmt:message key="menu_management.menu_title" var="menu_title"/>
+<fmt:message key="menu_management.menu_type" var="menu_type"/>
+<fmt:message key="menu_management.menu_creation_date" var="menu_creation_date"/>
+<fmt:message key="menu_management.menu_update_date" var="menu_update_date"/>
+
+<jsp:useBean id="menus" scope="session" type="java.util.List"/>
+
+<div class="scroll-table">
+    <table class="table-bordered meal-table">
+        <caption><h3 class="text-center">${menu_list}</h3></caption>
+        <thead>
+        <tr>
+            <th>${menu_choice}</th>
+            <th>${menu_id}</th>
+            <th>${menu_title}</th>
+            <th>${menu_type}</th>
+            <th>${menu_creation_date}</th>
+            <th>${menu_update_date}</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-table-body">
+        <table class="table-condensed table-bordered meal-table">
+            <tbody>
+            <c:forEach items="${menus}" var="menu">
+                <input type="hidden" name="type" value="${menu.type}"/>
+                <tr>
+                    <td>
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="selected_menu" value="${menu.id}">
+                        </label>
+                    </td>
+                    <td>${menu.id}</td>
+                    <td>${menu.title}</td>
+                    <td>${menu.type.value}</td>
+                    <td>${menu.created}</td>
+                    <td>${menu.updated}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>

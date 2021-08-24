@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    background: url("../images/background.jpg") no-repeat;
+    background-size: cover;
+}
+
+.authentication_error {
+    position: relative;
+    left: 45%;
+}
+
+#message {
+    position: absolute;
+    left: 35%;
+    width: 30%;
+    text-align: center;
+    z-index:99999999;
+    padding: 5px;
+}
+
+.valid_message {
+    color: darkgreen;
+}
+
+.invalid_message {
+    color: red;
+}

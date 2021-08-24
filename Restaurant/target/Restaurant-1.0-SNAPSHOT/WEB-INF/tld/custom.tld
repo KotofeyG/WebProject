@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>3.0</jsp-version>
+    <short-name>ct</short-name>
+    <uri>custom_tags</uri>
+    <tag>
+        <name>totalCost</name>
+        <tag-class>com.kotov.restaurant.tag.OrderTotalCostTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>mealList</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Map</type>
+        </attribute>
+    </tag>
+    <tag>
+        <name>AddressInfo</name>
+        <tag-class>com.kotov.restaurant.tag.AddressInfoTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>address</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>com.kotov.restaurant.model.entity.Address</type>
+        </attribute>
+    </tag>
+</taglib>

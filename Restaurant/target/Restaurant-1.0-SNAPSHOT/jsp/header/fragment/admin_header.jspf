@@ -1,0 +1,13 @@
+<fmt:message key="admin_header.user_management" var="user_management"/>
+<fmt:message key="admin_header.reviews_management" var="review_management"/>
+
+<li class="nav-item">
+    <c:choose>
+        <c:when test="${current_page.contains('user_management.jsp')}">
+            <a class="nav-link active" aria-current="page" href="#">${user_management}</a>
+        </c:when>
+        <c:otherwise>
+            <a class="nav-link active" aria-current="page" href="${abs}/controller?command=user_management_command">${user_management}</a>
+        </c:otherwise>
+    </c:choose>
+</li>
