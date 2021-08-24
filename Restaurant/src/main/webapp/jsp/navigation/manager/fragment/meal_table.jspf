@@ -1,0 +1,62 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+
+<fmt:message key="main.rub" var="rub"/>
+<fmt:message key="meal_management.dishes" var="dishes_list"/>
+<fmt:message key="meal_management.meal_id" var="meal_id"/>
+<fmt:message key="meal_management.choice" var="choice"/>
+<fmt:message key="meal_management.meal_title" var="meal_title"/>
+<fmt:message key="meal_management.meal_image" var="meal_image"/>
+<fmt:message key="meal_management.meal_type" var="meal_type"/>
+<fmt:message key="meal_management.meal_price" var="meal_price"/>
+<fmt:message key="meal_management.meal_ingredients" var="meal_ingredients"/>
+<fmt:message key="meal_management.meal_status" var="meal_status"/>
+<fmt:message key="meal_management.active" var="active"/>
+<fmt:message key="meal_management.archive" var="archive"/>
+<fmt:message key="meal_management.empty_picture" var="empty_picture"/>
+
+<jsp:useBean id="meals" scope="session" type="java.util.List"/>
+
+<div class="scroll-table">
+    <table class="table-bordered meal-table">
+        <caption><h3 class="text-center">${dishes_list}</h3></caption>
+        <thead>
+        <tr>
+            <th>${choice}</th>
+            <th>${meal_id}</th>
+            <th>${meal_title}</th>
+            <th>${meal_image}</th>
+            <th>${meal_type}</th>
+            <th>${meal_price}</th>
+            <th>${meal_ingredients}</th>
+            <th>${meal_status}</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="scroll-table-body">
+        <table class="table-bordered meal-table">
+            <tbody>
+            <c:forEach items="${meals}" var="order">
+                <tr>
+                    <td class="meal-checkbox">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="selected" value="${order.id}">
+                        </label>
+                    </td>
+                    <td>${order.id}</td>
+                    <td>${order.title}</td>
+                    <td> <img src="${order.image}" class="img-thumbnail" alt="${empty_picture}" width="153px"/></td>
+                    <td>${order.type.value}</td>
+                    <td>${order.price} ${rub}</td>
+                    <td>${order.recipe}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${order.active eq 'true'}">${active}</c:when>
+                            <c:otherwise>${archive}</c:otherwise>
+                        </c:choose>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
