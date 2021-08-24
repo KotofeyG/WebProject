@@ -40,4 +40,4 @@ for different kinds of user management operations.
   + can block and unblock users
   + can delete users who did not make orders
   + can log out
-![Restaurant](https://user-images.githubusercontent.com/57107139/130629535-8b94defa-bef8-4a6b-acd0-34885393da81.png)
+![Restaurant](https://user-images.githubusercontent.com/57107139/130692243-0eea786b-0d31-480e-92f4-b51e7ebaa567.png)
