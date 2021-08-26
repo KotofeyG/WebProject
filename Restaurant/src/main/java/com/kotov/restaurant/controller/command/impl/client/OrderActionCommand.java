@@ -23,6 +23,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 public class OrderActionCommand implements Command {
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
@@ -32,6 +37,7 @@ public class OrderActionCommand implements Command {
         String action = request.getParameter(ACTION);
         String orderId = request.getParameter(SELECTED);
         try {
+            action = action != null ? action : EMPTY;
             boolean actionResult = switch (action) {
                 case REJECT -> orderService.updateOrderStatus(orderId, Order.Status.REJECTED, user.getRole());
                 case PAY -> orderService.updateOrderStatus(orderId, Order.Status.PAID, user.getRole());

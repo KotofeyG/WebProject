@@ -2,7 +2,8 @@ package com.kotov.restaurant.controller.command.impl.common;
 
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.controller.Router;
-import com.kotov.restaurant.validator.LocaleValidator;
+import com.kotov.restaurant.exception.CommandException;
+import com.kotov.restaurant.util.validator.LocaleValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
@@ -11,6 +12,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 
 public class ChangeLocaleCommand implements Command {
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) {
         Router router = new Router();

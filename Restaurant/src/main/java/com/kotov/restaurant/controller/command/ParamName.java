@@ -1,5 +1,10 @@
 package com.kotov.restaurant.controller.command;
 
+/**
+ * @author Denis Kotov
+ *
+ * The request parameters names.
+ */
 public class ParamName {
     public static final String PAGE_NUMBER = "page";
     public static final int FIRST_PAGE = 1;

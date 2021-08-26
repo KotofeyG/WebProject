@@ -1,5 +1,10 @@
 package com.kotov.restaurant.controller.command;
 
+/**
+ * @author Denis Kotov
+ *
+ * The page paths.
+ */
 public class PagePath {
     public static final String PARAMETERS_START = "?";
     public static final String EQUALS = "=";
@@ -22,8 +27,6 @@ public class PagePath {
     public static final String USER_MANAGEMENT_PAGE = "/jsp/navigation/admin/user_management.jsp";
     /* error pages */
     public static final String ERROR_400_PAGE = "/jsp/error/error400.jsp";
-    public static final String INTERNAL_SERVER_ERROR_PAGE = "/jsp/error/internal_server_error.jsp";
-    public static final String NON_EXISTENT_COMMAND_PAGE = "/jsp/error/non_existent_command.jsp";
     private PagePath() {
     }
 }

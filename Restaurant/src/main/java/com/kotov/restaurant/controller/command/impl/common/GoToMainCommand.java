@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import static com.kotov.restaurant.controller.command.PagePath.MAIN_PAGE;
 
 public class GoToMainCommand implements Command {
+
     @Override
     public Router execute(HttpServletRequest request) {
         Router router = new Router();

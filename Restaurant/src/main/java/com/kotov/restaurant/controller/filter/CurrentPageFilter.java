@@ -9,6 +9,12 @@ import java.io.IOException;
 
 import static com.kotov.restaurant.controller.command.AttributeName.CURRENT_PAGE;
 
+
+/**
+ * @author Denis Kotov
+ *
+ * The type Current page filter.
+ */
 @WebFilter(urlPatterns = {"*.jsp"}, dispatcherTypes = {DispatcherType.FORWARD}
         , initParams = {@WebInitParam(name = "PAGES_ROOT_DIRECTORY", value = "/jsp", description = "Pages Param")
         , @WebInitParam(name = "INDEX_PAGE", value = "/index.jsp", description = "Pages Param")})

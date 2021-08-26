@@ -1,4 +1,4 @@
-package com.kotov.restaurant.validator;
+package com.kotov.restaurant.util.validator;
 
 public class LocaleValidator {
     private static final String ENGLISH_LOCALE = "en_US";

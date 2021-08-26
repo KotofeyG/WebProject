@@ -23,6 +23,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 public class UserListActionCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
@@ -31,6 +36,7 @@ public class UserListActionCommand implements Command {
         String action = request.getParameter(ACTION);
         String[] userIdArray = request.getParameterValues(SELECTED);
         try {
+            action = action != null ? action : EMPTY;
             Boolean actionResult = switch (action) {
                 case BLOCK -> userService.updateUserStatusesById(BLOCKED, userIdArray);
                 case UNBLOCK -> userService.updateUserStatusesById(ACTIVE, userIdArray);

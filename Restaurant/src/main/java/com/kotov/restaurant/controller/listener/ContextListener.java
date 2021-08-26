@@ -8,6 +8,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Context listener.
+ */
 @WebListener
 public class ContextListener implements ServletContextListener {
     private static final Logger logger = LogManager.getLogger();

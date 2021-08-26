@@ -7,7 +7,7 @@ import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.OrderService;
 import com.kotov.restaurant.model.service.ServiceProvider;
-import com.kotov.restaurant.validator.MealValidator;
+import com.kotov.restaurant.util.validator.MealValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
@@ -21,6 +21,11 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 public class OrderMealsCommand implements Command {
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();

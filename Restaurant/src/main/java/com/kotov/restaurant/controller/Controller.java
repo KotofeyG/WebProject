@@ -18,8 +18,15 @@ import java.io.IOException;
 import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
+/**
+ * @author Denis Kotov
+ * 
+ * The {@link Controller} class is a main HttpServlet.
+ * Overrides doPost and doGet methods by calling
+ * the own method processRequest(request, response).
+ */
 @WebServlet(name = "controller", urlPatterns = "/controller")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024)
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 

@@ -12,6 +12,7 @@ import com.kotov.restaurant.model.entity.Order;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.OrderService;
 import com.kotov.restaurant.model.service.ServiceProvider;
+import com.kotov.restaurant.util.validator.TimeValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean insertOrder(Map<String, String> orderedMeals, long userId, String addressIdStr, String time, String paymentType) throws ServiceException {
-        boolean result;
+        boolean result = false;
         try {
             long addressId = Long.parseLong(addressIdStr);
             Optional<Address> addressOptional = userDao.findAddressById(addressId);
@@ -56,14 +57,12 @@ public class OrderServiceImpl implements OrderService {
                 Address address = addressOptional.get();
                 result = insertOrder(orderedMeals, userId, address, time, paymentType);
             } else {
-                result = false;
                 logger.log(Level.WARN, "Address with id " + addressId + " doesn't exist");
             }
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Order cannot be added into database:", e);
             throw new ServiceException("Order cannot be added into database:", e);
         } catch (NumberFormatException e) {
-            result = false;
             logger.log(Level.WARN, "String does not contain a parsable value:", e);
         }
         return result;
@@ -71,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean insertOrder(Map<String, String> orderedMeals, long userId, Map<String, String> addressDataCheckResult, String time, String paymentType) throws ServiceException {
-        boolean result;
+        boolean result = false;
         UserServiceImpl service =(UserServiceImpl) ServiceProvider.getInstance().getUserService();
         Optional<Address> addressOptional = service.createAddress(addressDataCheckResult);
         if (addressOptional.isPresent()) {
@@ -85,7 +84,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new ServiceException("Order cannot be added into database:", e);
             }
         } else {
-            result = false;
             logger.log(Level.WARN, "Address cannot be created as wrong parameters");
         }
         return result;
@@ -103,16 +101,16 @@ public class OrderServiceImpl implements OrderService {
                     Integer mealQuantity = Integer.valueOf(entry.getValue());
                     meals.put(meal, mealQuantity);
                 } else {
-                    result = false;
                     logger.log(Level.WARN, "Meal with id " + mealId + " doesn't exist");
+                    result = false;
                 }
             }
             if (result) {
-                LocalTime deliveryTime = time != null & !time.isBlank() ? LocalTime.parse(time) : LocalTime.now()
+                LocalTime deliveryTime = TimeValidator.isTimeValid(time) ? LocalTime.parse(time) : LocalTime.now()
                         .plusHours(DEFAULT_DELIVERY_TIME);
                 boolean isCash = Boolean.parseBoolean(paymentType);
                 Order order = new Order(meals, userId, address, deliveryTime, isCash);
-                result = orderDao.insertNewEntity(order) >= 0;
+                result = orderDao.insertNewEntity(order) > 0;
             }
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Order cannot be added into database:", e);
@@ -144,21 +142,23 @@ public class OrderServiceImpl implements OrderService {
         boolean result = false;
         try {
             long orderId = Long.parseLong(orderIdStr);
-            Status currentStatus = orderDao.findOrderStatus(orderId);
-            if (orderStatus == APPROVED && (currentStatus == IN_PROCESS & userRole == MANAGER)) {
-                result = orderDao.updateOrderStatus(orderId, orderStatus);
-            } else if (orderStatus == REJECTED) {
-                if (currentStatus == IN_PROCESS & (userRole == CLIENT | userRole == MANAGER)) {
-                    System.out.println("!!!!!!!!");
+            Optional<Order.Status> optionalStatus = orderDao.findOrderStatus(orderId);
+            if (optionalStatus.isPresent()) {
+                Status currentStatus = optionalStatus.get();
+                if (orderStatus == APPROVED && (currentStatus == IN_PROCESS & userRole == MANAGER)) {
                     result = orderDao.updateOrderStatus(orderId, orderStatus);
-                } else if (currentStatus == APPROVED & userRole == MANAGER) {
-                    result = orderDao.updateOrderStatus(orderId, orderStatus);
-                }
-            } else if (orderStatus == PAID && currentStatus == APPROVED) {
-                if (orderDao.isOrderInCash(orderId) & userRole == MANAGER) {
-                    result = orderDao.updateOrderStatus(orderId, orderStatus);
-                } else if (!orderDao.isOrderInCash(orderId) & userRole == CLIENT) {
-                    result = orderDao.updateOrderStatus(orderId, orderStatus);
+                } else if (orderStatus == REJECTED) {
+                    if (currentStatus == IN_PROCESS & (userRole == CLIENT | userRole == MANAGER)) {
+                        result = orderDao.updateOrderStatus(orderId, orderStatus);
+                    } else if (currentStatus == APPROVED & userRole == MANAGER) {
+                        result = orderDao.updateOrderStatus(orderId, orderStatus);
+                    }
+                } else if (orderStatus == PAID && currentStatus == APPROVED) {
+                    if (orderDao.isOrderInCash(orderId) & userRole == MANAGER) {
+                        result = orderDao.updateOrderStatus(orderId, orderStatus);
+                    } else if (!orderDao.isOrderInCash(orderId) & userRole == CLIENT) {
+                        result = orderDao.updateOrderStatus(orderId, orderStatus);
+                    }
                 }
             }
         } catch (DaoException e) {

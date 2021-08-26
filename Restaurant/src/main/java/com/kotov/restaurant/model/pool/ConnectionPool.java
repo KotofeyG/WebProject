@@ -1,5 +1,6 @@
 package com.kotov.restaurant.model.pool;
 
+import com.kotov.restaurant.exception.DaoException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,7 +77,7 @@ public class ConnectionPool {
         return instance;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws DaoException {
         try {
             if (connectionsNumberCheck.get()) {
                 connectionsCheckLatch.await();
@@ -93,7 +94,7 @@ public class ConnectionPool {
         } finally {
             semaphore.release();
         }
-        throw new RuntimeException("Impossible to get connection as free connection timed out");
+        throw new DaoException("Impossible to get connection as free connection timed out");
     }
 
     public boolean releaseConnection(Connection connection) {

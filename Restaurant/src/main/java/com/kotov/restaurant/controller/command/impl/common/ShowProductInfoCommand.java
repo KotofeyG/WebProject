@@ -9,7 +9,7 @@ import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.Menu;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
-import com.kotov.restaurant.validator.MealValidator;
+import com.kotov.restaurant.util.validator.MealValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +25,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 public class ShowProductInfoCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();

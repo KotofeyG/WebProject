@@ -23,6 +23,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 public class ChangePersonalDataCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
@@ -31,6 +36,7 @@ public class ChangePersonalDataCommand implements Command {
         String type = request.getParameter(TYPE);
         String value = request.getParameter(VALUE);
         try {
+            type = type != null ? type : EMPTY;
             boolean result = switch (type) {
                 case FIRST_NAME -> {
                     boolean changeResult = userService.updateFirstNameById(user.getId(), value);

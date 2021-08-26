@@ -8,8 +8,8 @@ import com.kotov.restaurant.model.dao.MenuDao;
 import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.Menu;
 import com.kotov.restaurant.model.service.MenuService;
-import com.kotov.restaurant.validator.MealValidator;
-import com.kotov.restaurant.validator.MenuValidator;
+import com.kotov.restaurant.util.validator.MealValidator;
+import com.kotov.restaurant.util.validator.MenuValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,17 +30,16 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public boolean insertNewMeal(Map<String, String> dataCheckResult, InputStream image) throws ServiceException {
         boolean result = false;
-        String title = dataCheckResult.get(TITLE);
-        String type = dataCheckResult.get(TYPE);
-        String priceStr = dataCheckResult.get(PRICE);
-        String recipe = dataCheckResult.get(RECIPE);
         try {
             if (MealValidator.areMealParamsValid(dataCheckResult, image)) {
+                String title = dataCheckResult.get(TITLE);
+                String type = dataCheckResult.get(TYPE);
+                String priceStr = dataCheckResult.get(PRICE);
+                String recipe = dataCheckResult.get(RECIPE);
                 if (!mealDao.isMealExist(title)) {
                     BigDecimal price = BigDecimal.valueOf(Double.parseDouble(priceStr));
                     Meal meal = new Meal(title, Meal.Type.valueOf(type.toUpperCase()), price, recipe, LocalDateTime.now());
-                    mealDao.insertNewEntity(meal, image);
-                    result = true;
+                    result = mealDao.insertNewEntity(meal, image) > 0;
                 } else {
                     dataCheckResult.clear();
                     dataCheckResult.put(MEAL_CREATION_RESULT, NOT_UNIQUE);
@@ -53,9 +52,9 @@ public class MenuServiceImpl implements MenuService {
             logger.log(Level.ERROR, "Meal cannot be added:", e);
             throw new ServiceException("Meal cannot be added:", e);
         } catch (NumberFormatException e) {
-            logger.log(Level.WARN, "Price parameter doesn't contain number: " + priceStr);
+            logger.log(Level.WARN, "Price parameter doesn't contain number");
         } catch (IllegalArgumentException e) {
-            logger.log(Level.WARN, "This enum type has no constant with the specified name: " + type);
+            logger.log(Level.WARN, "This enum type has no constant with the specified name");
         }
         return result;
     }
@@ -219,14 +218,16 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<Meal> findMealsByType(String mealType) throws ServiceException {
         List<Meal> meals = new ArrayList<>();
-        try {
-            Meal.Type type = Meal.Type.valueOf(mealType.toUpperCase());
-            meals = mealDao.findMealsByType(type);
-        } catch (DaoException e) {
-            logger.log(Level.ERROR, "Meal cannot be found by type " + mealType, e);
-            throw new ServiceException("Meal cannot be found by type " + mealType, e);
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.ERROR, "Enum type has no constant with the specified name: " + mealType, e);
+        if (mealType != null) {
+            try {
+                Meal.Type type = Meal.Type.valueOf(mealType.toUpperCase());
+                meals = mealDao.findMealsByType(type);
+            } catch (DaoException e) {
+                logger.log(Level.ERROR, "Meal cannot be found by type " + mealType, e);
+                throw new ServiceException("Meal cannot be found by type " + mealType, e);
+            } catch (IllegalArgumentException e) {
+                logger.log(Level.ERROR, "Enum type has no constant with the specified name: " + mealType, e);
+            }
         }
         return meals;
     }

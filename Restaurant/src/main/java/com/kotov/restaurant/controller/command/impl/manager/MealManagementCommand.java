@@ -19,6 +19,11 @@ import static com.kotov.restaurant.controller.command.PagePath.MEAL_MANAGEMENT_P
 public class MealManagementCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();

@@ -4,6 +4,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * @author Denis Kotov
+ *
+ * Command factory get name of command from request.
+ */
 public class CommandFactory {
     private static final Logger logger = LogManager.getLogger();
 

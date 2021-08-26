@@ -115,22 +115,22 @@
     </c:when>
 </c:choose>
 <div class="row"><h3 class="col-sm-3">${user_addresses}</h3></div>
-<form action="${abs}/controller" method="post">
-    <input type="hidden" name="command" value="delete_user_address_command">
     <table class="checkout_table" id="checkout_table">
         <tbody>
         <c:forEach items="${addresses}" var="address">
             <tr>
                 <td><ctg:AddressInfo address="${address}"/></td>
                 <td class="controls">
-                    <input type="hidden" name="selected" value="${address.id}">
-                    <input type="submit" class="del" value="×"/>
+                    <form action="${abs}/controller" method="post">
+                        <input type="hidden" name="command" value="delete_user_address_command">
+                        <input type="hidden" name="selected" value="${address.id}">
+                        <input type="submit" class="del" value="×"/>
+                    </form>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-</form>
 <div class="row">
     <div class="col-sm-2"></div>
     <button class="col-sm-2 btn btn-success" data-toggle="collapse" data-target="#address">${add_address}</button>
@@ -227,19 +227,19 @@
         <div class="row">
             <div class="form-group col-sm-4 indent">
                 <label for="old_psw">${old_psw}</label>
-                <input type="text" class="form-control" id="old_psw" name="old_password">
+                <input type="password" class="form-control" id="old_psw" name="old_password">
             </div>
         </div>
         <div class="row">
             <div class="form-group col-sm-4 indent">
                 <label for="new_psw">${new_psw}</label>
-                <input type="text" class="form-control" id="new_psw" name="new_password">
+                <input type="password" class="form-control" id="new_psw" name="new_password">
             </div>
         </div>
         <div class="row">
             <div class="form-group col-sm-4 indent">
                 <label for="psw_confirmation">${psw_confirmation}</label>
-                <input type="text" class="form-control" id="psw_confirmation" name="confirm_password">
+                <input type="password" class="form-control" id="psw_confirmation" name="confirm_password">
             </div>
         </div>
         <div class="row">

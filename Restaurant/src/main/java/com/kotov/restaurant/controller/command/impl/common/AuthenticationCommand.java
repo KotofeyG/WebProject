@@ -14,16 +14,20 @@ import org.apache.logging.log4j.Level;
 
 import java.util.Optional;
 
-import static com.kotov.restaurant.controller.command.ErrorMessage.ACCOUNT_BLOCKAGE_MESSAGE;
+import static com.kotov.restaurant.controller.Router.RouteType.REDIRECT;
 import static com.kotov.restaurant.controller.command.ParamName.LOGIN;
 import static com.kotov.restaurant.controller.command.ParamName.PASSWORD;
-import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
-import static com.kotov.restaurant.controller.command.AttributeName.AUTHENTICATION_RESULT;
+import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MAIN_PAGE;
 
 public class AuthenticationCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
@@ -45,6 +49,7 @@ public class AuthenticationCommand implements Command {
                 request.setAttribute(AUTHENTICATION_RESULT, Boolean.FALSE);
             }
             router.setPagePath(MAIN_PAGE);
+            router.setRouterType(REDIRECT);
             return router;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Authentication cannot be completed:", e);

@@ -1,4 +1,4 @@
-package com.kotov.restaurant.validator;
+package com.kotov.restaurant.util.validator;
 
 import java.io.InputStream;
 import java.util.Map;

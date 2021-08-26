@@ -38,6 +38,7 @@ public class UserDaoImpl implements UserDao {
             ", first_name, patronymic, last_name, mobile_number, registered, role, status FROM users" +
             " JOIN roles ON role_id=roles.id" +
             " JOIN user_statuses ON status_id=user_statuses.id";
+    private static final String FIND_USER_IN_ANY_ORDER = "SELECT id FROM orders WHERE user_id=? LIMIT 1";
     private static final String FIND_USER_STATUS_BY_ID = "SELECT status FROM users JOIN user_statuses ON user_statuses.id=status_id WHERE users.id=?";
     private static final String FIND_ADDRESS_BY_ID = "SELECT address.id, city, street, building, block, flat, entrance, floor, intercom_code FROM address" +
             " JOIN city_names ON city_names.id=city_id" +
@@ -314,12 +315,17 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean deleteEntitiesById(List<Long> idList) throws DaoException {
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_USER_BY_ID)) {
+             PreparedStatement statement = connection.prepareStatement(DELETE_USER_BY_ID);
+             PreparedStatement checkStatement = connection.prepareStatement(FIND_USER_IN_ANY_ORDER)) {
             for (Long userId : idList) {
-                statement.setLong(FIRST_PARAM_INDEX, userId);
-                statement.addBatch();
+                checkStatement.setLong(FIRST_PARAM_INDEX, userId);
+                ResultSet resultSet = checkStatement.executeQuery();
+                if (!resultSet.isBeforeFirst()) {
+                    statement.setLong(FIRST_PARAM_INDEX, userId);
+                    statement.addBatch();
+                }
             }
-            boolean result = statement.executeBatch().length == idList.size();
+            boolean result = statement.executeBatch().length > 0;
             logger.log(Level.INFO, result ? "deleteEntitiesById method was completed successfully. Users with id " + idList + " were deleted"
                     : "Users with id " + idList + " weren't deleted");
             return result;

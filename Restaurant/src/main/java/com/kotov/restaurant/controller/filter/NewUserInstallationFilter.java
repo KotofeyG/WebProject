@@ -11,6 +11,11 @@ import java.util.Optional;
 
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type New user installation filter.
+ */
 @WebFilter(urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.INCLUDE, DispatcherType.FORWARD})
 public class NewUserInstallationFilter implements Filter {
     @Override

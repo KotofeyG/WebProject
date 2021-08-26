@@ -1,4 +1,4 @@
-<%@ page isErrorPage="true" contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page isErrorPage="true" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@include file="../imports.jspf" %>
 
 <fmt:message key="error.internal" var="title"/>

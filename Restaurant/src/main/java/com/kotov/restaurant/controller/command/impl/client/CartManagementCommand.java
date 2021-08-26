@@ -8,6 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import static com.kotov.restaurant.controller.command.PagePath.CART_PAGE;
 
 public class CartManagementCommand implements Command {
+
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();

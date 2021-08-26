@@ -2,6 +2,17 @@ package com.kotov.restaurant.controller;
 
 import com.kotov.restaurant.controller.command.PagePath;
 
+/**
+ * @author Denis Kotov
+ *
+ * The {@link Router} class contains four fields:
+ * pagePath
+ * routeType
+ * errorCode
+ * errorMessage
+ * that are used with by controller to find out where and how
+ * request and response should be processed after the controller.
+ */
 public class Router {
     public enum RouteType {
         FORWARD, REDIRECT
@@ -10,7 +21,6 @@ public class Router {
     private String pagePath = PagePath.INDEX_PAGE;
     private RouteType routerType = RouteType.FORWARD;
     private Integer errorCode;
-
     private String errorMessage;
 
     public String getPagePath() {

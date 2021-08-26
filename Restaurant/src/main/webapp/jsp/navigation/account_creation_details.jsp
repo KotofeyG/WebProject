@@ -4,6 +4,6 @@
     <title>Title</title>
 </head>
 <body>
-В разработке
+
 </body>
 </html>

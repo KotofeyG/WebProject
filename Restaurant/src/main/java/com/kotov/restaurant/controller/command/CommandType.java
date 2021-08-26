@@ -11,6 +11,11 @@ import java.util.EnumSet;
 import static com.kotov.restaurant.model.entity.User.*;
 import static com.kotov.restaurant.model.entity.User.Role.*;
 
+/**
+ * @author Denis Kotov
+ *
+ * The enum Command type.
+ */
 public enum CommandType {
     /* common commands */
     GO_TO_MAIN_COMMAND(new GoToMainCommand(), EnumSet.of(ADMIN, MANAGER, CLIENT, GUEST)),

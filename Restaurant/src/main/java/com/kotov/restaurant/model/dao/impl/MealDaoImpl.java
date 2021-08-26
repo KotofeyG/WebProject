@@ -119,7 +119,6 @@ public class MealDaoImpl implements MealDao {
                 checkStatement.setLong(FIRST_PARAM_INDEX, mealId);
                 ResultSet resultSet = checkStatement.executeQuery();
                 if (!resultSet.isBeforeFirst()) {
-                    System.out.println("тут");
                     statement.setLong(FIRST_PARAM_INDEX, mealId);
                     statement.addBatch();
                 }

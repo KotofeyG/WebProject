@@ -2,6 +2,7 @@
 <%@include file="../../imports.jspf" %>
 
 <fmt:message key="cart.title" var="cart_title"/>
+<fmt:message key="cart.empty" var="empty_cart"/>
 <fmt:message key="cart.amount" var="amount"/>
 <fmt:message key="cart.deleting_position" var="deleting_position"/>
 <fmt:message key="cart.clearing_cart" var="clearing_cart"/>
@@ -69,6 +70,8 @@
         <div class="alert alert-warning confirmation-message" id="message"><b class="invalid_message">${negative_result}</b></div>
     </c:when>
 </c:choose>
+<c:choose>
+<c:when test="${cart.isEmpty() eq 'false'}">
 <div class="absolute-cart">
     <div class="scroll-table">
         <table class="table-condensed table-bordered meal-table">
@@ -207,5 +210,8 @@
         </c:choose>
     </form>
 </div>
+</c:when>
+    <c:otherwise><h1>${empty_cart}</h1></c:otherwise>
+</c:choose>
 </body>
 </html>

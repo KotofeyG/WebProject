@@ -8,9 +8,9 @@ import com.kotov.restaurant.model.entity.Address;
 import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.UserService;
-import com.kotov.restaurant.validator.AddressValidator;
+import com.kotov.restaurant.util.validator.AddressValidator;
 import com.kotov.restaurant.util.PasswordEncryptor;
-import com.kotov.restaurant.validator.UserValidator;
+import com.kotov.restaurant.util.validator.UserValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -320,7 +320,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updatePatronymicById(long userId, String patronymic) throws ServiceException {
         try {
-            System.out.println(UserValidator.isNameValid(patronymic));
             return UserValidator.isNameValid(patronymic) && userDao.updateUserPatronymic(userId, patronymic);
         } catch (DaoException e) {
             logger.log(Level.ERROR, "Impossible to change user patronymic:", e);
@@ -381,9 +380,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateAccountPassword(long userId, Map<String, String> dataCheckResult) throws ServiceException {
         String oldPassword = dataCheckResult.get(OLD_PASSWORD);
-        String oldPasswordHash = PasswordEncryptor.encrypt(oldPassword);
         try {
-            boolean result = UserValidator.isPasswordValid(oldPassword) && userDao.isUserExist(userId, oldPasswordHash);
+            boolean result = UserValidator.isPasswordValid(oldPassword) && userDao.isUserExist(userId, PasswordEncryptor.encrypt(oldPassword));
             if (result) {
                 String newPassword = dataCheckResult.get(NEW_PASSWORD);
                 String confirmPassword = dataCheckResult.get(CONFIRM_PASSWORD);

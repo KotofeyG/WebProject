@@ -13,8 +13,24 @@ import static com.kotov.restaurant.controller.command.ParamName.PAGE_NUMBER;
 public interface Command {
     Logger logger = LogManager.getLogger();
 
+    /**
+     * @author Denis Kotov
+     *
+     * Execute.
+     *
+     * @param request contains information that {@link Command} should processed
+     * @return the Router
+     */
     Router execute(HttpServletRequest request) throws CommandException;
 
+    /**
+     * @author Denis Kotov
+     *
+     * Gets page.
+     *
+     * @param request the request
+     * @return the page
+     */
     default int getPage(HttpServletRequest request) {
         int page = FIRST_PAGE;
         String strPage = request.getParameter(PAGE_NUMBER);

@@ -1,4 +1,4 @@
-package com.kotov.restaurant.tag;
+package com.kotov.restaurant.controller.tag;
 
 import com.kotov.restaurant.model.entity.Meal;
 import jakarta.servlet.jsp.JspException;
@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Order total cost tag.
+ */
 public class OrderTotalCostTag extends TagSupport {
     private Map<Meal, Integer> mealList;
 

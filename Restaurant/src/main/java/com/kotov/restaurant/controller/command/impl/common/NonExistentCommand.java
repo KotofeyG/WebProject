@@ -8,6 +8,7 @@ import static com.kotov.restaurant.controller.command.AttributeName.WRONG_COMMAN
 import static com.kotov.restaurant.controller.command.PagePath.ERROR_400_PAGE;
 
 public class NonExistentCommand implements Command {
+
     @Override
     public Router execute(HttpServletRequest request) {
         Router router = new Router();

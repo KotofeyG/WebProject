@@ -1,4 +1,4 @@
-package com.kotov.restaurant.tag;
+package com.kotov.restaurant.controller.tag;
 
 import com.kotov.restaurant.model.entity.Address;
 import jakarta.servlet.jsp.JspException;
@@ -7,6 +7,11 @@ import jakarta.servlet.jsp.tagext.TagSupport;
 
 import java.io.IOException;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Address info tag.
+ */
 public class AddressInfoTag extends TagSupport {
     private static final String SEPARATOR = ", ";
     private static final String CITY = "г.";

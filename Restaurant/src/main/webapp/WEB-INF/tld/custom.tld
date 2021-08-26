@@ -8,7 +8,7 @@
     <uri>custom_tags</uri>
     <tag>
         <name>totalCost</name>
-        <tag-class>com.kotov.restaurant.tag.OrderTotalCostTag</tag-class>
+        <tag-class>com.kotov.restaurant.controller.tag.OrderTotalCostTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>mealList</name>
@@ -19,7 +19,7 @@
     </tag>
     <tag>
         <name>AddressInfo</name>
-        <tag-class>com.kotov.restaurant.tag.AddressInfoTag</tag-class>
+        <tag-class>com.kotov.restaurant.controller.tag.AddressInfoTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>address</name>

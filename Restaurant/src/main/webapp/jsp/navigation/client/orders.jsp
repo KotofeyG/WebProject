@@ -4,6 +4,7 @@
 
 <fmt:message key="main.rub" var="rub"/>
 <fmt:message key="order_check.title" var="order_title"/>
+<fmt:message key="order_check.empty" var="empty_orders"/>
 <fmt:message key="order_check.extra_info" var="extra_info"/>
 <fmt:message key="order_check.action" var="action"/>
 <fmt:message key="order_check.payment" var="pay"/>
@@ -42,6 +43,8 @@
     <title>${title}</title>
 </head>
 <body>
+<c:choose>
+<c:when test="${orders.isEmpty() eq 'false'}">
 <div class="container-fluid">
 <div class="row">
     <div class="col-sm-1"></div>
@@ -121,5 +124,8 @@
         </div>
     </div>
 </div>
+</c:when>
+<c:otherwise><h1>${empty_orders}</h1></c:otherwise>
+</c:choose>
 </body>
 </html>

@@ -227,18 +227,19 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order.Status findOrderStatus(long orderId) throws DaoException {
+    public Optional<Order.Status> findOrderStatus(long orderId) throws DaoException {
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_ORDER_BY_STATUS)) {
             statement.setLong(FIRST_PARAM_INDEX, orderId);
             ResultSet resultSet = statement.executeQuery();
-            Order.Status status = null;
+            Optional<Order.Status> optionalStatus = Optional.empty();
             if (resultSet.next()) {
-                status = Order.Status.valueOf(resultSet.getString(ORDER_STATUS).toUpperCase());
+                Order.Status status = Order.Status.valueOf(resultSet.getString(ORDER_STATUS).toUpperCase());
+                optionalStatus = Optional.of(status);
             }
-            logger.log(Level.DEBUG, status != null ? "Order with id " + orderId + " has status " + status
-                    : "Order with id " + orderId + " doesn't have any status");
-            return status;
+            logger.log(Level.DEBUG, optionalStatus.map(status -> "Order with id " + orderId + " has status " + status)
+                    .orElseGet(() -> "Order with id " + orderId + " doesn't have any status"));
+            return optionalStatus;
         } catch (SQLException e) {
             logger.log(Level.ERROR, "Impossible to find order by status. Database access error:", e);
             throw new DaoException("Impossible to find order by status. Database access error:", e);

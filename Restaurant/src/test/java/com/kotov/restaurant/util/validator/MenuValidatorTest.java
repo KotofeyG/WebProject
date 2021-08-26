@@ -1,4 +1,4 @@
-package com.kotov.restaurant.validator;
+package com.kotov.restaurant.util.validator;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

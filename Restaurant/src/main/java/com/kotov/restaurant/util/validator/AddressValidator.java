@@ -1,4 +1,4 @@
-package com.kotov.restaurant.validator;
+package com.kotov.restaurant.util.validator;
 
 import com.kotov.restaurant.model.entity.Address;
 
@@ -19,8 +19,8 @@ public class AddressValidator {
     }
 
     public static boolean isCityValid(String city) {
-        boolean result = city != null;
-        if (false) {
+        boolean result = false;
+        if (city != null) {
             for (Address.City value : Address.City.values()) {
                 if (value.toString().equals(city.toUpperCase())) {
                     result = true;

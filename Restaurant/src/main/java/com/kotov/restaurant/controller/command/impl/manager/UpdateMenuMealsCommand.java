@@ -15,6 +15,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 public class UpdateMenuMealsCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 
+    /**
+     * @param request the HttpServletRequest
+     * @return the {@link Router}
+     * @throws CommandException if the request could not be handled.
+     */
     @Override
     public Router execute(HttpServletRequest request) throws CommandException {
         Router router;
@@ -22,6 +27,7 @@ public class UpdateMenuMealsCommand implements Command {
         try {
             String action = request.getParameter(ACTION);
             String mealId = request.getParameter(SELECTED);
+            action = action != null ? action : EMPTY;
             boolean result = switch (action) {
                 case APPEND -> menuService.addMealToMenu(menuId, mealId);
                 case REMOVE -> menuService.deleteMealFromMenu(menuId, mealId);

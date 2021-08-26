@@ -6,6 +6,11 @@ import jakarta.servlet.annotation.WebInitParam;
 
 import java.io.IOException;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Encoding filter.
+ */
 @WebFilter(urlPatterns = {"/*"}, dispatcherTypes = DispatcherType.INCLUDE, initParams = {
         @WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param")
 })

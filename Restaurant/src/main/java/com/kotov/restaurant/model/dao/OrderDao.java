@@ -7,6 +7,7 @@ import com.kotov.restaurant.model.entity.Order;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface OrderDao extends BaseDao<Order> {
 
@@ -18,7 +19,7 @@ public interface OrderDao extends BaseDao<Order> {
 
     Map<Meal, Integer> findMealsForOrder(long orderId) throws DaoException;
 
-    Order.Status findOrderStatus(long orderId) throws DaoException;
+    Optional<Order.Status> findOrderStatus(long orderId) throws DaoException;
 
     boolean updateOrderStatus(long orderId, Order.Status status) throws DaoException;
 }

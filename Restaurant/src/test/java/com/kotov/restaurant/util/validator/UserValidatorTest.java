@@ -1,4 +1,4 @@
-package com.kotov.restaurant.validator;
+package com.kotov.restaurant.util.validator;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -115,26 +115,27 @@ public class UserValidatorTest {
     public void testIsEmailValidWithNullCondition() {
         String email = null;
         boolean condition = UserValidator.isEmailValid(email);
-        assertTrue(condition, "The value " + email + " is invalid");
-    }
-
-    @Test
-    public void testIsMobileNumberValidWithTrueCondition() {
-        String email = "447181933";
-        boolean condition = UserValidator.isEmailValid(email);
-        assertTrue(condition, "The value " + email + " is invalid");
+        assertFalse(condition, "The value isn't null");
     }
 
     @Test(dataProvider = "mobileNumberData")
-    public void testIsMobileNumberValidWithFalseCondition(String email) {
-        boolean condition = UserValidator.isEmailValid(email);
-        assertFalse(condition, "The value " + email + " is valid");
+    public void testIsMobileNumberValidWithTrueCondition(String mobileNumber) {
+        boolean condition = UserValidator.isMobileNumberValid(mobileNumber);
+        assertTrue(condition, "The value " + mobileNumber + " is invalid");
+
+    }
+
+    @Test
+    public void testIsMobileNumberValidWithFalseCondition() {
+        String mobileNumber = "117181933";
+        boolean condition = UserValidator.isMobileNumberValid(mobileNumber);
+        assertFalse(condition, "The value " + mobileNumber + " is valid");
     }
 
     @Test
     public void testIsMobileNumberValidWithNullCondition() {
         String email = null;
-        boolean condition = UserValidator.isEmailValid(email);
+        boolean condition = UserValidator.isMobileNumberValid(email);
         assertFalse(condition, "The value isn't null");
     }
 }

@@ -18,6 +18,11 @@ import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER
 import static com.kotov.restaurant.controller.command.PagePath.*;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Jsp security filter.
+ */
 @WebFilter(urlPatterns = {"*.jsp"})
 public class JspSecurityFilter implements Filter {
     private static final Logger logger = LogManager.getLogger();

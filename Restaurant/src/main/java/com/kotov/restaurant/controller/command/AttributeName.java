@@ -1,5 +1,10 @@
 package com.kotov.restaurant.controller.command;
 
+/**
+ * @author Denis Kotov
+ *
+ * The names of session and request attributes.
+ */
 public class AttributeName {
     public static final String PAGINATION_ITEM = "pagination_item";
     public static final String WRONG_COMMAND = "wrong_command";
@@ -66,6 +71,7 @@ public class AttributeName {
     public static final String ACTION_RESULT = "action_result";
     public static final String CURRENT_PAGE = "current_page";
     public static final String SESSION_LOCALE = "locale";
+    public static final String ACCOUNT_BLOCKAGE_MESSAGE = "account_blockage_message";
 
     private AttributeName() {
     }

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@include file="../imports.jspf" %>
 
 <fmt:message key="header.title" var="title"/>
@@ -18,22 +18,15 @@
 <fmt:message key="header.authorization" var="authorization"/>
 <fmt:message key="header.name" var="name"/>
 <fmt:message key="header.password" var="password"/>
-
 <fmt:message key="header.wrong_locale" var="wrong_locale_message"/>
-
-
-<%--Temporary messages--%>
 <fmt:message key="sign_up.registration" var="registration"/>
 <fmt:message key="main.order" var="order_book_mark"/>
 <fmt:message key="main.settings" var="settings"/>
 <fmt:message key="main.reviews" var="reviews"/>
 <fmt:message key="main.cart" var="cart_icon"/>
 <fmt:message key="main.booking" var="booking"/>
-<%--Temporary messages--%>
 
 <jsp:useBean id="user" scope="session" type="com.kotov.restaurant.model.entity.User"/>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -72,6 +65,7 @@
             </c:choose>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">${user.login}</a><li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span> ${language}</a>
                 <ul class="dropdown-menu">

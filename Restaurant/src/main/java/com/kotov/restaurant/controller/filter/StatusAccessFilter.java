@@ -16,9 +16,14 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
-import static com.kotov.restaurant.controller.command.ErrorMessage.ACCOUNT_BLOCKAGE_MESSAGE;
+import static com.kotov.restaurant.controller.command.AttributeName.ACCOUNT_BLOCKAGE_MESSAGE;
 import static jakarta.servlet.http.HttpServletResponse.*;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Status access filter.
+ */
 @WebFilter(urlPatterns = {"/*"})
 public class StatusAccessFilter implements Filter {
     private static final Logger logger = LogManager.getLogger();

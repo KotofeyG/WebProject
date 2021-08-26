@@ -19,6 +19,11 @@ import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
 import static com.kotov.restaurant.controller.command.ParamName.USER;
 
+/**
+ * @author Denis Kotov
+ *
+ * The type Command access filter.
+ */
 @WebFilter(urlPatterns = {"/*"})
 public class CommandAccessFilter implements Filter {
     private static final Logger logger = LogManager.getLogger();
