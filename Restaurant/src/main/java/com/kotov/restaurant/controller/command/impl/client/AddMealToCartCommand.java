@@ -24,6 +24,13 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * Add {@link Meal} to Cart command.
+ * Used by clients for adding items in their cart.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class AddMealToCartCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

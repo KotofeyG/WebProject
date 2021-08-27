@@ -4,6 +4,7 @@ import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,15 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.*;
 
+/**
+ * Registration command.
+ * Used by users for registration on website.
+ * Command get entered data and validates them.
+ * If input data are correct {@link User} can sign in on website.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class RegistrationCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

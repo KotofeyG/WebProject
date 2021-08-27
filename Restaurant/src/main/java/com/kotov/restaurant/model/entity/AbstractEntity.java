@@ -2,6 +2,12 @@ package com.kotov.restaurant.model.entity;
 
 import java.io.Serializable;
 
+/**
+ * The {@link AbstractEntity} class
+ * is a superclass for all entities in this project
+ *
+ * Implements Serializable, so every entity implements this interfaces too.
+ */
 public abstract class AbstractEntity implements Serializable {
     private long id;
 

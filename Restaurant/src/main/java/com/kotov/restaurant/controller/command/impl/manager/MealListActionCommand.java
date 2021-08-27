@@ -17,6 +17,14 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MEAL_MANAGEMENT_PAGE;
 
+/**
+ * {@link Meal} general control command.
+ * Used by managers for changing meals statuses.
+ * Used by managers to delete meals.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class MealListActionCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

@@ -18,6 +18,13 @@ import java.util.List;
 import static com.kotov.restaurant.controller.command.AttributeName.ORDER_LIST;
 import static com.kotov.restaurant.controller.command.PagePath.ORDER_PAGE;
 
+/**
+ * Find user {@link Order} command.
+ * Used by clients for displaying {@link Order}.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class ShowUserOrdersCommand implements Command {
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 

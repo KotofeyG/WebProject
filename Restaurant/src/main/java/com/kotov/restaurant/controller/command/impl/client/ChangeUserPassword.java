@@ -20,6 +20,9 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * This command used by {@link User} for changing password from their cabinet
+ */
 public class ChangeUserPassword implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

@@ -7,6 +7,7 @@ import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.Menu;
+import com.kotov.restaurant.model.entity.Order;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.util.validator.MealValidator;
@@ -22,6 +23,14 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ *
+ * Show {@link Meal}s on the main page.
+ * Client can add {@link Meal}s into their carts.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class ShowProductInfoCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

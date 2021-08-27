@@ -20,6 +20,13 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * Change personal data command.
+ * Used by clients for editing their personal data.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class ChangePersonalDataCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

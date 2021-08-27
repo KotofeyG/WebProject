@@ -4,6 +4,7 @@ import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.Menu;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,13 @@ import org.apache.logging.log4j.Level;
 import static com.kotov.restaurant.controller.command.AttributeName.MENU_TITLE_CHANGE_RESULT;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 
+/**
+ * Update menu meals command.
+ * Used by managers for updating {@link Menu} title.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class UpdateMenuTitleCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

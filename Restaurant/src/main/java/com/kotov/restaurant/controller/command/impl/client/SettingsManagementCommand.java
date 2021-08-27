@@ -18,6 +18,13 @@ import static com.kotov.restaurant.controller.command.AttributeName.ADDRESS_LIST
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
 import static com.kotov.restaurant.controller.command.PagePath.SETTINGS_PAGE;
 
+/**
+ * Settings management command.
+ * Used by clients for editing their personal data.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class SettingsManagementCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

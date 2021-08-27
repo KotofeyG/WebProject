@@ -18,6 +18,13 @@ import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MENU_MANAGEMENT_PAGE;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 
+/**
+ * Menu delete command
+ * Used by managers to delete unused {@link Menu}
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class MenuDeleteCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

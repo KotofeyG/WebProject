@@ -4,6 +4,7 @@ import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.Meal;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
@@ -14,6 +15,13 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.*;
 
+/**
+ * Delete meals from cart command.
+ * Used by clients for removing {@link Meal} from in their cart.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class DeleteMealsFromCartCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

@@ -1,5 +1,6 @@
 package com.kotov.restaurant.controller.command.impl.client;
 
+import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.Address;
@@ -18,6 +19,12 @@ import java.util.Map;
 
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * Utility class for clients command classes
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 class UserCommandsOverallControl {
     private static final Logger logger = LogManager.getLogger();
     private static final UserService userService = ServiceProvider.getInstance().getUserService();

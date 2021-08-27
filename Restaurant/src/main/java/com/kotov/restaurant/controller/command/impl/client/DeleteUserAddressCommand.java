@@ -4,6 +4,7 @@ import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.Address;
 import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import com.kotov.restaurant.model.service.UserService;
@@ -15,6 +16,13 @@ import static com.kotov.restaurant.controller.command.ParamName.SELECTED;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.SETTINGS_PAGE;
 
+/**
+ * Delete user address command.
+ * Used by clients for removing {@link Address} on their settings page.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class DeleteUserAddressCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

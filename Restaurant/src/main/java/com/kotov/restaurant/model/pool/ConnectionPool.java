@@ -14,6 +14,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.kotov.restaurant.model.pool.ConnectionFactory.POOL_SIZE;
 
+/**
+ * The {@link ConnectionPool} class has private BlockingQueue in which
+ * ProxyConnections are stored.
+ * The max amount of created connections is set by POOL_SIZE or
+ * otherwise will be take from DEFAULT_POOL_SIZE int value.
+ * The connection can be taken from the BlockingQueue and
+ * released to it. Once an hour {@link TimerConnectionCounter} checks the
+ * pool for the quantity of connections in it and add connection
+ * to pool if it necessary.
+ * Thread safe.
+ *
+ * @see ProxyConnection
+ */
 public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger();
     private static final int ONCE = 1;

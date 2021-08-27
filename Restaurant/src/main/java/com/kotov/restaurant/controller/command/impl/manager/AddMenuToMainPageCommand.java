@@ -5,6 +5,7 @@ import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.Menu;
+import com.kotov.restaurant.model.entity.User;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import jakarta.servlet.ServletContext;
@@ -19,6 +20,14 @@ import static com.kotov.restaurant.controller.command.ParamName.SELECTED_MENU;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MENU_MANAGEMENT_PAGE;
 
+/**
+ *
+ * Add menu to main page command
+ * {@link User} manager can add {@link Menu} to the main page.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class AddMenuToMainPageCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

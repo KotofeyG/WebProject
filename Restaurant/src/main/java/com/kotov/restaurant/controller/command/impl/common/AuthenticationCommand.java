@@ -20,6 +20,12 @@ import static com.kotov.restaurant.controller.command.ParamName.PASSWORD;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MAIN_PAGE;
 
+/**
+ * {@link User} authentication command. Check input by user data in data base.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class AuthenticationCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

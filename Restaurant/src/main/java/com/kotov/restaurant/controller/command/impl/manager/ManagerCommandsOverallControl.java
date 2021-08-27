@@ -1,6 +1,7 @@
 package com.kotov.restaurant.controller.command.impl.manager;
 
 import com.kotov.restaurant.controller.Router;
+import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
 import com.kotov.restaurant.model.entity.Meal;
@@ -25,6 +26,12 @@ import static com.kotov.restaurant.controller.command.ParamName.SELECTED_MENU;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.*;
 
+/**
+ * Utility class for other managers command classes
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 class ManagerCommandsOverallControl {
     private static final Logger logger = LogManager.getLogger();
     private static final UserService userService = ServiceProvider.getInstance().getUserService();

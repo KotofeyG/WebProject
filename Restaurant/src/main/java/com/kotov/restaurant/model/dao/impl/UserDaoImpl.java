@@ -16,6 +16,10 @@ import java.util.*;
 import static com.kotov.restaurant.model.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ *  The {@link UserDaoImpl} class provides access to
+ *  users table in the database
+ */
 public class UserDaoImpl implements UserDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();

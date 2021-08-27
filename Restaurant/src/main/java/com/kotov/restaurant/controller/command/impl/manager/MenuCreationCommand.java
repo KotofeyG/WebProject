@@ -4,6 +4,8 @@ import com.kotov.restaurant.controller.command.Command;
 import com.kotov.restaurant.controller.Router;
 import com.kotov.restaurant.exception.CommandException;
 import com.kotov.restaurant.exception.ServiceException;
+import com.kotov.restaurant.model.entity.Meal;
+import com.kotov.restaurant.model.entity.Menu;
 import com.kotov.restaurant.model.service.MenuService;
 import com.kotov.restaurant.model.service.ServiceProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,13 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MENU_CREATION_PAGE;
 
+/**
+ * Menu creation command
+ * Used by managers for creation new {@link Menu} from {@link Meal}
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class MenuCreationCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

@@ -18,6 +18,10 @@ import java.util.*;
 import static com.kotov.restaurant.model.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ *  The {@link OrderDaoImpl} class provides access to
+ *  orders table in the database
+ */
 public class OrderDaoImpl implements OrderDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();

@@ -20,6 +20,13 @@ import static com.kotov.restaurant.controller.command.PagePath.*;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * Order action command.
+ * Used by clients for doing action with {@link Order}.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class OrderActionCommand implements Command {
     private static final OrderService orderService = ServiceProvider.getInstance().getOrderService();
 

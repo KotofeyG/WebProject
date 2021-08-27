@@ -20,6 +20,13 @@ import static com.kotov.restaurant.model.entity.User.Status.BLOCKED;
 import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 
+/**
+ * {@link User} general control command.
+ * Used by admin for changing users statuses.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class UserListActionCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

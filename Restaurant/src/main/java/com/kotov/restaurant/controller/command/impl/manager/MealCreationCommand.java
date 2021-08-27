@@ -23,6 +23,14 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.MEAL_MANAGEMENT_PAGE;
 
+/**
+ *
+ * Menu creation command
+ * Managers can add new {@link Meal}.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class MealCreationCommand implements Command {
     private static final MenuService menuService = ServiceProvider.getInstance().getMenuService();
 

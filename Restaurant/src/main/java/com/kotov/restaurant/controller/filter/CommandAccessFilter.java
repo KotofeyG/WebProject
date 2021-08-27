@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static com.kotov.restaurant.controller.command.ParamName.COMMAND;
 import static com.kotov.restaurant.controller.command.AttributeName.SESSION_USER;
-import static com.kotov.restaurant.controller.command.ParamName.USER;
 
 /**
  * @author Denis Kotov

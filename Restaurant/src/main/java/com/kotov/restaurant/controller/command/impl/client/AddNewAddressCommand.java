@@ -21,6 +21,13 @@ import static com.kotov.restaurant.controller.command.ParamName.*;
 import static com.kotov.restaurant.controller.command.AttributeName.*;
 import static com.kotov.restaurant.controller.command.PagePath.*;
 
+/**
+ * Add new {@link Address} command.
+ * Used by clients for adding new addresses.
+ *
+ * @see Command
+ * @see com.kotov.restaurant.controller.command.Command
+ */
 public class AddNewAddressCommand implements Command {
     private static final UserService userService = ServiceProvider.getInstance().getUserService();
 

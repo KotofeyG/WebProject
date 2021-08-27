@@ -16,6 +16,10 @@ import java.util.Optional;
 
 import static com.kotov.restaurant.model.dao.ColumnName.*;
 
+/**
+ *  The {@link MenuDaoImpl} class provides access to
+ *  menus table in the database
+ */
 public class MenuDaoImpl implements MenuDao {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
