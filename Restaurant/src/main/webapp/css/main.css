@@ -25,3 +25,20 @@ body {
 .invalid_message {
     color: red;
 }
+p {
+    position: absolute;
+    font-size: 20px;
+    text-align: center;
+    color: #ffffaa;
+    width: 65%;
+    top: 30%;
+    left: 19%;
+}
+
+h1 {
+    position: absolute;
+    color: blanchedalmond;
+    font-size: 60px;
+    top: 15%;
+    left: 43%;
+}

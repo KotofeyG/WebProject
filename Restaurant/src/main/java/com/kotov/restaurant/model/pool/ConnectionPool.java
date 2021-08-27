@@ -84,7 +84,6 @@ public class ConnectionPool {
                 initialisingLatch.await();
             } catch (InterruptedException e) {
                 logger.log(Level.ERROR, "Thread is interrupted while ConnectionPool is creating", e);
-                Thread.currentThread().interrupt();
             }
         }
         return instance;
@@ -103,7 +102,6 @@ public class ConnectionPool {
             }
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, "Impossible to get connection", e);
-            Thread.currentThread().interrupt();
         } finally {
             semaphore.release();
         }
@@ -125,7 +123,6 @@ public class ConnectionPool {
             }
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, "Impossible to return connection into pool", e);
-            Thread.currentThread().interrupt();
         }
         logger.log(Level.DEBUG, "Connection was returned into pool");
         return result;
@@ -153,7 +150,6 @@ public class ConnectionPool {
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, Thread.class.getSimpleName()
                     + " thread was interrupted while checking free connection", e);
-            Thread.currentThread().interrupt();
         } finally {
             connectionsNumberCheck.set(false);
             connectionsCheckLatch.countDown();
